@@ -1,0 +1,97 @@
+# 全局路径管理
+paths:
+  data_dir: "./data"
+  db_dir: "./data/db"
+  vector_store: "./data/vector/chroma"
+  recipes_dir: "./data/recipes"
+  log_dir: "./logs"
+
+# MCP Server 交互配置 (Agent 调用 Server 的凭证)
+mcp:
+  transport: "stdio"          # stdio | http
+  command: "python"           # 启动 server 的命令
+  args: ["src/mcp/server.py"] # server 入口路径
+  env:                        # 传递给子进程的环境变量
+    PYTHONPATH: "."
+
+# 离线摄取流水线配置
+ingestion:
+  chunk_size: 1000            # 基于字符或标记的切块大小
+  chunk_overlap: 100          # 块之间重叠大小
+  enrichment:                 # Transformer 阶段配置
+    use_llm_summary: true     # 是否调用 LLM 生成切片摘要
+    extract_metadata: true    # 是否自动提取食材标签/难度
+
+# 检索与 RAG 核心
+retrieval:
+  sparse_backend: bm25
+  fusion_algorithm: rrf
+  top_k_dense: 20
+  top_k_sparse: 20
+  top_k_final: 10
+  rerank:
+    enabled: true             # 增加开关，方便调试时跳过精排
+    backend: cross_encoder 
+    model: "cross-encoder/ms-marco-MiniLM-L-6-v2"
+    threshold: 0.5            # 丢弃低于该分的检索结果
+
+# 本地业务数据库配置 (SQLite)
+databases:
+  user_profiles: "user_profiles.db"
+  inventory: "inventory.db"
+  ingestion_history: "ingestion_history.db"
+  
+# LLM 配置
+llm:
+  provider: dashscope             # 标识供应商为阿里云百炼 (DashScope)
+  model: qwen3-max                
+  api_base: "https://dashscope.aliyuncs.com/compatible-mode/v1" # 百炼的 OpenAI 兼容端点
+  api_key: "${DASHSCOPE_API_KEY}" # 从环境变量读取 API KEY
+  
+  # 运行参数调优
+  temperature: 0.7                # 创意与严谨的平衡
+  max_tokens: 2000                # 单次生成最大长度
+  timeout: 60                     # 旗舰模型推理较重，建议增加超时阈值
+  retry_limit: 3                  # 遇到网络抖动自动重试
+
+# Embedding 配置
+embedding:
+  provider: dashscope             # openai |  百炼
+  model: text-embedding-v4
+  
+# 向量存储配置
+vector_store:
+  backend: chroma           # chroma | qdrant | pinecone
+  persist_path: ./data/db/chroma
+
+# 检索配置
+retrieval:
+  sparse_backend: bm25      # bm25 | elasticsearch
+  fusion_algorithm: rrf     # rrf | weighted_sum
+  top_k_dense: 20
+  top_k_sparse: 20
+  top_k_final: 10
+
+# 重排配置
+rerank:
+  backend: cross_encoder    # none | cross_encoder | llm
+  model: cross-encoder/ms-marco-MiniLM-L-6-v2
+  top_m: 30
+
+# 评估配置
+evaluation:
+  backends: [ragas, custom]
+  golden_test_set: ./tests/fixtures/golden_test_set.json
+
+# 可观测性配置
+observability:
+  enabled: true
+  log_file: ./logs/traces.jsonl
+
+# Dashboard 管理平台配置
+dashboard:
+  enabled: true
+  port: 8501                     # Streamlit 服务端口
+  traces_dir: ./logs             # Trace 日志文件目录
+  auto_refresh: true             # 是否自动刷新（轮询新 trace）
+  refresh_interval: 5            # 自动刷新间隔（秒）
