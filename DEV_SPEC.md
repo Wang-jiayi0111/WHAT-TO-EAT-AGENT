@@ -255,37 +255,37 @@
        
        - Loader不负责切分：只做“格式统一 + 结构抽取 + 引用收集”，确保切分策略可独立迭代与度量。
   
-  2. **Splitter：**将 Loader 产出的标准化 Markdown 文档切分为具备完整语义、且携带全局业务特征的智能切块
+  2. **Splitter：** 将 Loader 产出的标准化 Markdown 文档切分为具备完整语义、且携带全局业务特征的智能切块
   
-     - **实现方案：**使用 LangChain 的 `RecursiveCharacterTextSplitter` 进行切分。
-       - **优势：**该方法对 Markdown 文档的结构（标题、段落、列表）有天然适配性，能通过配置 `Separators`（如 `["\n# ", "\n## ", "\n### ", "\n\n", "\n"]`）实现高质量、语义不破碎的切块。
-       - **Splitter输入：**由 Loader 产出的规范化 `Document` 对象（含文本及初步抽取的原料、标签等元数据）。
-       - **Splitter输出：**若干 `Chunk`，每个 chunk 必须携带稳定的定位信息与来源信息：`source`（源文件名）, `chunk_index`, `heading_context`：该片段所属的最近一级标题名称（如“操作步骤”）。
-     - **核心机制：**元数据透传与确定性标识，Splitter在切分过程中必须执行以下两点关键操作：
+     - **实现方案：** 使用 LangChain 的 `RecursiveCharacterTextSplitter` 进行切分。
+       - **优势：** 该方法对 Markdown 文档的结构（标题、段落、列表）有天然适配性，能通过配置 `Separators`（如 `["\n# ", "\n## ", "\n### ", "\n\n", "\n"]`）实现高质量、语义不破碎的切块。
+       - **Splitter输入：** 由 Loader 产出的规范化 `Document` 对象（含文本及初步抽取的原料、标签等元数据）。
+       - **Splitter输出：** 若干 `Chunk`，每个 chunk 必须携带稳定的定位信息与来源信息：`source`（源文件名）, `chunk_index`, `heading_context`：该片段所属的最近一级标题名称（如“操作步骤”）。
+     - **核心机制：** 元数据透传与确定性标识，Splitter在切分过程中必须执行以下两点关键操作：
        1. **全局业务信息透传 (Global Metadata Retention)**
           - **操作逻辑**：Loader 阶段提取的全局元数据（如 `ingredients` 结构化列表、`tags` 口味工艺、`difficulty` 难度等级）必须**全量复制**到该文档产出的每一个 Chunk 中。
-          - **目的：**确保检索阶段即便只命中了一个“操作步骤”的片段，Agent 也能通过透传的元数据获知该菜品的完整原料和属性，从而在 `Memory Keeper` 节点进行实时偏好匹配（例如：检测该步骤所属菜品是否包含过敏原）。
+          - **目的：** 确保检索阶段即便只命中了一个“操作步骤”的片段，Agent 也能通过透传的元数据获知该菜品的完整原料和属性，从而在 `Memory Keeper` 节点进行实时偏好匹配（例如：检测该步骤所属菜品是否包含过敏原）。
        2. **确定性唯一标识生成 (Deterministic ID Generation)**：
           - **操作逻辑**：为每个 Chunk 生成全局唯一的 `chunk_id`，生成算法采用确定的哈希组合：**`hash(source_path + chunk_index)`**。
           - **目的 (幂等性)**：确保同一文档即使被多次处理，数据库中也永远只有一份最新的唯一副本，彻底避免索引冗余。
           - **业务支撑**：当 `Logistics Manager` 节点在更新家庭库存或进行比例换算时，稳定的 ID 能确保 Agent 能够精准定位并引用知识库中的特定逻辑块. 
   
-  3. **Transform：**将 Splitter 产出的非结构化文本块转化为结构化、富语义的智能切片 (Smart Chunk)
+  3. **Transform：** 将 Splitter 产出的非结构化文本块转化为结构化、富语义的智能切片 (Smart Chunk)
   
-     - **结构转换：**利用LLM将原始的字符串文本转化为强类型的记录对象（Record/Object）
+     - **结构转换：** 利用LLM将原始的字符串文本转化为强类型的记录对象（Record/Object）
      - **核心增强策略：**
        1. 智能重组与去噪：
-          - **策略：**合并在逻辑上紧密相关但被物理切断的段落，剔除无意义的页眉页脚或乱码（去噪），确保每个 Chunk 是自包含（Self-contained）的语义单元。
+          - **策略：** 合并在逻辑上紧密相关但被物理切断的段落，剔除无意义的页眉页脚或乱码（去噪），确保每个 Chunk 是自包含（Self-contained）的语义单元。
        2. 语义元数据注入：
-          - **策略：**在原始文件路径等基础信息之上，利用 LLM 提取更高维度的语义特征 。为每个 Chunk 自动生成 `Title`（精准小标题）、`Summary`（内容摘要）和 `Tags`（主题标签），并将其注入到 Metadata 字段中，支持后续的混合检索与精确过滤。
+          - **策略：** 在原始文件路径等基础信息之上，利用 LLM 提取更高维度的语义特征 。为每个 Chunk 自动生成 `Title`（精准小标题）、`Summary`（内容摘要）和 `Tags`（主题标签），并将其注入到 Metadata 字段中，支持后续的混合检索与精确过滤。
      - **工程特征：**
        - **原子化与幂等：**每个 Chunk 的处理要么完全成功，要么不改变状态，且多次处理结果一致，防止数据库产生冗余重复信息。
        - **独立重试机制**：支持针对特定 Chunk 的独立重试。如果某个 Chunk 因为 LLM 调用失败（如网络抖动），系统会自动重试该 Chunk，而不会导致整个文档的摄取中断。
   
-  4.  **Embedding：**将经过 **Transform** 增强后的智能切片（Smart Chunk）转为Embedding。系统采用双路编码策略，以兼顾膳食检索中的“语义泛化”与“精确匹配”需求。
+  4.  **Embedding：** 将经过 **Transform** 增强后的智能切片（Smart Chunk）转为Embedding。系统采用双路编码策略，以兼顾膳食检索中的“语义泛化”与“精确匹配”需求。
   
      - **差量计算 (Incremental Embedding / Cost** **Optimization****)**：**
-     - **策略：**在调用昂贵的 Embedding API 之前，计算 Chunk 的内容哈希（Content Hash）。系统仅针对数据库中不存在的新内容哈希执行向量化计算，对于文件名变更但内容未变的片段，直接复用已有向量，显著降低 API 调用成本。
+     - **策略：** 在调用昂贵的 Embedding API 之前，计算 Chunk 的内容哈希（Content Hash）。系统仅针对数据库中不存在的新内容哈希执行向量化计算，对于文件名变更但内容未变的片段，直接复用已有向量，显著降低 API 调用成本。
      - **核心策略**：为了支持高精度的混合检索（Hybrid Search），系统对每个 Chunk 并行执行双路编码计算。
        - **Dense Embeddings（语义向量）**：调用 Embedding 模型（如 OpenAI text-embedding-3 或 BGE）生成高维浮点向量，捕捉文本的深层语义关联，解决“词不同意同”的检索难题。
        - **Sparse** **Embeddings（稀疏向量）**：利用 BM25 编码器生成稀疏向量（Keyword Weights），捕捉精确的关键词匹配信息，解决专有名词查找问题。    
@@ -308,7 +308,7 @@
   
      - **原子性保证**：以 Batch 为单位进行事务性写入，确保索引状态的一致性。
   
-  6. **文档生命周期管理：**为了支持 Dashboard 管理面板中的菜谱浏览、删除以及实时摄取监控，系统必须具备跨模块的协调能力（`Ingestion`层）
+  6. **文档生命周期管理：** 为了支持 Dashboard 管理面板中的菜谱浏览、删除以及实时摄取监控，系统必须具备跨模块的协调能力（`Ingestion`层）
   
      - **DocumentManager（文档管理器）**：独立于 Ingestion Pipeline 的文档管理模块（`src/ingestion/document_manager.py`），负责协调不同存储后端的操作，确保“数据删除即全链路抹除” 。
   
@@ -322,7 +322,7 @@
            2. **BM25 Indexer**：移除对应菜谱的关键词倒排索引条目，确保通过食材名搜不到已删菜谱。
            3. **FileIntegrity (SQLite)**：从 `ingestion_history` 表中移除 SHA256 记录，允许用户在修改该 Markdown 文件后重新摄入。
   
-     - **Pipeline 进度回调 (Progress Callback)：**为了解决摄取过程中的“黑盒”问题，`IngestionPipeline` 需提供钩子函数，供 Streamlit 前端展示实时动态。
+     - **Pipeline 进度回调 (Progress Callback)：** 为了解决摄取过程中的“黑盒”问题，`IngestionPipeline` 需提供钩子函数，供 Streamlit 前端展示实时动态。
   
        ```python
        def run(self, source_path: str, collection: str = "default",
@@ -337,7 +337,7 @@
          - **Transform**：**最耗时阶段**，展示 LLM 正在提取食材标签和生成摘要的进度。
          - **Embed & Upsert**：向量化计算并存入 Chroma 的进度。
   
-     - **存储层接口扩展：**为支持 `DocumentManager` 的删除操作，需扩展以下存储接口：
+     - **存储层接口扩展：** 为支持 `DocumentManager` 的删除操作，需扩展以下存储接口：
   
        - `BaseVectorStore` 新增 `delete_by_metadata(filter: dict) -> int` — 按 metadata 条件批量删除;
        - `BM25Indexer` 新增 `remove_document(source: str) -> None` — 移除指定文档的索引条目;
@@ -345,7 +345,7 @@
 
 ####  3.1.2 检索流水线  
 
-**目标：**实现核心的 RAG 检索引擎，采用 “多阶段过滤 (Multi-stage Filtering)” 架构，负责接收已消歧的独立查询（Standalone Query），并精准召回 Top-K 最相关片段。
+**目标：** 实现核心的 RAG 检索引擎，采用 “多阶段过滤 (Multi-stage Filtering)” 架构，负责接收已消歧的独立查询（Standalone Query），并精准召回 Top-K 最相关片段。
 
 - **Query** **Processing (查询预处理)**
 
@@ -353,7 +353,7 @@
 
   - **查询转换与关键词提取：**
 
-    - **策略：**利用膳食领域专用的 NLP 工具或 LLM 轻量级调用，提取 Query 中的关键实体。
+    - **策略：** 利用膳食领域专用的 NLP 工具或 LLM 轻量级调用，提取 Query 中的关键实体。
 
     - **操作：**     
 
@@ -363,9 +363,9 @@
 
       **禁忌/偏好识别**：提取关键属性词（如“低盐”、“过敏原：鱼”）。
 
-      **去停用词：**移除无意义的助词，生成用于稀疏检索（BM25）的精简 Token 列表。
+      **去停用词：** 移除无意义的助词，生成用于稀疏检索（BM25）的精简 Token 列表。
 
-  - **查询扩展：**针对膳食知识中**“一物多名”**的特点，实施差异化扩张策略
+  - **查询扩展：** 针对膳食知识中 **“一物多名”** 的特点，实施差异化扩张策略
 
     - **Synonym/Alias Expansion (同义词/别名扩展)**：     
 
@@ -377,10 +377,10 @@
 
     - **执行逻辑：**
 
-      - **Sparse Route (BM25 路由)：**将“原始关键词 + 同义词/别名”合并为一个逻辑查询表达式（按 `OR` 关系扩展）。 为防止语义漂移，**原始关键词被赋予更高权重**。
+      - **Sparse Route (BM25 路由)：** 将“原始关键词 + 同义词/别名”合并为一个逻辑查询表达式（按 `OR` 关系扩展）。 为防止语义漂移，**原始关键词被赋予更高权重**。
       - **Dense Route (Embedding 路由)**：使用原始 query（或轻度改写后的语义 query）生成 embedding，**只执行一次稠密检索**；默认不为每个同义词单独触发额外的向量检索请求。 
 
-- **Hybrid Search Execution (双路混合检索)：**将来自不同维度的检索结果进行融合，解决单一检索模式在处理专有名词与模糊语义的局限性
+- **Hybrid Search Execution (双路混合检索)：** 将来自不同维度的检索结果进行融合，解决单一检索模式在处理专有名词与模糊语义的局限性
 
   - **并行召回 (Parallel Execution)**：系统接收到预处理后的查询请求后，同时触发两条召回路径
     - **Dense Route**：计算 Query Embedding -> 检索向量库（Cosine Similarity）-> 返回 Top-N 语义候选。
@@ -389,26 +389,26 @@
     - 采用 **RRF (Reciprocal Rank Fusion)** 算法，基于排名的倒数进行加权融合。
     - 公式策略：`Score = 1 / (k + Rank_Dense) + 1 / (k + Rank_Sparse)`，平滑因单一模态缺陷导致的漏召回。 
 
-- **Filtering & Reranking (精确过滤与重排)：**在混合检索召回的初步候选集基础上，执行业务级的硬约束过滤与深度语义重排
+- **Filtering & Reranking (精确过滤与重排)：** 在混合检索召回的初步候选集基础上，执行业务级的硬约束过滤与深度语义重排
 
   - **Metadata Filtering Strategy (元数据过滤策略)**：  
 
-    **原则：**先解析、能前置则前置、无法前置则后置兜底。
+    **原则：** 先解析、能前置则前置、无法前置则后置兜底。
 
-    - **前置硬过滤 ：**Query Processing 阶段，Agent将用户身份对应的禁忌转化为结构化过滤条件。若底层Chroma支持且字段完整，在 Dense/Sparse 检索阶段做 Pre-filter 直接排除包含禁忌食材（`ingredients`字段）的菜谱。
-    - **后置安全过滤：**对于元数据缺失或检索阶段不支持的复杂逻辑，在 Rerank 之前，对召回的 Chunk 进行二次检查。对于缺失禁忌字段的 Chunk，默认采取“宽松包含”以避免误杀，对缺失字段默认采取“宽松包含”(missing->include) 以避免误杀召回。
-    - **软偏好加权：**对于口味倾向（酸辣）、烹饪习惯等软偏好（Soft Preference）不进行硬性剔除，而是在 Rerank 阶段作为评分信号。例如，用户偏好“酸辣”，则在重排时给带有“酸辣”标签（`tags`）的菜谱更高权重。
+    - **前置硬过滤 ：** Query Processing 阶段，Agent将用户身份对应的禁忌转化为结构化过滤条件。若底层Chroma支持且字段完整，在 Dense/Sparse 检索阶段做 Pre-filter 直接排除包含禁忌食材（`ingredients`字段）的菜谱。
+    - **后置安全过滤：** 对于元数据缺失或检索阶段不支持的复杂逻辑，在 Rerank 之前，对召回的 Chunk 进行二次检查。对于缺失禁忌字段的 Chunk，默认采取“宽松包含”以避免误杀，对缺失字段默认采取“宽松包含”(missing->include) 以避免误杀召回。
+    - **软偏好加权：** 对于口味倾向（酸辣）、烹饪习惯等软偏好（Soft Preference）不进行硬性剔除，而是在 Rerank 阶段作为评分信号。例如，用户偏好“酸辣”，则在重排时给带有“酸辣”标签（`tags`）的菜谱更高权重。
 
   - **Rerank Backend (可插拔精排后端)**：   
 
-    **目标：**在 混合检索给出的 Top-M 候选上进行高精度排序/过滤；该模块必须可关闭，并提供稳定回退策略
+    **目标：** 在 混合检索给出的 Top-M 候选上进行高精度排序/过滤；该模块必须可关闭，并提供稳定回退策略
 
     - **后端选项**：
       1. **None (关闭精排)**：在资源受限时，直接返回 **RRF** 融合后的排名结果。
       2. **Cross-Encoder Rerank (默认)**：将 [用户查询, 菜谱片段] 对输入 Cross-Encoder 模型（如 BGE-Reranker），输出相关性分数并排序；适合稳定、结构化输出。CPU 环境下建议默认仅对较小的 Top-M 执行（例如 M=10~30），并提供超时回退。
       3. **LLM** **Rerank (可选)**：利用 LLM 的指令理解能力，根据复杂的家庭需求（如“给生病的孩子做点软烂的”）对候选集进行排序。要求输出严格的 JSON 格式评分。
     - **可靠性保证** ：
-      - **默认回退(****Fallback)**：当精排后端发生超时、API 失败或逻辑异常时，系统必须自动回退至融合阶段的 **RRF Top-K** 结果，确保 Agent 始终有内容可用，避免服务中断。
+      - **默认回退(Fallback)**：当精排后端发生超时、API 失败或逻辑异常时，系统必须自动回退至融合阶段的 **RRF Top-K** 结果，确保 Agent 始终有内容可用，避免服务中断。
 
 ### 3.2 MCP 服务设计
 
@@ -419,7 +419,7 @@
 - **协议优先 (Protocol-First)**：严格遵循 MCP 官方规范（JSON-RPC 2.0），确保与任何合规 Client 的互操作性。
 - **开箱即用 (Zero-Config for Clients)**：Client 端采用动态发现机制，无需任何特殊配置，只需在配置文件中添加 Server 连接信息即可使用全部功能。
 - **引用透明 (Citation Transparency)**：所有检索结果必须携带完整的来源信息，支持 Client 端展示"回答依据"，增强用户对 AI 输出的信任。
-- **能力原子化(Atomic Capabilities)：**不输出模糊的整篇菜谱，而是提供原子级的工具（如：获取清单、获取步骤、检查禁忌）。
+- **能力原子化(Atomic Capabilities)：** 不输出模糊的整篇菜谱，而是提供原子级的工具（如：获取清单、获取步骤、检查禁忌）。
 
 ####  3.2.2 传输协议：Stdio本地通信
 
@@ -1450,6 +1450,8 @@ observability:
 ## 5.  系统架构与模块设计
 
 ### 5.1 项目架构图
+
+![image-20260329230842996](markdown-img/DEV_SPEC.assets/image-20260329230842996.png)
 
 ```Plain
 +=============================================================================+

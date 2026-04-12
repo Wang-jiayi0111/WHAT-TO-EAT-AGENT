@@ -1,0 +1,825 @@
+2026-04-02 00:33:39,991 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 00:33:39,999 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 00:33:40,103 - chromadb.config - DEBUG - Starting component System
+2026-04-02 00:33:40,103 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 00:33:41,128 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 00:33:41,261 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 00:33:41,262 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 00:33:41,267 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 00:33:41,276 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 00:33:41,277 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001B0DBFF6590>
+2026-04-02 00:33:41,278 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 00:33:41,278 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 00:33:41,278 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for get_recipe_source, refreshing cache
+2026-04-02 00:33:41,279 - root - ERROR - DEBUG: 收到工具 get_recipe_source 调用, 参数: {'recipe_name': '梅菜扣肉'}
+2026-04-02 00:33:41,279 - src.mcp.tool - INFO - 正在获取菜谱 '梅菜扣肉' 的源文件路径...
+2026-04-02 00:33:41,280 - src.ingestion.document_manager - INFO - Searching for recipe '梅菜扣肉'. Found 1 results.
+2026-04-02 00:33:41,280 - root - INFO - 获取到的文件路径: None
+2026-04-02 00:33:41,281 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 00:33:41,283 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001B0DAC16910>
+2026-04-02 00:33:41,283 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 00:33:41,283 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 00:33:41,283 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 00:34:30,671 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 00:34:30,681 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 00:34:30,806 - chromadb.config - DEBUG - Starting component System
+2026-04-02 00:34:30,806 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 00:34:31,084 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 00:34:31,085 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 00:34:31,085 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 00:34:31,093 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 00:34:31,106 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 00:34:31,107 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001D5361AC590>
+2026-04-02 00:34:31,108 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 00:34:31,108 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 00:34:31,108 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for get_recipe_source, refreshing cache
+2026-04-02 00:34:31,110 - root - ERROR - DEBUG: 收到工具 get_recipe_source 调用, 参数: {'recipe_name': '梅菜扣肉'}
+2026-04-02 00:34:31,110 - src.mcp.tool - INFO - 正在获取菜谱 '梅菜扣肉' 的源文件路径...
+2026-04-02 00:34:31,112 - src.ingestion.document_manager - INFO - Searching for recipe '梅菜扣肉'. Found 1 results. results: [{'content': '# 梅菜扣肉 ## **菜品描述** 这道经典的梅菜扣肉，色泽酱红油亮，口感软烂醇香，肥而不腻，是绝佳的宴客下饭菜。五花肉经过蒸制，油脂析出，搭配咸鲜的梅菜，风味浓郁，易于消化。菜品虽需一定烹饪时间，但成品大气美味，尤其适合家庭聚餐或款待宾客，能为餐桌增添一份醇厚的满足感。 ---', 'source': 'bm25', 'score': 8.20852590336585, 'metadata': {}, 'query_type': 'keyword'}]
+2026-04-02 00:34:31,112 - root - INFO - 获取到的文件路径: None
+2026-04-02 00:34:31,113 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 00:34:31,116 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001D536731A50>
+2026-04-02 00:34:31,116 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 00:34:31,116 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 00:34:31,117 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 00:37:37,125 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 00:37:37,137 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 00:37:37,290 - chromadb.config - DEBUG - Starting component System
+2026-04-02 00:37:37,291 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 00:37:37,417 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 00:37:37,418 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 00:37:37,418 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 00:37:37,428 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 00:37:37,442 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 00:37:37,444 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001EEE9F263D0>
+2026-04-02 00:37:37,445 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 00:37:37,445 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 00:37:37,445 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for get_recipe_source, refreshing cache
+2026-04-02 00:37:37,447 - root - ERROR - DEBUG: 收到工具 get_recipe_source 调用, 参数: {'recipe_name': '梅菜扣肉'}
+2026-04-02 00:37:37,447 - src.mcp.tool - INFO - 正在获取菜谱 '梅菜扣肉' 的源文件路径...
+2026-04-02 00:37:37,447 - src.ingestion.document_manager - INFO - 正在使用 BM25 搜索，查询: '梅菜扣肉'
+2026-04-02 00:37:37,450 - src.ingestion.document_manager - INFO - BM25 搜索完成，找到 1 条结果, results: [{'id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md_chunk_986', 'content': '# 梅菜扣肉 ## **菜品描述** 这道经典的梅菜扣肉，色泽酱红油亮，口感软烂醇香，肥而不腻，是绝佳的宴客下饭菜。五花肉经过蒸制，油脂析出，搭配咸鲜的梅菜，风味浓郁，易于消化。菜品虽需一定烹饪时间，但成品大气美味，尤其适合家庭聚餐或款待宾客，能为餐桌增添一份醇厚的满足感。 ---', 'score': 8.20852590336585, 'metadata': {}}]
+2026-04-02 00:37:37,450 - src.ingestion.document_manager - INFO - Searching for recipe '梅菜扣肉'. Found 1 results. results: [{'content': '# 梅菜扣肉 ## **菜品描述** 这道经典的梅菜扣肉，色泽酱红油亮，口感软烂醇香，肥而不腻，是绝佳的宴客下饭菜。五花肉经过蒸制，油脂析出，搭配咸鲜的梅菜，风味浓郁，易于消化。菜品虽需一定烹饪时间，但成品大气美味，尤其适合家庭聚餐或款待宾客，能为餐桌增添一份醇厚的满足感。 ---', 'source': 'bm25', 'score': 8.20852590336585, 'metadata': {}, 'query_type': 'keyword'}]
+2026-04-02 00:37:37,450 - root - INFO - 获取到的文件路径: None
+2026-04-02 00:37:37,451 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 00:37:37,454 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001EEE9622A10>
+2026-04-02 00:37:37,454 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 00:37:37,454 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 00:37:37,455 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 10:34:55,440 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 10:34:55,450 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 10:34:56,191 - chromadb.config - DEBUG - Starting component System
+2026-04-02 10:34:56,191 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 10:34:56,645 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 10:34:56,645 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 10:34:56,645 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 10:34:56,652 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 10:34:56,661 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 10:34:56,662 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001D4AC794590>
+2026-04-02 10:34:56,663 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 10:34:56,663 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 10:34:56,663 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for get_recipe_source, refreshing cache
+2026-04-02 10:34:56,664 - root - ERROR - DEBUG: 收到工具 get_recipe_source 调用, 参数: {'recipe_name': '梅菜扣肉'}
+2026-04-02 10:34:56,664 - src.mcp.tool - INFO - 正在获取菜谱 '梅菜扣肉' 的源文件路径...
+2026-04-02 10:34:56,665 - src.ingestion.document_manager - INFO - 正在使用 BM25 搜索，查询: '梅菜扣肉'
+2026-04-02 10:34:56,666 - src.ingestion.document_manager - INFO - BM25 搜索完成，找到 1 条结果, results: [{'id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md_chunk_986', 'content': '# 梅菜扣肉 ## **菜品描述** 这道经典的梅菜扣肉，色泽酱红油亮，口感软烂醇香，肥而不腻，是绝佳的宴客下饭菜。五花肉经过蒸制，油脂析出，搭配咸鲜的梅菜，风味浓郁，易于消化。菜品虽需一定烹饪时间，但成品大气美味，尤其适合家庭聚餐或款待宾客，能为餐桌增添一份醇厚的满足感。 ---', 'metadata': {'chunk_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md_chunk_986', 'chunk_index': 986, 'source_document_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md', 'file_path': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md', 'recipe_name': '梅菜扣肉', 'source_file': '梅菜扣肉.md'}, 'score': 7.894760829572305}]
+2026-04-02 10:34:56,666 - src.ingestion.document_manager - INFO - Searching for recipe '梅菜扣肉'. Found 1 results. results: [{'content': '# 梅菜扣肉 ## **菜品描述** 这道经典的梅菜扣肉，色泽酱红油亮，口感软烂醇香，肥而不腻，是绝佳的宴客下饭菜。五花肉经过蒸制，油脂析出，搭配咸鲜的梅菜，风味浓郁，易于消化。菜品虽需一定烹饪时间，但成品大气美味，尤其适合家庭聚餐或款待宾客，能为餐桌增添一份醇厚的满足感。 ---', 'source': 'bm25', 'score': 7.894760829572305, 'metadata': {'chunk_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md_chunk_986', 'chunk_index': 986, 'source_document_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md', 'file_path': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md', 'recipe_name': '梅菜扣肉', 'source_file': '梅菜扣肉.md'}, 'query_type': 'keyword'}]
+2026-04-02 10:34:56,666 - root - INFO - 获取到的文件路径: F:\WHAT-TO-EAT-AGENT\data\recipes\meat_dish\梅菜扣肉\梅菜扣肉.md
+2026-04-02 10:34:56,667 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 10:34:56,669 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001D4ADCC1A90>
+2026-04-02 10:34:56,669 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 10:34:56,670 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 10:34:56,670 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 11:02:25,583 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 11:02:25,592 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 11:02:25,694 - chromadb.config - DEBUG - Starting component System
+2026-04-02 11:02:25,695 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 11:02:30,392 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 11:02:30,401 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 11:02:30,498 - chromadb.config - DEBUG - Starting component System
+2026-04-02 11:02:30,498 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 11:02:30,833 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 11:02:30,833 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 11:02:30,833 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 11:02:30,840 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 11:02:30,850 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 11:02:30,851 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001E0455F9350>
+2026-04-02 11:02:30,852 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 11:02:30,852 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 11:02:30,852 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for get_recipe_source, refreshing cache
+2026-04-02 11:02:30,853 - root - ERROR - DEBUG: 收到工具 get_recipe_source 调用, 参数: {'recipe_name': '梅菜扣肉'}
+2026-04-02 11:02:30,854 - src.mcp.tool - INFO - 正在获取菜谱 '梅菜扣肉' 的源文件路径...
+2026-04-02 11:02:30,854 - src.ingestion.document_manager - INFO - 正在使用 BM25 搜索，查询: '梅菜扣肉'
+2026-04-02 11:02:30,855 - src.ingestion.document_manager - INFO - BM25 搜索完成，找到 1 条结果, results: [{'id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md_chunk_986', 'content': '# 梅菜扣肉 ## **菜品描述** 这道经典的梅菜扣肉，色泽酱红油亮，口感软烂醇香，肥而不腻，是绝佳的宴客下饭菜。五花肉经过蒸制，油脂析出，搭配咸鲜的梅菜，风味浓郁，易于消化。菜品虽需一定烹饪时间，但成品大气美味，尤其适合家庭聚餐或款待宾客，能为餐桌增添一份醇厚的满足感。 ---', 'metadata': {'chunk_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md_chunk_986', 'chunk_index': 986, 'source_document_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md', 'file_path': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md', 'recipe_name': '梅菜扣肉', 'source_file': '梅菜扣肉.md'}, 'score': 7.894760829572305}]
+2026-04-02 11:02:30,855 - src.ingestion.document_manager - INFO - Searching for recipe '梅菜扣肉'. Found 1 results. results: [{'content': '# 梅菜扣肉 ## **菜品描述** 这道经典的梅菜扣肉，色泽酱红油亮，口感软烂醇香，肥而不腻，是绝佳的宴客下饭菜。五花肉经过蒸制，油脂析出，搭配咸鲜的梅菜，风味浓郁，易于消化。菜品虽需一定烹饪时间，但成品大气美味，尤其适合家庭聚餐或款待宾客，能为餐桌增添一份醇厚的满足感。 ---', 'source': 'bm25', 'score': 7.894760829572305, 'metadata': {'chunk_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md_chunk_986', 'chunk_index': 986, 'source_document_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md', 'file_path': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md', 'recipe_name': '梅菜扣肉', 'source_file': '梅菜扣肉.md'}, 'query_type': 'keyword'}]
+2026-04-02 11:02:30,855 - root - INFO - 获取到的文件路径: F:\WHAT-TO-EAT-AGENT\data\recipes\meat_dish\梅菜扣肉\梅菜扣肉.md
+2026-04-02 11:02:30,856 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 11:02:30,858 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001E04590E950>
+2026-04-02 11:02:30,859 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 11:02:30,859 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 11:02:30,859 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 11:19:38,570 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 11:19:38,578 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 11:19:38,669 - chromadb.config - DEBUG - Starting component System
+2026-04-02 11:19:38,669 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 11:19:43,234 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 11:19:43,237 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 11:19:43,343 - chromadb.config - DEBUG - Starting component System
+2026-04-02 11:19:43,343 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 11:19:44,490 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 11:19:44,490 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 11:19:44,491 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 11:19:44,496 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 11:19:44,504 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 11:19:44,505 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000020EBA0A1D50>
+2026-04-02 11:19:44,505 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 11:19:44,506 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 11:19:44,506 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for get_recipe_source, refreshing cache
+2026-04-02 11:19:44,507 - root - ERROR - DEBUG: 收到工具 get_recipe_source 调用, 参数: {'recipe_name': '梅菜扣肉'}
+2026-04-02 11:19:44,507 - src.mcp.tool - INFO - 正在获取菜谱 '梅菜扣肉' 的源文件路径...
+2026-04-02 11:19:44,507 - src.ingestion.document_manager - INFO - 正在使用 BM25 搜索，查询: '梅菜扣肉'
+2026-04-02 11:19:44,508 - src.ingestion.document_manager - INFO - BM25 搜索完成，找到 1 条结果, results: [{'id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md_chunk_986', 'content': '# 梅菜扣肉 ## **菜品描述** 这道经典的梅菜扣肉，色泽酱红油亮，口感软烂醇香，肥而不腻，是绝佳的宴客下饭菜。五花肉经过蒸制，油脂析出，搭配咸鲜的梅菜，风味浓郁，易于消化。菜品虽需一定烹饪时间，但成品大气美味，尤其适合家庭聚餐或款待宾客，能为餐桌增添一份醇厚的满足感。 ---', 'metadata': {'chunk_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md_chunk_986', 'chunk_index': 986, 'source_document_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md', 'file_path': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md', 'recipe_name': '梅菜扣肉', 'source_file': '梅菜扣肉.md'}, 'score': 7.894760829572305}]
+2026-04-02 11:19:44,508 - src.ingestion.document_manager - INFO - Searching for recipe '梅菜扣肉'. Found 1 results. results: [{'content': '# 梅菜扣肉 ## **菜品描述** 这道经典的梅菜扣肉，色泽酱红油亮，口感软烂醇香，肥而不腻，是绝佳的宴客下饭菜。五花肉经过蒸制，油脂析出，搭配咸鲜的梅菜，风味浓郁，易于消化。菜品虽需一定烹饪时间，但成品大气美味，尤其适合家庭聚餐或款待宾客，能为餐桌增添一份醇厚的满足感。 ---', 'source': 'bm25', 'score': 7.894760829572305, 'metadata': {'chunk_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md_chunk_986', 'chunk_index': 986, 'source_document_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md', 'file_path': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md', 'recipe_name': '梅菜扣肉', 'source_file': '梅菜扣肉.md'}, 'query_type': 'keyword'}]
+2026-04-02 11:19:44,509 - root - INFO - 获取到的文件路径: F:\WHAT-TO-EAT-AGENT\data\recipes\meat_dish\梅菜扣肉\梅菜扣肉.md
+2026-04-02 11:19:44,509 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 11:19:44,511 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000020EB9AB7910>
+2026-04-02 11:19:44,511 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 11:19:44,511 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 11:19:44,511 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 11:24:13,457 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 11:24:13,467 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 11:24:13,573 - chromadb.config - DEBUG - Starting component System
+2026-04-02 11:24:13,573 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 11:24:18,398 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 11:24:18,406 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 11:24:18,505 - chromadb.config - DEBUG - Starting component System
+2026-04-02 11:24:18,505 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 11:24:18,835 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 11:24:18,836 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 11:24:18,836 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 11:24:18,841 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 11:24:18,850 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 11:24:18,851 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000017AA635C590>
+2026-04-02 11:24:18,851 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 11:24:18,851 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 11:24:18,851 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for get_recipe_source, refreshing cache
+2026-04-02 11:24:18,852 - root - ERROR - DEBUG: 收到工具 get_recipe_source 调用, 参数: {'recipe_name': '梅菜扣肉'}
+2026-04-02 11:24:18,853 - src.mcp.tool - INFO - 正在获取菜谱 '梅菜扣肉' 的源文件路径...
+2026-04-02 11:24:18,853 - src.ingestion.document_manager - INFO - 正在使用 BM25 搜索，查询: '梅菜扣肉'
+2026-04-02 11:24:18,854 - src.ingestion.document_manager - INFO - BM25 搜索完成，找到 1 条结果, results: [{'id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md_chunk_986', 'content': '# 梅菜扣肉 ## **菜品描述** 这道经典的梅菜扣肉，色泽酱红油亮，口感软烂醇香，肥而不腻，是绝佳的宴客下饭菜。五花肉经过蒸制，油脂析出，搭配咸鲜的梅菜，风味浓郁，易于消化。菜品虽需一定烹饪时间，但成品大气美味，尤其适合家庭聚餐或款待宾客，能为餐桌增添一份醇厚的满足感。 ---', 'metadata': {'chunk_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md_chunk_986', 'chunk_index': 986, 'source_document_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md', 'file_path': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md', 'recipe_name': '梅菜扣肉', 'source_file': '梅菜扣肉.md'}, 'score': 7.894760829572305}]
+2026-04-02 11:24:18,854 - src.ingestion.document_manager - INFO - Searching for recipe '梅菜扣肉'. Found 1 results. results: [{'content': '# 梅菜扣肉 ## **菜品描述** 这道经典的梅菜扣肉，色泽酱红油亮，口感软烂醇香，肥而不腻，是绝佳的宴客下饭菜。五花肉经过蒸制，油脂析出，搭配咸鲜的梅菜，风味浓郁，易于消化。菜品虽需一定烹饪时间，但成品大气美味，尤其适合家庭聚餐或款待宾客，能为餐桌增添一份醇厚的满足感。 ---', 'source': 'bm25', 'score': 7.894760829572305, 'metadata': {'chunk_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md_chunk_986', 'chunk_index': 986, 'source_document_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md', 'file_path': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md', 'recipe_name': '梅菜扣肉', 'source_file': '梅菜扣肉.md'}, 'query_type': 'keyword'}]
+2026-04-02 11:24:18,854 - root - INFO - 获取到的文件路径: F:\WHAT-TO-EAT-AGENT\data\recipes\meat_dish\梅菜扣肉\梅菜扣肉.md
+2026-04-02 11:24:18,855 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 11:24:18,857 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000017AA7A31950>
+2026-04-02 11:24:18,857 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 11:24:18,857 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 11:24:18,857 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 11:29:02,498 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 11:29:02,507 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 11:29:07,203 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 11:29:07,212 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 11:29:07,326 - chromadb.config - DEBUG - Starting component System
+2026-04-02 11:29:07,326 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 11:29:09,593 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 11:29:09,593 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 11:29:09,594 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 11:29:09,599 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 11:29:09,608 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 11:29:09,609 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001B0D906E910>
+2026-04-02 11:29:09,609 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 11:29:09,609 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 11:29:09,609 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for get_recipe_source, refreshing cache
+2026-04-02 11:29:09,611 - root - ERROR - DEBUG: 收到工具 get_recipe_source 调用, 参数: {'recipe_name': '梅菜扣肉'}
+2026-04-02 11:29:09,611 - src.mcp.tool - INFO - 正在获取菜谱 '梅菜扣肉' 的源文件路径...
+2026-04-02 11:29:09,611 - src.ingestion.document_manager - INFO - 正在使用 BM25 搜索，查询: '梅菜扣肉'
+2026-04-02 11:29:09,612 - src.ingestion.document_manager - INFO - BM25 搜索完成，找到 1 条结果, results: [{'id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md_chunk_986', 'content': '# 梅菜扣肉 ## **菜品描述** 这道经典的梅菜扣肉，色泽酱红油亮，口感软烂醇香，肥而不腻，是绝佳的宴客下饭菜。五花肉经过蒸制，油脂析出，搭配咸鲜的梅菜，风味浓郁，易于消化。菜品虽需一定烹饪时间，但成品大气美味，尤其适合家庭聚餐或款待宾客，能为餐桌增添一份醇厚的满足感。 ---', 'metadata': {'chunk_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md_chunk_986', 'chunk_index': 986, 'source_document_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md', 'file_path': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md', 'recipe_name': '梅菜扣肉', 'source_file': '梅菜扣肉.md'}, 'score': 7.894760829572305}]
+2026-04-02 11:29:09,613 - src.ingestion.document_manager - INFO - Searching for recipe '梅菜扣肉'. Found 1 results. results: [{'content': '# 梅菜扣肉 ## **菜品描述** 这道经典的梅菜扣肉，色泽酱红油亮，口感软烂醇香，肥而不腻，是绝佳的宴客下饭菜。五花肉经过蒸制，油脂析出，搭配咸鲜的梅菜，风味浓郁，易于消化。菜品虽需一定烹饪时间，但成品大气美味，尤其适合家庭聚餐或款待宾客，能为餐桌增添一份醇厚的满足感。 ---', 'source': 'bm25', 'score': 7.894760829572305, 'metadata': {'chunk_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md_chunk_986', 'chunk_index': 986, 'source_document_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md', 'file_path': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\梅菜扣肉\\梅菜扣肉.md', 'recipe_name': '梅菜扣肉', 'source_file': '梅菜扣肉.md'}, 'query_type': 'keyword'}]
+2026-04-02 11:29:09,613 - root - INFO - 获取到的文件路径: F:\WHAT-TO-EAT-AGENT\data\recipes\meat_dish\梅菜扣肉\梅菜扣肉.md
+2026-04-02 11:29:09,613 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 11:29:09,616 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001B0D8FDC1D0>
+2026-04-02 11:29:09,616 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 11:29:09,616 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 11:29:09,616 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 11:33:00,542 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 11:33:00,551 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 11:33:00,654 - chromadb.config - DEBUG - Starting component System
+2026-04-02 11:33:00,655 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 11:33:04,101 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 11:33:04,111 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 11:33:04,218 - chromadb.config - DEBUG - Starting component System
+2026-04-02 11:33:04,219 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 11:33:04,993 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 11:33:04,994 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 11:33:04,994 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 11:33:05,000 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 11:33:05,008 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 11:33:05,009 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000002B11CE4C590>
+2026-04-02 11:33:05,009 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 11:33:05,010 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 11:33:05,010 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for search_recipes, refreshing cache
+2026-04-02 11:33:05,012 - root - ERROR - DEBUG: 收到工具 search_recipes 调用, 参数: {'query': '您家目前的库存食材如下：\n\n  · 鸡胸肉：1.0 个\n  · 胡萝卜：1.0 个\n  · 排骨：250.0 g\n  · 牛筋：500.0 g\n  · 苦瓜：2.0 根\n  · 西红柿：1.0 个\n  · 豆腐：1.0 块\n  · 五花肉：500.0 g\n\n共 8 种食材。', 'user_id': 'default_user'}
+2026-04-02 11:33:05,018 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): dashscope.aliyuncs.com:443
+2026-04-02 11:33:07,850 - urllib3.connectionpool - DEBUG - https://dashscope.aliyuncs.com:443 "POST /api/v1/services/embeddings/text-embedding/text-embedding HTTP/1.1" 200 None
+2026-04-02 11:33:07,924 - root - ERROR - ❌ 工具执行崩溃: Traceback (most recent call last):
+  File "F:\WHAT-TO-EAT-AGENT\src\mcp\server.py", line 132, in handle_call_tool
+    result = await search_heandler.execute(**arguments)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\WHAT-TO-EAT-AGENT\src\mcp\tool.py", line 71, in execute
+    results = self.rag_engine.get_detailed_results(enhanced_query)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\WHAT-TO-EAT-AGENT\src\rag\rag_core.py", line 371, in get_detailed_results
+    results = self.retrieve(query, top_k)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\WHAT-TO-EAT-AGENT\src\rag\rag_core.py", line 317, in retrieve
+    results = self.search_engine.search(query, top_k)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\WHAT-TO-EAT-AGENT\src\rag\rag_core.py", line 172, in search
+    keyword_results = self.keyword_engine.search(query, top_k * 2)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\WHAT-TO-EAT-AGENT\src\rag\rag_core.py", line 116, in search
+    results = self.bm25_indexer.search(query, top_k)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "F:\WHAT-TO-EAT-AGENT\src\libs\base\bm25_indexer.py", line 84, in search
+    cursor.execute('''
+sqlite3.OperationalError: fts5: syntax error near "."
+
+2026-04-02 11:33:07,924 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 11:33:07,927 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000002B11E4D5790>
+2026-04-02 11:33:07,927 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 11:33:07,927 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 11:33:07,927 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 11:51:43,433 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 11:51:43,441 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 11:51:43,545 - chromadb.config - DEBUG - Starting component System
+2026-04-02 11:51:43,545 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 11:51:43,970 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 11:51:43,970 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 11:51:43,970 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 11:51:43,977 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 11:51:43,987 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 11:51:43,988 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x00000243671AC590>
+2026-04-02 11:51:43,988 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 11:51:43,988 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 11:51:43,988 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for search_recipes, refreshing cache
+2026-04-02 11:51:43,990 - root - ERROR - DEBUG: 收到工具 search_recipes 调用, 参数: {'query': '您家目前的库存食材如下：\n\n  · 鸡胸肉：1.0 个\n  · 胡萝卜：1.0 个\n  · 排骨：250.0 g\n  · 牛筋：500.0 g\n  · 苦瓜：2.0 根\n  · 西红柿：1.0 个\n  · 豆腐：1.0 块\n  · 五花肉：500.0 g\n\n共 8 种食材。', 'user_id': 'default_user'}
+2026-04-02 11:51:43,998 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): dashscope.aliyuncs.com:443
+2026-04-02 11:51:45,745 - urllib3.connectionpool - DEBUG - https://dashscope.aliyuncs.com:443 "POST /api/v1/services/embeddings/text-embedding/text-embedding HTTP/1.1" 200 None
+2026-04-02 11:51:45,817 - chromadb - DEBUG - semantic scores: [0.64, 0.671, 0.728]
+2026-04-02 11:51:45,818 - chromadb - DEBUG - keyword scores: []
+2026-04-02 11:51:45,818 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 11:51:45,821 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x00000243682C78D0>
+2026-04-02 11:51:45,821 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 11:51:45,821 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 11:51:45,821 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 11:53:37,512 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 11:53:37,522 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 11:53:37,626 - chromadb.config - DEBUG - Starting component System
+2026-04-02 11:53:37,626 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 11:53:38,147 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 11:53:38,147 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 11:53:38,148 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 11:53:38,153 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 11:53:38,162 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 11:53:38,163 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001A57752E550>
+2026-04-02 11:53:38,164 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 11:53:38,164 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 11:53:38,164 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for get_recipe_source, refreshing cache
+2026-04-02 11:53:38,165 - root - ERROR - DEBUG: 收到工具 get_recipe_source 调用, 参数: {'recipe_name': '酱排骨'}
+2026-04-02 11:53:38,165 - src.mcp.tool - INFO - 正在获取菜谱 '酱排骨' 的源文件路径...
+2026-04-02 11:53:38,165 - src.ingestion.document_manager - INFO - 正在使用 BM25 搜索，查询: '酱排骨'
+2026-04-02 11:53:38,167 - src.ingestion.document_manager - INFO - BM25 搜索完成，找到 1 条结果, results: [{'id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\酱排骨\\酱排骨.md_chunk_1141', 'content': '# 酱排骨 ## **菜品描述** 这道酱排骨色泽酱红诱人，口感**酥烂**脱骨，**咸中带甜**的酱汁浓郁**鲜美**，是一道极佳的**下饭菜**。排骨富含**高蛋白**和**钙质**，能提供充足营养，尤其适合需要补充能量的**健身人士**或**儿童**。虽然烹饪**耗时**较长，但步骤清晰，成品非常适合作为**宴客**大菜或家庭聚餐的硬菜，为餐桌增添满足感。 ---', 'metadata': {'chunk_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\酱排骨\\酱排骨.md_chunk_1141', 'chunk_index': 1141, 'source_document_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\酱排骨\\酱排骨.md', 'file_path': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\酱排骨\\酱排骨.md', 'recipe_name': '酱排骨', 'source_file': '酱排骨.md'}, 'score': 6.234346829524037}]
+2026-04-02 11:53:38,167 - src.ingestion.document_manager - INFO - Searching for recipe '酱排骨'. Found 1 results. results: [{'content': '# 酱排骨 ## **菜品描述** 这道酱排骨色泽酱红诱人，口感**酥烂**脱骨，**咸中带甜**的酱汁浓郁**鲜美**，是一道极佳的**下饭菜**。排骨富含**高蛋白**和**钙质**，能提供充足营养，尤其适合需要补充能量的**健身人士**或**儿童**。虽然烹饪**耗时**较长，但步骤清晰，成品非常适合作为**宴客**大菜或家庭聚餐的硬菜，为餐桌增添满足感。 ---', 'source': 'bm25', 'score': 6.234346829524037, 'metadata': {'chunk_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\酱排骨\\酱排骨.md_chunk_1141', 'chunk_index': 1141, 'source_document_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\酱排骨\\酱排骨.md', 'file_path': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\酱排骨\\酱排骨.md', 'recipe_name': '酱排骨', 'source_file': '酱排骨.md'}, 'query_type': 'keyword'}]
+2026-04-02 11:53:38,167 - root - INFO - 获取到的文件路径: F:\WHAT-TO-EAT-AGENT\data\recipes\meat_dish\酱排骨\酱排骨.md
+2026-04-02 11:53:38,167 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 11:53:38,169 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001A5774C1950>
+2026-04-02 11:53:38,170 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 11:53:38,170 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 11:53:38,170 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 12:12:46,761 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 12:12:46,770 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 12:12:46,874 - chromadb.config - DEBUG - Starting component System
+2026-04-02 12:12:46,875 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 12:12:50,194 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 12:12:50,203 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 12:12:50,315 - chromadb.config - DEBUG - Starting component System
+2026-04-02 12:12:50,316 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 12:12:51,605 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 12:12:51,605 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 12:12:51,605 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 12:12:51,612 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 12:12:51,621 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 12:12:51,622 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x00000186CE084590>
+2026-04-02 12:12:51,622 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 12:12:51,622 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 12:12:51,622 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for search_recipes, refreshing cache
+2026-04-02 12:12:51,625 - root - ERROR - DEBUG: 收到工具 search_recipes 调用, 参数: {'query': '您家目前的库存食材如下：\n\n  · 鸡胸肉：1.0 个\n  · 胡萝卜：1.0 个\n  · 排骨：250.0 g\n  · 牛筋：500.0 g\n  · 苦瓜：2.0 根\n  · 西红柿：1.0 个\n  · 豆腐：1.0 块\n  · 五花肉：500.0 g\n\n共 8 种食材。', 'user_id': 'default_user'}
+2026-04-02 12:12:51,632 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): dashscope.aliyuncs.com:443
+2026-04-02 12:12:54,466 - urllib3.connectionpool - DEBUG - https://dashscope.aliyuncs.com:443 "POST /api/v1/services/embeddings/text-embedding/text-embedding HTTP/1.1" 200 None
+2026-04-02 12:12:54,535 - chromadb - DEBUG - semantic scores: [0.64, 0.671, 0.728]
+2026-04-02 12:12:54,535 - chromadb - DEBUG - keyword scores: []
+2026-04-02 12:12:54,535 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 12:12:54,538 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x00000186CF611950>
+2026-04-02 12:12:54,538 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 12:12:54,538 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 12:12:54,538 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 12:13:06,379 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 12:13:06,388 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 12:13:06,489 - chromadb.config - DEBUG - Starting component System
+2026-04-02 12:13:06,489 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 12:13:09,809 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 12:13:09,818 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 12:13:09,927 - chromadb.config - DEBUG - Starting component System
+2026-04-02 12:13:09,927 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 12:13:10,353 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 12:13:10,353 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 12:13:10,353 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 12:13:10,359 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 12:13:10,368 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 12:13:10,369 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001F5965F6BD0>
+2026-04-02 12:13:10,369 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 12:13:10,369 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 12:13:10,369 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for get_recipe_source, refreshing cache
+2026-04-02 12:13:10,371 - root - ERROR - DEBUG: 收到工具 get_recipe_source 调用, 参数: {'recipe_name': '南派红烧肉'}
+2026-04-02 12:13:10,371 - src.mcp.tool - INFO - 正在获取菜谱 '南派红烧肉' 的源文件路径...
+2026-04-02 12:13:10,371 - src.ingestion.document_manager - INFO - 正在使用 BM25 搜索，查询: '南派红烧肉'
+2026-04-02 12:13:10,373 - src.ingestion.document_manager - INFO - BM25 搜索完成，找到 1 条结果, results: [{'id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\红烧肉\\南派红烧肉.md_chunk_1048', 'content': '# 南派红烧肉 ## **菜品描述** 这道南派红烧肉色泽红亮诱人，口感香糯软烂，肥而不腻，是绝佳的下饭菜。五花肉富含优质蛋白与脂肪，经过慢炖更易消化。做法虽需耐心，但步骤清晰，新手也能成功。非常适合家庭聚餐时作为主菜，浓郁的酱汁拌饭尤其美味，但因其油脂含量较高，建议控制食量。 ---', 'metadata': {'chunk_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\红烧肉\\南派红烧肉.md_chunk_1048', 'chunk_index': 1048, 'source_document_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\红烧肉\\南派红烧肉.md', 'file_path': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\红烧肉\\南派红烧肉.md', 'recipe_name': '南派红烧肉', 'source_file': '南派红烧肉.md'}, 'score': 8.073957797177979}]
+2026-04-02 12:13:10,373 - src.ingestion.document_manager - INFO - Searching for recipe '南派红烧肉'. Found 1 results. results: [{'content': '# 南派红烧肉 ## **菜品描述** 这道南派红烧肉色泽红亮诱人，口感香糯软烂，肥而不腻，是绝佳的下饭菜。五花肉富含优质蛋白与脂肪，经过慢炖更易消化。做法虽需耐心，但步骤清晰，新手也能成功。非常适合家庭聚餐时作为主菜，浓郁的酱汁拌饭尤其美味，但因其油脂含量较高，建议控制食量。 ---', 'source': 'bm25', 'score': 8.073957797177979, 'metadata': {'chunk_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\红烧肉\\南派红烧肉.md_chunk_1048', 'chunk_index': 1048, 'source_document_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\红烧肉\\南派红烧肉.md', 'file_path': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\红烧肉\\南派红烧肉.md', 'recipe_name': '南派红烧肉', 'source_file': '南派红烧肉.md'}, 'query_type': 'keyword'}]
+2026-04-02 12:13:10,373 - root - INFO - 获取到的文件路径: F:\WHAT-TO-EAT-AGENT\data\recipes\meat_dish\红烧肉\南派红烧肉.md
+2026-04-02 12:13:10,373 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 12:13:10,375 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001F596631950>
+2026-04-02 12:13:10,376 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 12:13:10,376 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 12:13:10,376 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 12:20:56,483 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 12:20:56,493 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 12:20:59,691 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 12:20:59,700 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 12:20:59,818 - chromadb.config - DEBUG - Starting component System
+2026-04-02 12:20:59,818 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 12:21:00,187 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 12:21:00,187 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 12:21:00,187 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 12:21:00,193 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 12:21:00,203 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 12:21:00,204 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001D9FFCAEA50>
+2026-04-02 12:21:00,204 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 12:21:00,204 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 12:21:00,205 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for search_recipes, refreshing cache
+2026-04-02 12:21:00,207 - root - ERROR - DEBUG: 收到工具 search_recipes 调用, 参数: {'query': '这个菜需要什么食材', 'user_id': 'default_user'}
+2026-04-02 12:21:00,213 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): dashscope.aliyuncs.com:443
+2026-04-02 12:21:02,364 - urllib3.connectionpool - DEBUG - https://dashscope.aliyuncs.com:443 "POST /api/v1/services/embeddings/text-embedding/text-embedding HTTP/1.1" 200 None
+2026-04-02 12:21:02,429 - chromadb - DEBUG - semantic scores: [0.626, 0.642, 0.657]
+2026-04-02 12:21:02,429 - chromadb - DEBUG - keyword scores: []
+2026-04-02 12:21:02,429 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 12:21:02,431 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001D9FFC41950>
+2026-04-02 12:21:02,431 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 12:21:02,431 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 12:21:02,432 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 12:22:51,414 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 12:22:51,423 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 12:22:51,525 - chromadb.config - DEBUG - Starting component System
+2026-04-02 12:22:51,525 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 12:22:51,664 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 12:22:51,664 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 12:22:51,664 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 12:22:51,670 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 12:22:51,680 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 12:22:51,681 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001C833A9C690>
+2026-04-02 12:22:51,681 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 12:22:51,681 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 12:22:51,681 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for search_recipes, refreshing cache
+2026-04-02 12:22:51,684 - root - ERROR - DEBUG: 收到工具 search_recipes 调用, 参数: {'query': '您家目前的库存食材如下：\n\n  · 鸡胸肉：1.0 个\n  · 胡萝卜：1.0 个\n  · 排骨：250.0 g\n  · 牛筋：500.0 g\n  · 苦瓜：2.0 根\n  · 西红柿：1.0 个\n  · 豆腐：1.0 块\n  · 五花肉：500.0 g\n\n共 8 种食材。', 'user_id': 'default_user'}
+2026-04-02 12:22:51,690 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): dashscope.aliyuncs.com:443
+2026-04-02 12:22:53,689 - urllib3.connectionpool - DEBUG - https://dashscope.aliyuncs.com:443 "POST /api/v1/services/embeddings/text-embedding/text-embedding HTTP/1.1" 200 None
+2026-04-02 12:22:53,753 - chromadb - DEBUG - semantic scores: [0.64, 0.671, 0.728]
+2026-04-02 12:22:53,753 - chromadb - DEBUG - keyword scores: []
+2026-04-02 12:22:53,755 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 12:22:53,757 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001C834B459D0>
+2026-04-02 12:22:53,757 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 12:22:53,757 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 12:22:53,757 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 12:23:05,940 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 12:23:05,949 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 12:23:09,089 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 12:23:09,098 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 12:23:09,204 - chromadb.config - DEBUG - Starting component System
+2026-04-02 12:23:09,204 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 12:23:09,544 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 12:23:09,545 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 12:23:09,545 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 12:23:09,551 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 12:23:09,562 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 12:23:09,563 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001C1F6A42550>
+2026-04-02 12:23:09,564 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 12:23:09,564 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 12:23:09,564 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for get_recipe_source, refreshing cache
+2026-04-02 12:23:09,565 - root - ERROR - DEBUG: 收到工具 get_recipe_source 调用, 参数: {'recipe_name': '南派红烧肉'}
+2026-04-02 12:23:09,565 - src.mcp.tool - INFO - 正在获取菜谱 '南派红烧肉' 的源文件路径...
+2026-04-02 12:23:09,565 - src.ingestion.document_manager - INFO - 正在使用 BM25 搜索，查询: '南派红烧肉'
+2026-04-02 12:23:09,566 - src.ingestion.document_manager - INFO - BM25 搜索完成，找到 1 条结果, results: [{'id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\红烧肉\\南派红烧肉.md_chunk_1048', 'content': '# 南派红烧肉 ## **菜品描述** 这道南派红烧肉色泽红亮诱人，口感香糯软烂，肥而不腻，是绝佳的下饭菜。五花肉富含优质蛋白与脂肪，经过慢炖更易消化。做法虽需耐心，但步骤清晰，新手也能成功。非常适合家庭聚餐时作为主菜，浓郁的酱汁拌饭尤其美味，但因其油脂含量较高，建议控制食量。 ---', 'metadata': {'chunk_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\红烧肉\\南派红烧肉.md_chunk_1048', 'chunk_index': 1048, 'source_document_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\红烧肉\\南派红烧肉.md', 'file_path': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\红烧肉\\南派红烧肉.md', 'recipe_name': '南派红烧肉', 'source_file': '南派红烧肉.md'}, 'score': 8.073957797177979}]
+2026-04-02 12:23:09,566 - src.ingestion.document_manager - INFO - Searching for recipe '南派红烧肉'. Found 1 results. results: [{'content': '# 南派红烧肉 ## **菜品描述** 这道南派红烧肉色泽红亮诱人，口感香糯软烂，肥而不腻，是绝佳的下饭菜。五花肉富含优质蛋白与脂肪，经过慢炖更易消化。做法虽需耐心，但步骤清晰，新手也能成功。非常适合家庭聚餐时作为主菜，浓郁的酱汁拌饭尤其美味，但因其油脂含量较高，建议控制食量。 ---', 'source': 'bm25', 'score': 8.073957797177979, 'metadata': {'chunk_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\红烧肉\\南派红烧肉.md_chunk_1048', 'chunk_index': 1048, 'source_document_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\红烧肉\\南派红烧肉.md', 'file_path': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\红烧肉\\南派红烧肉.md', 'recipe_name': '南派红烧肉', 'source_file': '南派红烧肉.md'}, 'query_type': 'keyword'}]
+2026-04-02 12:23:09,567 - root - INFO - 获取到的文件路径: F:\WHAT-TO-EAT-AGENT\data\recipes\meat_dish\红烧肉\南派红烧肉.md
+2026-04-02 12:23:09,567 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 12:23:09,569 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001C1F5E5FAD0>
+2026-04-02 12:23:09,569 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 12:23:09,569 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 12:23:09,570 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 12:30:10,303 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 12:30:10,313 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 12:30:10,431 - chromadb.config - DEBUG - Starting component System
+2026-04-02 12:30:10,431 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 12:30:10,604 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 12:30:10,604 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 12:30:10,604 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 12:30:10,610 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 12:30:10,621 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 12:30:10,622 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000016B521DE450>
+2026-04-02 12:30:10,623 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 12:30:10,623 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 12:30:10,623 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for search_recipes, refreshing cache
+2026-04-02 12:30:10,625 - root - ERROR - DEBUG: 收到工具 search_recipes 调用, 参数: {'query': '这个菜谱需要什么食材', 'user_id': 'default_user'}
+2026-04-02 12:30:10,634 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): dashscope.aliyuncs.com:443
+2026-04-02 12:30:13,701 - urllib3.connectionpool - DEBUG - https://dashscope.aliyuncs.com:443 "POST /api/v1/services/embeddings/text-embedding/text-embedding HTTP/1.1" 200 None
+2026-04-02 12:30:13,766 - chromadb - DEBUG - semantic scores: [0.661, 0.669, 0.675]
+2026-04-02 12:30:13,766 - chromadb - DEBUG - keyword scores: []
+2026-04-02 12:30:13,767 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 12:30:13,769 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000016B51B86910>
+2026-04-02 12:30:13,769 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 12:30:13,769 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 12:30:13,769 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 12:32:28,698 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 12:32:28,707 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 12:32:28,812 - chromadb.config - DEBUG - Starting component System
+2026-04-02 12:32:28,812 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 12:32:29,271 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 12:32:29,271 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 12:32:29,271 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 12:32:29,278 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 12:32:29,289 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 12:32:29,290 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001C8465DC590>
+2026-04-02 12:32:29,291 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 12:32:29,291 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 12:32:29,291 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for search_recipes, refreshing cache
+2026-04-02 12:32:29,293 - root - ERROR - DEBUG: 收到工具 search_recipes 调用, 参数: {'query': '红烧肉', 'user_id': 'default_user'}
+2026-04-02 12:32:29,300 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): dashscope.aliyuncs.com:443
+2026-04-02 12:32:31,031 - urllib3.connectionpool - DEBUG - https://dashscope.aliyuncs.com:443 "POST /api/v1/services/embeddings/text-embedding/text-embedding HTTP/1.1" 200 None
+2026-04-02 12:32:31,102 - chromadb - DEBUG - semantic scores: [0.577, 0.609, 0.623]
+2026-04-02 12:32:31,102 - chromadb - DEBUG - keyword scores: []
+2026-04-02 12:32:31,103 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 12:32:31,105 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001C847426910>
+2026-04-02 12:32:31,105 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 12:32:31,105 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 12:32:31,106 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 12:32:48,252 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 12:32:48,261 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 12:32:51,570 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 12:32:51,580 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 12:32:51,694 - chromadb.config - DEBUG - Starting component System
+2026-04-02 12:32:51,694 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 12:32:52,218 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 12:32:52,218 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 12:32:52,218 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 12:32:52,224 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 12:32:52,234 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 12:32:52,235 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x00000201A914EB90>
+2026-04-02 12:32:52,235 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 12:32:52,235 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 12:32:52,235 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for get_recipe_source, refreshing cache
+2026-04-02 12:32:52,236 - root - ERROR - DEBUG: 收到工具 get_recipe_source 调用, 参数: {'recipe_name': '简易红烧肉'}
+2026-04-02 12:32:52,236 - src.mcp.tool - INFO - 正在获取菜谱 '简易红烧肉' 的源文件路径...
+2026-04-02 12:32:52,237 - src.ingestion.document_manager - INFO - 正在使用 BM25 搜索，查询: '简易红烧肉'
+2026-04-02 12:32:52,238 - src.ingestion.document_manager - INFO - BM25 搜索完成，找到 1 条结果, results: [{'id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\红烧肉\\简易红烧肉.md_chunk_1054', 'content': '# 简易红烧肉 ## **菜品描述** 这道简易红烧肉色泽红亮诱人，口感香糯软烂，肥而不腻，是绝佳的下饭菜。五花肉富含优质蛋白与脂肪，能提供充足能量，搭配的鸡蛋或豆皮则增添了营养。做法对新手友好，耗时适中，非常适合家庭日常晚餐或周末宴客，尤其适合需要补充能量、喜欢浓郁口味的人群享用。 ---', 'metadata': {'chunk_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\红烧肉\\简易红烧肉.md_chunk_1054', 'chunk_index': 1054, 'source_document_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\红烧肉\\简易红烧肉.md', 'file_path': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\红烧肉\\简易红烧肉.md', 'recipe_name': '简易红烧肉', 'source_file': '简易红烧肉.md'}, 'score': 8.261478603137807}]
+2026-04-02 12:32:52,238 - src.ingestion.document_manager - INFO - Searching for recipe '简易红烧肉'. Found 1 results. results: [{'content': '# 简易红烧肉 ## **菜品描述** 这道简易红烧肉色泽红亮诱人，口感香糯软烂，肥而不腻，是绝佳的下饭菜。五花肉富含优质蛋白与脂肪，能提供充足能量，搭配的鸡蛋或豆皮则增添了营养。做法对新手友好，耗时适中，非常适合家庭日常晚餐或周末宴客，尤其适合需要补充能量、喜欢浓郁口味的人群享用。 ---', 'source': 'bm25', 'score': 8.261478603137807, 'metadata': {'chunk_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\红烧肉\\简易红烧肉.md_chunk_1054', 'chunk_index': 1054, 'source_document_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\红烧肉\\简易红烧肉.md', 'file_path': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\红烧肉\\简易红烧肉.md', 'recipe_name': '简易红烧肉', 'source_file': '简易红烧肉.md'}, 'query_type': 'keyword'}]
+2026-04-02 12:32:52,238 - root - INFO - 获取到的文件路径: F:\WHAT-TO-EAT-AGENT\data\recipes\meat_dish\红烧肉\简易红烧肉.md
+2026-04-02 12:32:52,238 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 12:32:52,240 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x00000201A923FC50>
+2026-04-02 12:32:52,240 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 12:32:52,240 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 12:32:52,241 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 12:44:29,852 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 12:44:29,861 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 12:44:29,964 - chromadb.config - DEBUG - Starting component System
+2026-04-02 12:44:29,964 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 12:44:33,268 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 12:44:33,277 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 12:44:33,387 - chromadb.config - DEBUG - Starting component System
+2026-04-02 12:44:33,387 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 12:44:34,237 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 12:44:34,237 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 12:44:34,237 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 12:44:34,243 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 12:44:34,252 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 12:44:34,252 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001B450BC2050>
+2026-04-02 12:44:34,253 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 12:44:34,253 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 12:44:34,253 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for search_recipes, refreshing cache
+2026-04-02 12:44:34,255 - root - ERROR - DEBUG: 收到工具 search_recipes 调用, 参数: {'query': '红烧肉', 'user_id': 'default_user'}
+2026-04-02 12:44:34,261 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): dashscope.aliyuncs.com:443
+2026-04-02 12:44:36,187 - urllib3.connectionpool - DEBUG - https://dashscope.aliyuncs.com:443 "POST /api/v1/services/embeddings/text-embedding/text-embedding HTTP/1.1" 200 None
+2026-04-02 12:44:36,250 - chromadb - DEBUG - semantic scores: [0.577, 0.609, 0.623]
+2026-04-02 12:44:36,250 - chromadb - DEBUG - keyword scores: []
+2026-04-02 12:44:36,250 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 12:44:36,252 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001B450B15390>
+2026-04-02 12:44:36,253 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 12:44:36,253 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 12:44:36,253 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 12:44:52,697 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 12:44:52,706 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 12:44:52,816 - chromadb.config - DEBUG - Starting component System
+2026-04-02 12:44:52,817 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 12:44:55,933 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 12:44:55,941 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 12:44:56,042 - chromadb.config - DEBUG - Starting component System
+2026-04-02 12:44:56,042 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 12:44:56,191 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 12:44:56,191 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 12:44:56,191 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 12:44:56,197 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 12:44:56,206 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 12:44:56,207 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000002BD7FD0FED0>
+2026-04-02 12:44:56,208 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 12:44:56,208 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 12:44:56,208 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for get_recipe_source, refreshing cache
+2026-04-02 12:44:56,209 - root - ERROR - DEBUG: 收到工具 get_recipe_source 调用, 参数: {'recipe_name': '简易红烧肉'}
+2026-04-02 12:44:56,209 - src.mcp.tool - INFO - 正在获取菜谱 '简易红烧肉' 的源文件路径...
+2026-04-02 12:44:56,209 - src.ingestion.document_manager - INFO - 正在使用 BM25 搜索，查询: '简易红烧肉'
+2026-04-02 12:44:56,211 - src.ingestion.document_manager - INFO - BM25 搜索完成，找到 1 条结果, results: [{'id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\红烧肉\\简易红烧肉.md_chunk_1054', 'content': '# 简易红烧肉 ## **菜品描述** 这道简易红烧肉色泽红亮诱人，口感香糯软烂，肥而不腻，是绝佳的下饭菜。五花肉富含优质蛋白与脂肪，能提供充足能量，搭配的鸡蛋或豆皮则增添了营养。做法对新手友好，耗时适中，非常适合家庭日常晚餐或周末宴客，尤其适合需要补充能量、喜欢浓郁口味的人群享用。 ---', 'metadata': {'chunk_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\红烧肉\\简易红烧肉.md_chunk_1054', 'chunk_index': 1054, 'source_document_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\红烧肉\\简易红烧肉.md', 'file_path': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\红烧肉\\简易红烧肉.md', 'recipe_name': '简易红烧肉', 'source_file': '简易红烧肉.md'}, 'score': 8.261478603137807}]
+2026-04-02 12:44:56,211 - src.ingestion.document_manager - INFO - Searching for recipe '简易红烧肉'. Found 1 results. results: [{'content': '# 简易红烧肉 ## **菜品描述** 这道简易红烧肉色泽红亮诱人，口感香糯软烂，肥而不腻，是绝佳的下饭菜。五花肉富含优质蛋白与脂肪，能提供充足能量，搭配的鸡蛋或豆皮则增添了营养。做法对新手友好，耗时适中，非常适合家庭日常晚餐或周末宴客，尤其适合需要补充能量、喜欢浓郁口味的人群享用。 ---', 'source': 'bm25', 'score': 8.261478603137807, 'metadata': {'chunk_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\红烧肉\\简易红烧肉.md_chunk_1054', 'chunk_index': 1054, 'source_document_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\红烧肉\\简易红烧肉.md', 'file_path': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\红烧肉\\简易红烧肉.md', 'recipe_name': '简易红烧肉', 'source_file': '简易红烧肉.md'}, 'query_type': 'keyword'}]
+2026-04-02 12:44:56,211 - root - INFO - 获取到的文件路径: F:\WHAT-TO-EAT-AGENT\data\recipes\meat_dish\红烧肉\简易红烧肉.md
+2026-04-02 12:44:56,211 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 12:44:56,214 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000002BD7FC74950>
+2026-04-02 12:44:56,214 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 12:44:56,214 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 12:44:56,214 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 12:48:23,909 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 12:48:23,917 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 12:48:24,022 - chromadb.config - DEBUG - Starting component System
+2026-04-02 12:48:24,022 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 12:48:27,169 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 12:48:27,178 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 12:48:27,277 - chromadb.config - DEBUG - Starting component System
+2026-04-02 12:48:27,277 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 12:48:27,791 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 12:48:27,791 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 12:48:27,791 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 12:48:27,797 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 12:48:27,808 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 12:48:27,809 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000019C65DBC590>
+2026-04-02 12:48:27,809 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 12:48:27,809 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 12:48:27,809 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for search_recipes, refreshing cache
+2026-04-02 12:48:27,811 - root - ERROR - DEBUG: 收到工具 search_recipes 调用, 参数: {'query': '想吃甜品，需要买什么', 'user_id': 'default_user'}
+2026-04-02 12:48:27,818 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): dashscope.aliyuncs.com:443
+2026-04-02 12:48:29,732 - urllib3.connectionpool - DEBUG - https://dashscope.aliyuncs.com:443 "POST /api/v1/services/embeddings/text-embedding/text-embedding HTTP/1.1" 200 None
+2026-04-02 12:48:29,994 - chromadb - DEBUG - semantic scores: [0.903, 0.914, 0.917]
+2026-04-02 12:48:29,994 - chromadb - DEBUG - keyword scores: []
+2026-04-02 12:48:29,994 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 12:48:29,997 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000019C67397D10>
+2026-04-02 12:48:29,997 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 12:48:29,997 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 12:48:29,997 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 13:15:48,421 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 13:15:48,430 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 13:15:48,540 - chromadb.config - DEBUG - Starting component System
+2026-04-02 13:15:48,541 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 13:15:51,900 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 13:15:51,909 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 13:15:52,013 - chromadb.config - DEBUG - Starting component System
+2026-04-02 13:15:52,013 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 13:15:52,452 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 13:15:52,452 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 13:15:52,452 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 13:15:52,458 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 13:15:52,467 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 13:15:52,468 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001F120BFC590>
+2026-04-02 13:15:52,469 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 13:15:52,469 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 13:15:52,469 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for search_recipes, refreshing cache
+2026-04-02 13:15:52,471 - root - ERROR - DEBUG: 收到工具 search_recipes 调用, 参数: {'query': '想吃甜品，需要买什么东西', 'user_id': 'default_user'}
+2026-04-02 13:15:52,478 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): dashscope.aliyuncs.com:443
+2026-04-02 13:15:54,343 - urllib3.connectionpool - DEBUG - https://dashscope.aliyuncs.com:443 "POST /api/v1/services/embeddings/text-embedding/text-embedding HTTP/1.1" 200 None
+2026-04-02 13:15:54,410 - chromadb - DEBUG - semantic scores: [0.893, 0.904, 0.908]
+2026-04-02 13:15:54,411 - chromadb - DEBUG - keyword scores: []
+2026-04-02 13:15:54,411 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 13:15:54,413 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001F121DE7850>
+2026-04-02 13:15:54,414 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 13:15:54,414 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 13:15:54,414 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 13:16:27,863 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 13:16:27,871 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 13:16:27,971 - chromadb.config - DEBUG - Starting component System
+2026-04-02 13:16:27,971 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 13:16:28,359 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 13:16:28,359 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 13:16:28,359 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 13:16:28,365 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 13:16:28,374 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 13:16:28,375 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000002D4B5C7C590>
+2026-04-02 13:16:28,375 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 13:16:28,375 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 13:16:28,375 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for get_recipe_source, refreshing cache
+2026-04-02 13:16:28,377 - root - ERROR - DEBUG: 收到工具 get_recipe_source 调用, 参数: {'recipe_name': '雪花酥'}
+2026-04-02 13:16:28,377 - src.mcp.tool - INFO - 正在获取菜谱 '雪花酥' 的源文件路径...
+2026-04-02 13:16:28,377 - src.ingestion.document_manager - INFO - 正在使用 BM25 搜索，查询: '雪花酥'
+2026-04-02 13:16:28,378 - src.ingestion.document_manager - INFO - BM25 搜索完成，找到 1 条结果, results: [{'id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\dessert\\雪花酥\\雪花酥.md_chunk_435', 'content': '## 必备原料和工具 ### 工具 - 不粘平底锅 - 烘焙刮刀（可用锅铲代替，小心使用破坏不粘锅涂层） - 一次性塑料手套 - 雪花酥/牛轧糖模具 - 擀面杖', 'metadata': {'chunk_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\dessert\\雪花酥\\雪花酥.md_chunk_435', 'chunk_index': 435, 'source_document_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\dessert\\雪花酥\\雪花酥.md', 'file_path': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\dessert\\雪花酥\\雪花酥.md', 'recipe_name': '雪花酥', 'source_file': '雪花酥.md'}, 'score': 8.039620405684408}]
+2026-04-02 13:16:28,378 - src.ingestion.document_manager - INFO - Searching for recipe '雪花酥'. Found 1 results. results: [{'content': '## 必备原料和工具 ### 工具 - 不粘平底锅 - 烘焙刮刀（可用锅铲代替，小心使用破坏不粘锅涂层） - 一次性塑料手套 - 雪花酥/牛轧糖模具 - 擀面杖', 'source': 'bm25', 'score': 8.039620405684408, 'metadata': {'chunk_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\dessert\\雪花酥\\雪花酥.md_chunk_435', 'chunk_index': 435, 'source_document_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\dessert\\雪花酥\\雪花酥.md', 'file_path': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\dessert\\雪花酥\\雪花酥.md', 'recipe_name': '雪花酥', 'source_file': '雪花酥.md'}, 'query_type': 'keyword'}]
+2026-04-02 13:16:28,378 - root - INFO - 获取到的文件路径: F:\WHAT-TO-EAT-AGENT\data\recipes\dessert\雪花酥\雪花酥.md
+2026-04-02 13:16:28,379 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 13:16:28,381 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000002D4B7317910>
+2026-04-02 13:16:28,382 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 13:16:28,382 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 13:16:28,382 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 13:22:21,184 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 13:22:21,193 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 13:22:21,304 - chromadb.config - DEBUG - Starting component System
+2026-04-02 13:22:21,304 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 13:22:21,746 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 13:22:21,746 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 13:22:21,746 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 13:22:21,752 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 13:22:21,761 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 13:22:21,762 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000027B61C8EE10>
+2026-04-02 13:22:21,762 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 13:22:21,763 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 13:22:21,763 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for search_recipes, refreshing cache
+2026-04-02 13:22:21,764 - root - ERROR - DEBUG: 收到工具 search_recipes 调用, 参数: {'query': '想吃甜品，需要买什么', 'user_id': 'default_user'}
+2026-04-02 13:22:21,771 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): dashscope.aliyuncs.com:443
+2026-04-02 13:22:23,633 - urllib3.connectionpool - DEBUG - https://dashscope.aliyuncs.com:443 "POST /api/v1/services/embeddings/text-embedding/text-embedding HTTP/1.1" 200 None
+2026-04-02 13:22:23,920 - chromadb - DEBUG - semantic scores: [0.903, 0.914, 0.917]
+2026-04-02 13:22:23,920 - chromadb - DEBUG - keyword scores: []
+2026-04-02 13:22:23,921 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 13:22:23,923 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000027B613932D0>
+2026-04-02 13:22:23,924 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 13:22:23,924 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 13:22:23,924 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 13:23:08,137 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 13:23:08,146 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 13:23:11,496 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 13:23:11,506 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 13:23:11,614 - chromadb.config - DEBUG - Starting component System
+2026-04-02 13:23:11,614 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 13:23:13,384 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 13:23:13,384 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 13:23:13,384 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 13:23:13,390 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 13:23:13,398 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 13:23:13,399 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001C358C14590>
+2026-04-02 13:23:13,399 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 13:23:13,399 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 13:23:13,399 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for get_recipe_source, refreshing cache
+2026-04-02 13:23:13,401 - root - ERROR - DEBUG: 收到工具 get_recipe_source 调用, 参数: {'recipe_name': '芋泥雪媚娘'}
+2026-04-02 13:23:13,401 - src.mcp.tool - INFO - 正在获取菜谱 '芋泥雪媚娘' 的源文件路径...
+2026-04-02 13:23:13,401 - src.ingestion.document_manager - INFO - 正在使用 BM25 搜索，查询: '芋泥雪媚娘'
+2026-04-02 13:23:13,402 - src.ingestion.document_manager - INFO - BM25 搜索完成，找到 1 条结果, results: [{'id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\dessert\\芋泥雪媚娘\\芋泥雪媚娘.md_chunk_409', 'content': '# 芋泥雪媚娘 ## **菜品描述** 这款芋泥雪媚娘口感软糯香甜，内馅细腻顺滑，芋泥与奶香完美融合。它无需烤箱，制作过程简单无油烟，是适合亲子互动的手作甜品。成品富含膳食纤维，易于消化，尤其适合作为儿童的健康零食或家庭下午茶点心，为家人带来甜蜜的味蕾享受。 ---', 'metadata': {'chunk_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\dessert\\芋泥雪媚娘\\芋泥雪媚娘.md_chunk_409', 'chunk_index': 409, 'source_document_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\dessert\\芋泥雪媚娘\\芋泥雪媚娘.md', 'file_path': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\dessert\\芋泥雪媚娘\\芋泥雪媚娘.md', 'recipe_name': '芋泥雪媚娘', 'source_file': '芋泥雪媚娘.md'}, 'score': 8.663924632891094}]
+2026-04-02 13:23:13,402 - src.ingestion.document_manager - INFO - Searching for recipe '芋泥雪媚娘'. Found 1 results. results: [{'content': '# 芋泥雪媚娘 ## **菜品描述** 这款芋泥雪媚娘口感软糯香甜，内馅细腻顺滑，芋泥与奶香完美融合。它无需烤箱，制作过程简单无油烟，是适合亲子互动的手作甜品。成品富含膳食纤维，易于消化，尤其适合作为儿童的健康零食或家庭下午茶点心，为家人带来甜蜜的味蕾享受。 ---', 'source': 'bm25', 'score': 8.663924632891094, 'metadata': {'chunk_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\dessert\\芋泥雪媚娘\\芋泥雪媚娘.md_chunk_409', 'chunk_index': 409, 'source_document_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\dessert\\芋泥雪媚娘\\芋泥雪媚娘.md', 'file_path': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\dessert\\芋泥雪媚娘\\芋泥雪媚娘.md', 'recipe_name': '芋泥雪媚娘', 'source_file': '芋泥雪媚娘.md'}, 'query_type': 'keyword'}]
+2026-04-02 13:23:13,402 - root - INFO - 获取到的文件路径: F:\WHAT-TO-EAT-AGENT\data\recipes\dessert\芋泥雪媚娘\芋泥雪媚娘.md
+2026-04-02 13:23:13,403 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 13:23:13,405 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001C359C36910>
+2026-04-02 13:23:13,405 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 13:23:13,405 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 13:23:13,405 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 13:26:18,098 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 13:26:18,107 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 13:26:18,210 - chromadb.config - DEBUG - Starting component System
+2026-04-02 13:26:18,211 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 13:26:21,517 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 13:26:21,527 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 13:26:21,633 - chromadb.config - DEBUG - Starting component System
+2026-04-02 13:26:21,633 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 13:26:23,478 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 13:26:23,478 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 13:26:23,478 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 13:26:23,484 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 13:26:23,492 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 13:26:23,493 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000020FF0EF1910>
+2026-04-02 13:26:23,493 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 13:26:23,493 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 13:26:23,493 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for search_recipes, refreshing cache
+2026-04-02 13:26:23,495 - root - ERROR - DEBUG: 收到工具 search_recipes 调用, 参数: {'query': '刚刚买了一盒饼干，能做什么甜品', 'user_id': 'default_user'}
+2026-04-02 13:26:23,502 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): dashscope.aliyuncs.com:443
+2026-04-02 13:26:25,309 - urllib3.connectionpool - DEBUG - https://dashscope.aliyuncs.com:443 "POST /api/v1/services/embeddings/text-embedding/text-embedding HTTP/1.1" 200 None
+2026-04-02 13:26:25,587 - chromadb - DEBUG - semantic scores: [0.695, 0.726, 0.776]
+2026-04-02 13:26:25,587 - chromadb - DEBUG - keyword scores: []
+2026-04-02 13:26:25,588 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 13:26:25,590 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000020FF0907010>
+2026-04-02 13:26:25,590 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 13:26:25,590 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 13:26:25,590 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 13:26:45,777 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 13:26:45,785 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 13:26:49,065 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 13:26:49,074 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 13:26:49,175 - chromadb.config - DEBUG - Starting component System
+2026-04-02 13:26:49,175 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 13:26:49,966 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 13:26:49,967 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 13:26:49,967 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 13:26:49,973 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 13:26:49,982 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 13:26:49,983 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001FAAACD2550>
+2026-04-02 13:26:49,983 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 13:26:49,983 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 13:26:49,983 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for get_recipe_source, refreshing cache
+2026-04-02 13:26:49,985 - root - ERROR - DEBUG: 收到工具 get_recipe_source 调用, 参数: {'recipe_name': '玛格丽特饼干'}
+2026-04-02 13:26:49,985 - src.mcp.tool - INFO - 正在获取菜谱 '玛格丽特饼干' 的源文件路径...
+2026-04-02 13:26:49,985 - src.ingestion.document_manager - INFO - 正在使用 BM25 搜索，查询: '玛格丽特饼干'
+2026-04-02 13:26:49,987 - src.ingestion.document_manager - INFO - BM25 搜索完成，找到 1 条结果, results: [{'id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\dessert\\玛格丽特饼干\\玛格丽特饼干.md_chunk_398', 'content': '# 玛格丽特饼干的做法 ![玛格丽特成品](./玛格丽特饼干.jpg) 玛格丽特饼干通常作为下午茶点心或伴随热饮享用，是一种经典而受欢迎的点心。它们的酥脆质地和丰富的黄油味道使它们成为许多人喜爱的饼干之一。 预估烹饪难度：★★★', 'metadata': {'chunk_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\dessert\\玛格丽特饼干\\玛格丽特饼干.md_chunk_398', 'chunk_index': 398, 'source_document_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\dessert\\玛格丽特饼干\\玛格丽特饼干.md', 'file_path': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\dessert\\玛格丽特饼干\\玛格丽特饼干.md', 'recipe_name': '玛格丽特饼干', 'source_file': '玛格丽特饼干.md'}, 'score': 8.920657802089092}]
+2026-04-02 13:26:49,987 - src.ingestion.document_manager - INFO - Searching for recipe '玛格丽特饼干'. Found 1 results. results: [{'content': '# 玛格丽特饼干的做法 ![玛格丽特成品](./玛格丽特饼干.jpg) 玛格丽特饼干通常作为下午茶点心或伴随热饮享用，是一种经典而受欢迎的点心。它们的酥脆质地和丰富的黄油味道使它们成为许多人喜爱的饼干之一。 预估烹饪难度：★★★', 'source': 'bm25', 'score': 8.920657802089092, 'metadata': {'chunk_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\dessert\\玛格丽特饼干\\玛格丽特饼干.md_chunk_398', 'chunk_index': 398, 'source_document_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\dessert\\玛格丽特饼干\\玛格丽特饼干.md', 'file_path': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\dessert\\玛格丽特饼干\\玛格丽特饼干.md', 'recipe_name': '玛格丽特饼干', 'source_file': '玛格丽特饼干.md'}, 'query_type': 'keyword'}]
+2026-04-02 13:26:49,987 - root - INFO - 获取到的文件路径: F:\WHAT-TO-EAT-AGENT\data\recipes\dessert\玛格丽特饼干\玛格丽特饼干.md
+2026-04-02 13:26:49,988 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 13:26:49,990 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001FAAAC34950>
+2026-04-02 13:26:49,990 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 13:26:49,990 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 13:26:49,990 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 13:54:36,586 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 13:54:36,597 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 13:54:36,731 - chromadb.config - DEBUG - Starting component System
+2026-04-02 13:54:36,731 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 13:54:37,178 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 13:54:37,178 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 13:54:37,178 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 13:54:37,185 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 13:54:37,195 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 13:54:37,196 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000002196ED2B7D0>
+2026-04-02 13:54:37,196 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 13:54:37,196 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 13:54:37,197 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for search_recipes, refreshing cache
+2026-04-02 13:54:37,199 - root - ERROR - DEBUG: 收到工具 search_recipes 调用, 参数: {'query': '红烧肉', 'user_id': 'default_user'}
+2026-04-02 13:54:37,206 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): dashscope.aliyuncs.com:443
+2026-04-02 13:54:39,135 - urllib3.connectionpool - DEBUG - https://dashscope.aliyuncs.com:443 "POST /api/v1/services/embeddings/text-embedding/text-embedding HTTP/1.1" 200 None
+2026-04-02 13:54:39,204 - chromadb - DEBUG - semantic scores: [0.577, 0.609, 0.623]
+2026-04-02 13:54:39,204 - chromadb - DEBUG - keyword scores: []
+2026-04-02 13:54:39,205 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 13:54:39,207 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000002196F56C190>
+2026-04-02 13:54:39,207 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 13:54:39,207 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 13:54:39,207 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 13:55:21,346 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 13:55:21,357 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 13:55:21,481 - chromadb.config - DEBUG - Starting component System
+2026-04-02 13:55:21,481 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 13:55:21,659 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 13:55:21,660 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 13:55:21,660 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 13:55:21,667 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 13:55:21,676 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 13:55:21,677 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001436284F510>
+2026-04-02 13:55:21,677 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 13:55:21,678 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 13:55:21,678 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for search_recipes, refreshing cache
+2026-04-02 13:55:21,680 - root - ERROR - DEBUG: 收到工具 search_recipes 调用, 参数: {'query': '感冒了想吃清淡的', 'user_id': 'default_user'}
+2026-04-02 13:55:21,689 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): dashscope.aliyuncs.com:443
+2026-04-02 13:55:23,923 - urllib3.connectionpool - DEBUG - https://dashscope.aliyuncs.com:443 "POST /api/v1/services/embeddings/text-embedding/text-embedding HTTP/1.1" 200 None
+2026-04-02 13:55:24,004 - chromadb - DEBUG - semantic scores: [0.965, 0.97, 0.98]
+2026-04-02 13:55:24,004 - chromadb - DEBUG - keyword scores: []
+2026-04-02 13:55:24,005 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 13:55:24,007 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000014361F552D0>
+2026-04-02 13:55:24,008 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 13:55:24,008 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 13:55:24,008 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 13:57:59,462 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 13:57:59,473 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 13:57:59,606 - chromadb.config - DEBUG - Starting component System
+2026-04-02 13:57:59,606 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 13:58:00,138 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 13:58:00,138 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 13:58:00,138 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 13:58:00,145 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 13:58:00,155 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 13:58:00,156 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001C43C0AC590>
+2026-04-02 13:58:00,156 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 13:58:00,157 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 13:58:00,157 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for search_recipes, refreshing cache
+2026-04-02 13:58:00,159 - root - ERROR - DEBUG: 收到工具 search_recipes 调用, 参数: {'query': '推荐一道蔬菜菜谱', 'user_id': 'default_user'}
+2026-04-02 13:58:00,167 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): dashscope.aliyuncs.com:443
+2026-04-02 13:58:01,999 - urllib3.connectionpool - DEBUG - https://dashscope.aliyuncs.com:443 "POST /api/v1/services/embeddings/text-embedding/text-embedding HTTP/1.1" 200 None
+2026-04-02 13:58:02,900 - chromadb - DEBUG - semantic scores: [0.674, 0.712, 0.739]
+2026-04-02 13:58:02,900 - chromadb - DEBUG - keyword scores: []
+2026-04-02 13:58:02,901 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 13:58:02,903 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001C43CE94F50>
+2026-04-02 13:58:02,903 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 13:58:02,903 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 13:58:02,903 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 13:58:38,840 - mcp_server - INFO - --- MCP Server Starting ---
+2026-04-02 13:58:38,851 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-04-02 13:58:38,976 - chromadb.config - DEBUG - Starting component System
+2026-04-02 13:58:38,976 - chromadb.config - DEBUG - Starting component Posthog
+2026-04-02 13:58:39,479 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-04-02 13:58:39,479 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-04-02 13:58:39,480 - asyncio - DEBUG - Using selector: SelectSelector
+2026-04-02 13:58:39,488 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-04-02 13:58:39,499 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-04-02 13:58:39,500 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x00000219DC2B4590>
+2026-04-02 13:58:39,500 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-04-02 13:58:39,501 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-04-02 13:58:39,501 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for search_recipes, refreshing cache
+2026-04-02 13:58:39,504 - root - ERROR - DEBUG: 收到工具 search_recipes 调用, 参数: {'query': '红烧肉', 'user_id': 'default_user'}
+2026-04-02 13:58:39,514 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): dashscope.aliyuncs.com:443
+2026-04-02 13:58:41,248 - urllib3.connectionpool - DEBUG - https://dashscope.aliyuncs.com:443 "POST /api/v1/services/embeddings/text-embedding/text-embedding HTTP/1.1" 200 None
+2026-04-02 13:58:41,520 - chromadb - DEBUG - semantic scores: [0.577, 0.609, 0.623]
+2026-04-02 13:58:41,521 - chromadb - DEBUG - keyword scores: []
+2026-04-02 13:58:41,521 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-04-02 13:58:41,524 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x00000219DD827910>
+2026-04-02 13:58:41,524 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-04-02 13:58:41,524 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-04-02 13:58:41,524 - mcp.server.lowlevel.server - DEBUG - Response sent

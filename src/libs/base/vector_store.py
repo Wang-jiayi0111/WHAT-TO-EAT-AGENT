@@ -41,6 +41,18 @@ class VectorStore(ABC):
         """
         pass
 
+    @abstractmethod
+    def add_texts(self, texts, metadatas=None, ids=None):
+        """
+        Add text chunks with metadata to the store.
+
+        Args:
+            texts (list): List of text chunks to be added.
+            metadatas (list): List of metadata dicts for each text chunk.
+            ids (list): List of IDs for each text chunk.
+        """
+        pass
+
 
 class ConcreteVectorStore(VectorStore):
     """
@@ -53,6 +65,7 @@ class ConcreteVectorStore(VectorStore):
         """
         self.vectors = []  # List to store vectors
         self.metadata = []  # List to store metadata associated with vectors
+        self.texts = []  # List to store original text chunks
 
     def add(self, chunks, metadata):
         """
@@ -66,6 +79,28 @@ class ConcreteVectorStore(VectorStore):
             vector = self._embed(chunk)  # Convert chunk to vector
             self.vectors.append(vector)
             self.metadata.append(metadata)
+            self.texts.append(chunk)
+
+    def add_texts(self, texts, metadatas=None, ids=None):
+        """
+        Add text chunks with metadata to the store.
+
+        Args:
+            texts (list): List of text chunks to be added.
+            metadatas (list): List of metadata dicts for each text chunk.
+            ids (list): List of IDs for each text chunk.
+        """
+        if metadatas is None:
+            metadatas = [{}] * len(texts)
+
+        for i, text in enumerate(texts):
+            # Use provided metadata or default to empty dict
+            meta = metadatas[i] if i < len(metadatas) else {}
+
+            vector = self._embed(text)  # Convert text to vector
+            self.vectors.append(vector)
+            self.metadata.append(meta)
+            self.texts.append(text)
 
     def query(self, vector, top_k):
         """
@@ -82,6 +117,7 @@ class ConcreteVectorStore(VectorStore):
         top_indices = np.argsort(similarities)[-top_k:][::-1]  # Get top_k indices sorted by similarity
         results = [
             {
+                "content": self.texts[i],  # Include the original text
                 "metadata": self.metadata[i],
                 "similarity": similarities[i]
             }
@@ -100,6 +136,7 @@ class ConcreteVectorStore(VectorStore):
         for index in sorted(indices_to_delete, reverse=True):
             del self.vectors[index]
             del self.metadata[index]
+            del self.texts[index]
 
     def _embed(self, text):
         """

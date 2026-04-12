@@ -1,0 +1,3 @@
+sys.executable: D:\anaconda3\envs\eatAgent_env\python.exe
+sys.path: ['F:\\WHAT-TO-EAT-AGENT\\src\\mcp', 'F:\\WHAT-TO-EAT-AGENT', 'D:\\anaconda3\\envs\\eatAgent_env\\python311.zip', 'D:\\anaconda3\\envs\\eatAgent_env\\DLLs', 'D:\\anaconda3\\envs\\eatAgent_env\\Lib', 'D:\\anaconda3\\envs\\eatAgent_env', 'D:\\anaconda3\\envs\\eatAgent_env\\Lib\\site-packages', 'D:\\anaconda3\\envs\\eatAgent_env\\Lib\\site-packages\\win32', 'D:\\anaconda3\\envs\\eatAgent_env\\Lib\\site-packages\\win32\\lib', 'D:\\anaconda3\\envs\\eatAgent_env\\Lib\\site-packages\\Pythonwin']
+PYTHONPATH env: F:\WHAT-TO-EAT-AGENT;

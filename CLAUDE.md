@@ -4,62 +4,143 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-The WHAT-TO-EAT-AGENT is an intelligent meal planning assistant that implements a sophisticated RAG (Retrieval Augmented Generation) system for personalized recipe recommendations. The system features multi-user support, inventory tracking, dietary constraint handling, and integrates with the Model Context Protocol (MCP) for seamless interaction with AI assistants like GitHub Copilot.
+The WHAT-TO-EAT-AGENT is an intelligent meal planning assistant that combines RAG (Retrieval-Augmented Generation) technology with MCP (Model Context Protocol) to provide personalized recipe recommendations. The system features multi-user support with individual dietary profiles, inventory tracking, and contextual meal planning capabilities.
 
 ## Architecture
 
-The system follows a layered architecture:
+The system consists of several interconnected components:
 
-- **Agent Layer** (`src/agent/`): Orchestrates the main application logic using LangGraph, including intent routing, memory management, and logistics coordination
-- **MCP Server Layer** (`src/mcp/`): Provides standardized tools for recipe retrieval using the Model Context Protocol
-- **Ingestion Pipeline** (`src/ingestion/`): Handles document processing, chunking, and indexing of recipe knowledge base
-- **Libraries** (`src/libs/`): Core abstractions and utilities for LLM providers, embeddings, and data handling
-- **Observability** (`src/observability/`): Tracking and visualization tools for monitoring the RAG pipeline
+1. **Agent Logic Layer** (`src/agent/`): LangGraph-based workflow orchestrator with intent routing
+2. **MCP Server Layer** (`src/mcp/`): Standardized protocol interface for recipe tools
+3. **RAG Engine** (`src/rag/`): Retrieval pipeline with hybrid search (dense + sparse)
+4. **Ingestion Pipeline** (`src/ingestion/`): Data processing from Markdown recipes to vector storage
+5. **Persistence Layer** (`src/libs/base/`): SQLite databases for user profiles, inventory, and history
+6. **Adapters** (`src/libs/adapters/`): Pluggable interfaces for LLMs, embeddings, and vector stores
 
-## Key Components
+## Key Features
 
-- **Recipe Researcher**: Performs RAG retrieval using hybrid search (dense + sparse) with reranking
-- **Memory Keeper**: Maintains user profiles, dietary restrictions, and preferences in `data/db/user_profiles.db`
-- **Logistics Manager**: Tracks household inventory and generates shopping lists in `data/db/inventory.db`
-- **MCP Integration**: Allows the system to work seamlessly with AI coding assistants via standardized protocols
+- **Multi-user Support**: Individual dietary restrictions, preferences, and cooking habits
+- **Inventory Tracking**: Real-time tracking of available ingredients
+- **Personalized Recommendations**: Recipe suggestions based on user profiles and available ingredients
+- **MCP Integration**: Standardized protocol for consumption by AI assistants
+- **Modular Architecture**: Pluggable components for LLMs, embeddings, and storage backends
 
-## Common Development Commands
+## Directory Structure
 
-### Testing
-- Run all tests: `pytest`
-- Run specific test file: `pytest tests/test_filename.py`
-- Run with coverage: `pytest --cov=src tests/`
+```
+WHAT-TO-EAT-AGENT/
+├── config/                 # Configuration files
+├── data/                   # Persistent data (databases, recipes)
+│   ├── db/                 # SQLite databases
+│   └── recipes/            # Markdown recipe files
+├── logs/                   # Application logs
+├── src/                    # Source code
+│   ├── agent/              # LangGraph agent logic
+│   ├── mcp/                # MCP server implementation
+│   ├── ingestion/          # Data ingestion pipeline
+│   ├── observability/      # Monitoring and dashboard
+│   ├── rag/                # RAG core components
+│   └── libs/               # Shared libraries and adapters
+├── tests/                  # Unit, integration, and end-to-end tests
+├── pyproject.toml          # Dependencies and configuration
+└── config/setting.yaml     # Runtime configuration
+```
+
+## Common Commands
 
 ### Running the Application
-- Start the MCP server: `python src/mcp/server.py`
-- Start the observability dashboard: `streamlit run src/observability/dashboard/app.py`
-- Process new recipes: `python -m src.ingestion.pipeline`
+
+```bash
+# Run with default behavior (ingest and interactive mode)
+python src/main.py
+
+# Run only the ingestion pipeline
+python src/main.py --ingest
+
+# Run in interactive mode only
+python src/main.py --interactive
+
+# Run the MCP server
+python src/main.py --mcp-server
+
+# Run with custom data directory
+python src/main.py --data-dir path/to/recipes
+
+# Run incremental ingestion (only process changed files)
+python src/main.py --ingest --incremental
+```
+
+### Testing
+
+```bash
+# Run all tests
+pytest
+
+# Run specific test directory
+pytest tests/unit/
+
+# Run specific test file
+pytest tests/unit/test_main_app.py
+
+# Run with coverage
+pytest --cov=src
+```
 
 ### Configuration
-The system is configured via `config/settings.yaml` which manages LLM providers, embedding models, vector stores, and other settings.
 
-## Data Storage
-
-- User profiles: `data/db/user_profiles.db`
-- Inventory tracking: `data/db/inventory.db`
-- Ingestion history: `data/db/ingestion_history.db`
-- BM25 index: `data/db/bm25_index.db`
-- Vector storage: `data/vector/chroma/`
-- System logs: `logs/traces.jsonl`
-
-## Specialized Tools & Libraries
-
-- LangGraph for agent orchestration
-- ChromaDB for vector storage
-- SQLite for structured data persistence
-- MCP (Model Context Protocol) for integration with coding assistants
-- Streamlit for observability dashboard
-- Various LLM providers supported via abstract interfaces (OpenAI, Azure OpenAI, Ollama, DashScope)
+- Main configuration is in `config/setting.yaml`
+- Database paths and settings can be adjusted in the `databases` section
+- LLM provider settings (currently configured for DashScope/Qwen) are in the `llm` section
+- Embedding and retrieval parameters can be tuned in respective sections
 
 ## Development Guidelines
 
-- Use the factory pattern for LLM and embedding provider abstraction
-- Maintain traceability through the observability system
-- Follow the RAG pipeline patterns for document ingestion and retrieval
-- Respect the multi-user architecture when implementing features
-- Leverage the MCP protocol for integration with AI assistants
+### Adding New Recipe Formats
+
+1. Create a new loader in `src/ingestion/processors/`
+2. Register it in the ingestion pipeline in `src/main.py`
+3. Update the `LangChainMarkdownHeaderSplitter` if needed for new structural patterns
+
+### Extending MCP Tools
+
+1. Create a new tool class inheriting from `RecipeRetrievalTool` in `src/mcp/server.py`
+2. Register the tool in the `MCPRecipeServer` initialization
+3. Implement the execute method with proper error handling
+
+### Modifying the Agent Workflow
+
+1. The main state machine is defined in `src/agent/state.py`
+2. Intent routing logic is in `src/agent/nodes/router.py`
+3. Each node implementation is in `src/agent/nodes/`
+4. The workflow orchestration is in `src/agent/workflow.py`
+
+### Database Schema Changes
+
+- User profiles are stored in `data/db/user_profiles.db`
+- Inventory is managed in `data/db/inventory.db`
+- Ingestion history is tracked in `data/db/integrity.db`
+- Vector data uses Chroma at `data/db/chroma/`
+
+## Key Classes and Modules
+
+- `WhatToEatAgent` (main.py): Main application class
+- `MCPRecipeServer` (mcp/server.py): MCP protocol implementation
+- `RAGEngine` (rag/core.py): Core retrieval logic
+- `AgentState` (agent/state.py): State management for the workflow
+- `IngestionPipelineController` (ingestion/pipeline_controller.py): Data ingestion orchestration
+- Various adapter classes in `src/libs/adapters/`: Pluggable LLM/embedding/vector store implementations
+
+## Testing Approach
+
+The project follows a test-driven development approach with three layers:
+
+1. **Unit Tests** (`tests/unit/`): Individual component testing
+2. **Integration Tests** (`tests/integration/`): Multi-component workflow testing
+3. **End-to-End Tests** (`tests/e2e/`): Complete scenario testing
+
+## Troubleshooting
+
+- If recipes aren't being found, check if the ingestion pipeline ran successfully
+- If dietary restrictions aren't being applied, verify the user profile is correctly configured
+- If the MCP server isn't responding, ensure the configuration in `config/setting.yaml` is correct
+- Check logs in `logs/` directory for detailed error information
