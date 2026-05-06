@@ -25,6 +25,7 @@ from rich.status import Status
 import uuid
 import logging
 from src.agent.workflow import create_agent, run_turn
+from src.agent.state import empty_agent_slices
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -64,7 +65,8 @@ async def terminal_chat(agent):
             continue
 
         input_state = {
-            "messages": [("user", user_input)]
+            **empty_agent_slices(),
+            "messages": [("user", user_input)],
         }
 
         final_reply = ""

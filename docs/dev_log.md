@@ -1,0 +1,477 @@
+# WHAT-TO-EAT-AGENT 开发日志
+
+项目：WHAT-TO-EAT-AGENT  
+技术栈：Python · LangGraph  
+规格基线：docs/规格设计.md v2.4 · docs/项目说明.md（SRS v1.7）  
+日志格式：v1.0  
+
+> 只追加，不修改历史记录。格式规范见 docs/dev_log_format.md。
+
+---
+
+<!-- 开发 Agent 从此处开始追加记录 -->
+
+## [DEV-001] M0 基线路由快照与 pytest 夹具
+
+**类型**：`功能开发`  
+**编号**：T-001  
+**对应规格**：NFR-05；规格 §10（编排路径 `workflow.py`）；里程碑 M0  
+**里程碑**：M0  
+**状态**：`已完成`  
+**日期**：2026-05-06  
+
+### 做了什么
+
+建立 `tests/conftest.py` 中最小 `logistics_buffer` / `AgentState` 片段工厂与 fixture；新增 `test_workflow_routing_baseline.py`，对 `workflow.py` 四条条件路由函数做表驱动调用并与黄金 JSON 比对；配置 `pytest.ini` / `pyproject.toml` 的 `python_files = test_*.py`，避免脚本型 `*_test.py` 被收集。  
+
+### 变更文件
+
+| 文件 | 类型 | 说明 |
+|------|------|------|
+| `tests/conftest.py` | 新增 | 路径与状态工厂、fixture |
+| `tests/unit/test_workflow_routing_baseline.py` | 新增 | 路由快照测试 |
+| `tests/snapshots/workflow_routing_baseline.json` | 新增 | 黄金快照 |
+| `pytest.ini` | 修改 | `python_files` |
+| `pyproject.toml` | 修改 | `python_files`（与上互补） |
+| `docs/T-001_基线测试说明.md` | 新增 | T-001 开发说明（维护约定与范围） |
+| `docs/开发计划.md` | 修改 | T-001 状态与备注 |
+
+### 规格对齐要点
+
+- [NFR-05] 核心路径具备可自动化执行的单测（当前锚定编排条件边，无外部 I/O）。
+- [规格 §10] 与「编排」目录映射一致，快照锁定 `workflow.py` 路由行为。
+- [M0] 刻意对齐**现状**扁平状态；七切片夹具留待 T-030（规格 §1.2.0 / `dev_agent_prompt` 方案 A）。
+
+### 规格偏差（若有）
+
+无（M0 允许仅覆盖现状路由；方案 A 非本任务范围）。
+
+### 遗留问题
+
+- [ ] `make_minimal_agent_state` 在 T-030 后改为基于 `control_state` / `recipe_state` 或提供访问器（T-030）。
+- [ ] `task_stack`「执行即出队」单测在 T-003 补强。
+
+### 关联
+
+前置：无  
+后续：T-002、T-032（开发计划标注依赖 T-001）  
+测试覆盖：`tests/unit/test_workflow_routing_baseline.py`（结论以测试 Agent `docs/test_report.md` 为准）
+
+---
+
+## [DEV-002] logistics 静默缺口预计算（§1.3 步 5 / §7.1）
+
+**类型**：`功能开发`  
+**编号**：T-002  
+**对应规格**：规格 §1.3 步 5；§7.1～§7.2；SRS §6.1（按需分流）；NFR-05（可测）  
+**里程碑**：M1  
+**状态**：`已完成`  
+**日期**：2026-05-06  
+
+### 做了什么
+
+在 `logistics_manager_node` 末尾增加 `_apply_silent_gap_precalc`：当合并后的 `recipe_requirements`（**R**）非空时，在 **TASK_INV_COMMIT / TASK_INV_ADD** 等可能修改库存的分支之后，再次 `get_inventory_snapshot()` 拉取最新 **I**，用既有 `calculate_shopping_gap` 写入 `cached_shopping_gap`（含 `computed_at`、`pending_manual`）、`gap_basis`（`recipe_title`、`r_fingerprint`、`inventory_fingerprint`），并保留顶层 `shopping_list` 等兼容字段。`TASK_GAP_CALC` 分支去掉重复的缺口计算，避免与静默路径双算。
+
+### 变更文件
+
+| 文件 | 类型 | 说明 |
+|------|------|------|
+| `src/agent/nodes/logistics.py` | 修改 | 指纹辅助函数 + 静默预计算；模块文档 |
+| `src/agent/workflow.py` | 修改 | 顶部注释对齐 researcher→logistics 行为 |
+| `tests/unit/test_logistics_silent_gap.py` | 新增 | 指纹稳定性 + mock 下的缓存断言 |
+| `docs/开发计划.md` | 修改 | T-002 开发/测试状态 |
+
+### 规格对齐要点
+
+- [规格 §1.3 步 5] **R** 非空且拉取 **I** 后 logistics **必须**执行 §7.2 并写缓存；不要求用户本轮清单意图。
+- [规格 §7.1～7.2] `cached_shopping_gap` 结构含 `shopping_list` / `sufficient_items` / `missing_items` / `pending_manual` / `computed_at`；`gap_basis` 含指纹与菜名。
+- [规格 §7.5] R/I 逐项规范化后续任务补充；本实现沿用现有 `calculate_shopping_gap` 键名匹配。
+
+### 规格偏差（若有）
+
+`inventory_state` 七切片与字段迁入 **T-030** 前，缓存仍写入 `logistics_buffer`（与现有 generator 读路径一致）。
+
+### 遗留问题
+
+- [ ] 用户仅 `TASK_INV_CHECK` 且无 **R** 时不触发静默预计算（符合 §7.1「R 非空」）。
+- [ ] `normalize_name` 接入 gap 计算（§7.5）建议在 T-023/T-024 统一。
+
+### 关联
+
+前置：T-001 ✓  
+后续：T-030（切片字段迁移）、T-023（清单缓存读路径）  
+测试覆盖：`tests/unit/test_logistics_silent_gap.py`（结论以测试 Agent 为准）
+
+---
+
+## [DEV-003] task_stack 执行即出队与 generator 调度顺序
+
+**类型**：`功能开发`  
+**编号**：T-003  
+**对应规格**：FR-04；规格 §11.4  
+**里程碑**：M1  
+**状态**：`已完成`  
+**日期**：2026-05-06  
+
+### 做了什么
+
+新增 `src/agent/task_stack.py`：`consume_tasks`、`first_present`、`GENERATOR_REPLY_TASK_ORDER` / `ROUTER_TASK_PRIORITY` 文档常量。`generator` 对成果类任务按固定顺序取首个命中任务并出队；澄清分支区分「有候选等待用户」与「无候选」的消费集合；删除 `handle_clarify` 内对 `state.task_stack` 的原地修改。`researcher`、`clarify_resolver` 对 `TASK_SEARCH`/`TASK_CLARIFY` 的移除改为 `consume_tasks`。
+
+### 变更文件
+
+| 文件 | 类型 | 说明 |
+|------|------|------|
+| `src/agent/task_stack.py` | 新增 | 出队工具与优先级元组 |
+| `src/agent/nodes/generator.py` | 修改 | 统一消费语义与多任务调度 |
+| `src/agent/nodes/researcher.py` | 修改 | consume_tasks |
+| `src/agent/nodes/clarify_resolver.py` | 修改 | consume_tasks |
+| `src/agent/state.py` | 修改 | task_stack 注释指向 FR-04 |
+| `tests/unit/test_task_stack.py` | 新增 | 工具函数行为 |
+
+### 规格对齐要点
+
+- [FR-04 / §11.4] 任务执行后轮转出队；禁止依赖「集合包含」而不移除已执行标记。
+- [dev_agent_prompt] 仅用 `task_stack` 命名。
+
+### 规格偏差（若有）
+
+无。
+
+### 遗留问题
+
+- [ ] FR-50 全量多意图仲裁优先级（T-007）可细化 `ROUTER_TASK_PRIORITY` 与路由 jointly。
+
+### 关联
+
+前置：T-002 ✓  
+后续：T-004（路由结构化输出）、T-007  
+测试覆盖：`tests/unit/test_task_stack.py`
+
+---
+
+## [DEV-004] router 结构化输出（FR-01 / §11.1）
+
+**类型**：`功能开发`  
+**编号**：T-004  
+**对应规格**：FR-01；规格 §11.1（primary、intents、confidence、needs_clarification、slots）  
+**里程碑**：M1  
+**状态**：`已完成`  
+**日期**：2026-05-06  
+
+### 做了什么
+
+`get_intent_details` 与 `router_node` 统一写出 `primary_intent`、`intents`、`secondary_intents`、`confidence`、`needs_clarification`；`slots` 与 `entities` 同构；`missing_slots` 暂空列表（T-031）。综合置信度低于 0.6 时 `needs_clarification=True` 并走 `TASK_CLARIFY`（阈值后续 T-005 接入配置）。`INTENT_TASK_MAPPING` 增加 `dietary_advice`。修正 `IntentResult` 重复 `reasoning` 字段定义。
+
+### 变更文件
+
+| 文件 | 类型 | 说明 |
+|------|------|------|
+| `src/agent/state.py` | 修改 | NotRequired：意图与 slots 字段 |
+| `src/agent/nodes/router.py` | 修改 | 结构化输出与常量阈值 |
+| `src/agent/nodes/schema.py` | 修改 | 去除重复 Field |
+| `tests/unit/test_router_structured_output.py` | 新增 | mock 分类器契约 |
+
+### 规格对齐要点
+
+- [FR-01] 每轮可观测：意图列表、实体槽位、综合置信度、是否澄清。
+- [§11.1] `primary_intent` 与 `intents[0]` 一致；`slots` 承载迁移期实体命名空间。
+
+### 遗留问题
+
+- [ ] `intent.confidence.clarify_threshold` 来自配置（T-005）。
+- [ ] `missing_slots` 必填槽推导（T-031）。
+
+### 关联
+
+前置：T-003 ✓  
+后续：T-005、T-031  
+测试覆盖：`tests/unit/test_router_structured_output.py`
+
+---
+
+## [DEV-005] 意图置信度阈值配置与澄清分支（T-005）
+
+**类型**：`功能开发`  
+**编号**：T-005  
+**对应规格**：FR-03；规格 §8、`intent.confidence.clarify_threshold`；§11.6  
+**里程碑**：M1  
+**状态**：`已完成`  
+**日期**：2026-05-06  
+
+### 做了什么
+
+`Settings.get_intent_clarify_threshold()` 读取 `config/setting.yaml` 中 `intent.confidence.clarify_threshold`（缺省 **0.55**，与规格 §8 表一致）。`IntentClassifier` 在初始化时保存 `self.clarify_threshold`，`get_intent_details` 用其与模型综合置信度比较：低于阈值则 `needs_clarification=True`、仅 `TASK_CLARIFY`、不映射写库类任务（FR-03）。
+
+### 变更文件
+
+| 文件 | 类型 | 说明 |
+|------|------|------|
+| `src/libs/base/settings.py` | 修改 | `get_intent_clarify_threshold` |
+| `config/setting.yaml` | 修改 | `intent.confidence` 段 |
+| `src/agent/nodes/router.py` | 修改 | 实例阈值替代模块常量 |
+| `tests/unit/test_settings_intent_threshold.py` | 新增 | 配置解析单测 |
+
+### 规格对齐要点
+
+- [§8] 配置键与默认值 0.55；可调参。
+- [FR-03 / §11.6] 低置信不展开 `TASK_INV_*` / 画像写路径。
+
+### 遗留问题
+
+无。
+
+### 关联
+
+前置：T-004 ✓  
+后续：T-006（元意图话术可共用阈值语义）  
+测试覆盖：`tests/unit/test_settings_intent_threshold.py`
+
+---
+
+## [DEV-006] 元意图与 dietary_advice / recipe_adopt（T-006）
+
+**类型**：`功能开发`  
+**编号**：T-006  
+**对应规格**：FR-02；规格 §11.3～§11.4  
+**里程碑**：M1  
+**状态**：`已完成`  
+**日期**：2026-05-06  
+
+### 做了什么
+
+`IntentResult.intents` 扩展 `help`、`out_of_scope`、`recipe_adopt`；`INTENT_TASK_MAPPING` 补全上述及既有 `dietary_advice` → `TASK_DIRECT_REPLY`。`intent_prompt.md` 增加对应类别说明与 `diet_topic` 实体键；修正 Response Format 中全角逗号。`GeneratorNode.handle_direct_reply` 按 `primary_intent` 分支：`help`/`out_of_scope` 固定话术，`dietary_advice` 专用系统提示 + LLM，`recipe_adopt` 占位回复（与 `recipe_use_confirmed` 衔接留 T-021）；默认仍走闲聊。
+
+### 变更文件
+
+| 文件 | 类型 | 说明 |
+|------|------|------|
+| `src/agent/nodes/schema.py` | 修改 | Literal 扩展 |
+| `src/agent/nodes/router.py` | 修改 | 映射表 |
+| `src/agent/nodes/generator.py` | 修改 | 元意图分支与常量文案 |
+| `src/agent/prompts/intent_prompt.md` | 修改 | 意图与实体说明 |
+| `tests/unit/test_meta_intent_replies.py` | 新增 | 分支单测 |
+
+### 规格对齐要点
+
+- [FR-02] 支持帮助、超范围、闲聊路径区分。
+- [§11.4] help / out_of_scope / general_chat / dietary_advice 均落 `TASK_DIRECT_REPLY`，由 generator 提示词区分。
+
+### 遗留问题
+
+- [ ] `recipe_adopt` 写 `inventory_state.recipe_use_confirmed`（T-030 + T-021）。
+
+### 关联
+
+前置：T-004 ✓  
+后续：T-007（多意图优先级）、T-031（槽位）  
+测试覆盖：`tests/unit/test_meta_intent_replies.py`
+
+---
+
+## [DEV-007] 多意图 FR-50 仲裁与 task_stack 顺序（T-007）
+
+**类型**：`功能开发`  
+**编号**：T-007  
+**对应规格**：FR-50、FR-51；规格 §11.4（`intents` 有序）  
+**里程碑**：M1  
+**状态**：`已完成`  
+**日期**：2026-05-06  
+
+### 做了什么
+
+新增 `src/agent/intent_priority.py`：`FR50_INTENT_RANK` 与 `sort_intents_by_fr50`。`get_intent_details` 在置信度检查前对模型返回的 `intents` 做 FR-50 重排，重算 `primary_intent` / `secondary_intents`，并按重排后的意图顺序展开 `task_stack`（去重时保留先出现的任务，与意图顺序一致）。`workflow.py` 头部注明单线程图满足 FR-51。`intent_prompt.md` 规则 2 改为说明路由层重排。
+
+### 变更文件
+
+| 文件 | 类型 | 说明 |
+|------|------|------|
+| `src/agent/intent_priority.py` | 新增 | FR-50 排序 |
+| `src/agent/nodes/router.py` | 修改 | 接入排序与日志 |
+| `src/agent/workflow.py` | 修改 | FR-51 说明 |
+| `src/agent/prompts/intent_prompt.md` | 修改 | 多意图规则 |
+| `tests/unit/test_intent_priority_fr50.py` | 新增 | 排序单测 |
+
+### 规格对齐要点
+
+- [FR-50] 画像 > 定菜/清单 > 库存侧 > 闲聊类元意图。
+- [FR-51] 共享状态仅由 LangGraph 顺序执行节点写入；`task_stack` 顺序与仲裁后意图一致。
+
+### 遗留问题
+
+- [ ] 更细的「硬禁忌优先」可与 `profile_sync` + 置信策略在 T-011/T-031 强化。
+
+### 关联
+
+前置：T-004 ✓  
+后续：T-008（次意图合并答复）、T-031  
+测试覆盖：`tests/unit/test_intent_priority_fr50.py`
+
+---
+
+## [DEV-008] 次意图合并答复（FR-52）（T-008）
+
+**类型**：`功能开发`  
+**编号**：T-008  
+**对应规格**：FR-52  
+**里程碑**：M1  
+**状态**：`已完成`  
+**日期**：2026-05-06  
+
+### 做了什么
+
+在 `generator_node` 成果收集阶段，不再仅用「优先级表首个命中」单段回复；改为按 **`task_stack` 从左到右**扫描 `MERGEABLE_GENERATOR_TASKS`，依次调用既有 `handle_*`，将非空段落用 `\n\n` 合并为 **一条** `AIMessage`，并从栈中移除本轮已处理的合并类标记（`TASK_SEARCH` 等非合并项保留在原相对顺序）。`TASK_SUMMARIZE` 之后的 **`pending_tasks` 回填**逻辑保留（可多批 summarize 顺序追加）。若成果段均为空，则不消费栈并打日志。
+
+### 变更文件
+
+| 文件 | 类型 | 说明 |
+|------|------|------|
+| `src/agent/nodes/generator.py` | 修改 | `_collect_merged_generator_reply`、`MERGEABLE_GENERATOR_TASKS` |
+| `tests/unit/test_generator_merged_replies.py` | 新增 | 合并顺序、保留 SEARCH、pending、降级 DIRECT_REPLY |
+
+### 规格对齐要点
+
+- [FR-52] 次意图在主意图相关节点完成后，用户可见侧 **顺序对应 stack**，并以 **单条合并答复** 交付（与 FR-50 排序后的 stack 一致）。
+
+### 遗留问题
+
+- [ ] 若需「分段多条气泡」UI，需在编排层拆 AIMessage（当前仍为单条 content）。
+
+### 关联
+
+前置：T-007 ✓  
+后续：T-031  
+测试覆盖：`tests/unit/test_generator_merged_replies.py`
+
+---
+
+## [DEV-031] 槽位归一、必填校验与任务栈守卫（T-031）
+
+**类型**：`功能开发`  
+**编号**：T-031  
+**对应规格**：规格 §11.2～11.5；`IntentResult` / `intent_prompt`  
+**里程碑**：M1  
+**状态**：`已完成`  
+**日期**：2026-05-06  
+
+### 做了什么
+
+新增 `src/agent/slot_filling.py`：`normalize_legacy_entities_to_slots` 将历史 `entities`（含 `amounts`、`preferences`、`check_inventory` 等）收敛到 §11.2 槽位键；`compute_missing_slots` 实现 §11.5 最小必填（含同轮 `recipe_search`+`shopping_list` 时对 **R** 未就绪的豁免）；`apply_slot_guards_to_task_stack` 按缺失码裁剪对应意图产生的任务，并在有缺失时在队首插入 `TASK_CLARIFY`。`IntentResult` 增加 `slots`、`missing_slots` 字段，`intents` Literal 补 `user_clarify`。路由在高置信路径合并模型与规则侧的 `missing_slots`，并将 `needs_clarification` 与必填缺口对齐。`intent_prompt.md` 补充 §11.2 键说明与响应格式中的 `slots` / `missing_slots`。
+
+### 变更文件
+
+| 文件 | 类型 | 说明 |
+|------|------|------|
+| `src/agent/slot_filling.py` | 新增 | 归一、缺失计算、task_stack 守卫 |
+| `src/agent/nodes/schema.py` | 修改 | `IntentResult.slots` / `missing_slots`、`user_clarify` |
+| `src/agent/nodes/router.py` | 修改 | 接入槽位管线 |
+| `src/agent/prompts/intent_prompt.md` | 修改 | §11.2 与 JSON 契约 |
+
+### 规格对齐要点
+
+- [§11.2] 全局槽位命名空间与兼容别名归一。  
+- [§11.5] 必填缺口 → `missing_slots`，并禁止对缺口意图展开写库类任务（裁剪 + 澄清）。  
+
+### 遗留问题
+
+- [ ] 槽位澄清与「选菜澄清」在生成器侧话术分流仍可按 §11.6 细化。  
+- [ ] `inventory_query_targets` 由模型直接产出可减少对 `check_inventory` 的依赖。
+
+### 关联
+
+前置：T-004 ✓  
+后续：T-009 / T-011 / T-029  
+测试覆盖：本轮按迭代约定未新增自动化用例。
+
+---
+
+## [DEV-030] 方案 A 七切片、访问器与移除 logistics_buffer（T-030）
+
+**类型**：`功能开发`  
+**编号**：T-030  
+**对应规格**：规格 §1.2.0～1.2.1；SRS §7.2（状态语义）  
+**里程碑**：M1  
+**状态**：`已完成`（阶段 1～3 本轮收敛：切片 + `get_runtime_bundle` + 删除顶层 buffer 键）  
+**日期**：2026-05-06  
+
+### 做了什么
+
+**阶段 1（早前）**：`AgentState` 七切片、`merge_slice`、`empty_agent_slices`、`state_sync` 从展平 bundle 推导各切片。
+
+**阶段 2**：新增 **`state_accessors.get_runtime_bundle(state)`**——优先从切片 **`materialize_runtime_bundle_from_slices`** 组装展平视图；若 checkpoint **仅有旧 `logistics_buffer`** 且切片尚无业务载荷，则沿用 buffer。节点侧统一通过 **`get_runtime_bundle`** / **`runtime_bundle_to_slice_patches`** 读写，取代散落 `state["logistics_buffer"]`。
+
+**阶段 3**：从 **`AgentState` TypedDict 删除 `logistics_buffer`**；路由将 **`extracted_entities` / `router_reasoning`** 写入 **`control_state`**；各节点 **`return`** 仅输出 **切片补丁**（不再写 buffer 键）。**`control_state_from_logistics_buffer`**、**`empty_runtime_bundle`**、展平键向 **`inventory_state`** 的透传（shopping_list 等）支撑 round-trip。
+
+**其它**：**`_recipe_candidates_to_legacy_shape`** 对无 `title`/`name` 的 dict 候选保留原 dict，避免路由单测与 MCP 原始条目被清空。
+
+### 变更文件（阶段 2～3 追加）
+
+| 文件 | 类型 | 说明 |
+|------|------|------|
+| `src/agent/state_accessors.py` | 新增 | `get_runtime_bundle` |
+| `src/agent/state_sync.py` | 修改 | 展平组装、`runtime_bundle_to_slice_patches`、`empty_runtime_bundle`、`control_state_*` |
+| `src/agent/state.py` | 修改 | 移除 `LogisticsBuffer` / `logistics_buffer` 键 |
+| `workflow.py`、`slot_filling.py`、`nodes/*` | 修改 | 访问器与切片 `return` |
+| `tests/conftest.py`、`test_*` | 修改 | 夹具与断言对齐切片 |
+
+### 规格对齐要点
+
+- [§1.2.0] 业务状态以切片为唯一持久形状；展平 bundle 为运行时视图。  
+- [§1.2.1] `inventory_snapshot` 字典型 **I** 仍在 `inventory_state`。  
+
+### 遗留问题
+
+- [ ] **`messages` → `dialog_state.messages`** 与 LangGraph `add_messages` 归约迁移（独立变更）。  
+- [ ] 旧持久化线程若含 **`logistics_buffer`**，`get_runtime_bundle` 仍会读取该键直至用户清空 checkpoint。
+
+### 关联
+
+前置：T-002 ✓  
+后续：T-020 / T-023 / T-009  
+测试覆盖：`pytest tests/unit`（25 passed）
+
+---
+
+## [DEV-032] L2 摘要节点与业务状态解耦（T-009）
+
+**类型**：`功能开发`  
+**编号**：T-009  
+**对应规格**：FR-14，FR-16；**规格 §4.2**（L2 仅更新 messages 与 conversation_summary；禁止改 task_stack / recipe / inventory 澄清相关字段）  
+**里程碑**：M2  
+**状态**：`已完成`  
+**日期**：2026-05-06  
+
+### 做了什么
+
+从 `conversation_summary_node` 删除「按 task_stack 是否为空」分支中对 `task_stack`、`expert_payloads` 及 `runtime_bundle_to_slice_patches(empty_runtime_bundle())` 的清场/重置逻辑；删除调试 `print`。L2 仅在存在 `messages` 时返回 `messages` 裁剪结果、`conversation_summary` 与 `memory_state["conversation_summary"]` 镜像补丁，不再调用 `memory_state_patch_from_summary_and_constraints`（避免在 L2 掺写 `short_term_constraints`）。`existing_summary` 优先读取 `memory_state.conversation_summary`。`state_sync.memory_state_patch_from_summary_and_constraints` 增加文档说明：仅供非 L2 路径使用。`workflow.py` 顶部编排注释对齐 §4.2。
+
+### 变更文件
+
+| 文件 | 类型 | 说明 |
+|------|------|------|
+| `src/agent/nodes/conversation_summary.py` | 修改 | L2 纯化；模块文档 |
+| `src/agent/state_sync.py` | 修改 | 合并函数文档约束 |
+| `src/agent/workflow.py` | 修改 | 节点职责注释 |
+| `docs/开发计划.md` | 修改 | T-009 开发/测试状态 |
+
+### 规格对齐要点
+
+- [§4.2] L2 **仅** messages 裁剪 + `conversation_summary`（及镜像 `memory_state` 摘要键）。  
+- [FR-14/16] 摘要与业务「清场」解耦：澄清等待态不再依赖 L2 分支「保护现场」。  
+
+### 规格偏差（若有）
+
+无。
+
+### 遗留问题
+
+- [ ] §4.3 L3 独立节点与 `memory_state.short_term_constraints` 写入路径仍待 T-010；此前由 L2 合并函数带入的 logistics 短期线索需在该任务显式承接（若仍需要）。  
+- [ ] `messages` 与 `add_messages` 归约下「裁剪」语义见 `docs/dev_log.md` [DEV-030] 遗留项。  
+
+### 关联
+
+前置：T-002 ✓  
+后续：T-010（L3）、T-013（TTL）  
+测试覆盖：本轮按约定未新增单测；回归以测试 Agent 为准。  
+
+---
+

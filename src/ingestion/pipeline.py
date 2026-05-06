@@ -76,7 +76,7 @@ def create_default_pipeline(data_dir: str = "data/recipes", collection_name: str
     # Create vector store
     settings = Settings()
     embedding_fn = EmbedFactory.get_embed(settings)
-    persist_path = "./data/db"
+    persist_path = "./data/db/chroma_db"
     vector_store = ChromaStore(
         db_path=persist_path, 
         embedding_function=embedding_fn,

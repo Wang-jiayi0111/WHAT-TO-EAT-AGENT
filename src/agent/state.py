@@ -7,38 +7,31 @@ from typing import Annotated, List, Dict, Union, Optional, Any
 import operator  # 必须导入用于列表合并
 from langgraph.graph.message import add_messages
 from langchain_core.messages import BaseMessage
-from typing_extensions import TypedDict
-
-class LogisticsBuffer(TypedDict):
-    """后勤缓冲区详细定义"""
-    # --- 1. 意图提取的原始实体 (从 Router 传入) --- 
-    # - ingredients: 提到的食材列表 (如: ["鸡蛋", "西红柿"])。
-    # - recipe_name: 提到的具体菜名 (如: "红烧肉")。
-    # - target_member: 涉及的家庭成员 ID (默认为 {active_user_id})。
-    # - check_inventory: 布尔值，是否需要检查库存。
-    extracted_entities: Dict[str, Any] 
-    router_reasoning: str                       # 路由推理逻辑
-
-    # --- 2. 检索与锁定 (由 Researcher 填充) ---
-    recipe_candidates: List[Dict[str, Any]]     # 待选菜谱列表
-    selected_recipe_id: Optional[str]           # 确定的菜谱路径或 ID
-    
-    
-    # --- 3. 标准菜谱需求 R (由 TASK_SEARCH 填充) ---
-    recipe_requirements: List[Dict[str, Any]]   # 结构化食材清单 R
-    recipe_cook_step: Optional[str]             # 结构化烹饪步骤描述
+from typing_extensions import TypedDict, NotRequired
 
 
-    # --- 4. 库存数据 I (由 TASK_INV_CHECK 填充) ---
-    inventory_snapshot: List[Dict[str, Any]] 
-    
-    # --- 5. 清单数据 (I-R) (由 TASK_GAP_CALC 生成) ---
-    ingredient_gaps: List[Dict[str, Any]] 
-    
-    # --- 6. 执行元数据 (记录事务 ID 或扣减确认状态) ---
-    action_metadata: Dict[str, Any]
+def merge_slice(
+    left: Optional[Dict[str, Any]], right: Optional[Dict[str, Any]]
+) -> Dict[str, Any]:
+    """切片 dict 浅合并（后者覆盖前者）；供 LangGraph Annotated 归约。"""
+    l = {} if left is None else dict(left)
+    r = {} if right is None else dict(right)
+    l.update(r)
+    return l
 
-    pending_tasks: List[str]                    # 暂存的任务列表
+
+def empty_agent_slices() -> Dict[str, Dict[str, Any]]:
+    """首轮 invoke 建议并入的空切片，避免缺键（T-030 阶段 1）。"""
+    return {
+        "dialog_state": {},
+        "memory_state": {},
+        "control_state": {},
+        "recipe_state": {},
+        "inventory_state": {},
+        "response_state": {},
+        "error_state": {},
+    }
+
 
 def replace_list(old: List, new: List) -> List:
     """替换语义：直接用新值覆盖旧值。"""
@@ -46,25 +39,44 @@ def replace_list(old: List, new: List) -> List:
 
 class AgentState(TypedDict):
     """
-    优化后的 WHAT-TO-EAT-AGENT 状态定义
+    WHAT-TO-EAT-AGENT LangGraph 状态。
+
+    方案 A（§1.2.0）：一级 **七切片** 与窄顶层 `active_user_id`。会话业务字段已迁入各切片；
+    运行时展平视图由 `state_accessors.get_runtime_bundle` 组装。`messages` 暂驻顶层以保留
+    `add_messages`（迁入 `dialog_state` 见后续迭代）。
     """
     # 1. 对话记忆：使用 add_messages 增量累加
     messages: Annotated[List[BaseMessage], add_messages]
-    conversation_summary: str           # 对话摘要，供后续节点快速理解上下文 
+    conversation_summary: str           # 对话摘要；镜像至 memory_state.conversation_summary
     
-    # 2. 任务控制流：使用 operator.add 确保任务可以被追加而非覆盖
+    # 1b 方案 A 七切片（规格 §1.2.0～1.2.1）
+    dialog_state: Annotated[Dict[str, Any], merge_slice]
+    memory_state: Annotated[Dict[str, Any], merge_slice]
+    control_state: Annotated[Dict[str, Any], merge_slice]
+    recipe_state: Annotated[Dict[str, Any], merge_slice]
+    inventory_state: Annotated[Dict[str, Any], merge_slice]
+    response_state: Annotated[Dict[str, Any], merge_slice]
+    error_state: Annotated[Dict[str, Any], merge_slice]
+
+    # 2. 任务控制流：整表替换（replace_list）；消费语义见 task_stack.py（FR-04 执行即出队）
     task_stack: Annotated[List[str], replace_list]
     current_task: Optional[str]  # 正在处理的任务 ID
-    current_intent: Optional[str] # 识别出的主意图 (SEARCH/INVENTORY 等)
+    current_intent: Optional[str] # 兼容字段：与 primary_intent 同步（规格 §11.1 迁移期）
+
+    # 2b 意图结构化输出（FR-01；规格 §11.1；迁入 control_state 见 T-030）
+    primary_intent: NotRequired[Optional[str]]
+    intents: NotRequired[List[str]]
+    secondary_intents: NotRequired[List[str]]
+    confidence: NotRequired[float]
+    needs_clarification: NotRequired[bool]
+    slots: NotRequired[Dict[str, Any]]
+    missing_slots: NotRequired[List[str]]
 
     # 3. 用户上下文
     active_user_id: str
     active_constraints: Dict[str, Any]  # 存储过敏、口味等实时约束
     
-    # 4. 业务数据缓冲区 
-    logistics_buffer: LogisticsBuffer
-    
-    # 5. 专家节点交付物 (显式定义)
+    # 4. 专家节点交付物 (显式定义)
     inventory_status: Optional[Dict[str, Any]]          # 库存快照
     research_results: Optional[List[Dict[str, Any]]]    # 检索到的菜谱切片
     shopping_list: Optional[Dict[str, Any]]             # 最终计算出的缺口清单
@@ -74,3 +86,5 @@ class AgentState(TypedDict):
     
     # 6. 系统控制
     final_response: Optional[str]
+    # 阶段1：防止 generator↔route 异常回环
+    loop_guard_count: NotRequired[int]

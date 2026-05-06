@@ -1,0 +1,33 @@
+{
+  "route_by_task": {
+    "clarify_no_candidates": "generator",
+    "clarify_with_candidates": "clarify_resolver",
+    "empty_stack": "generator",
+    "task_gap_calc": "logistics",
+    "task_inv_add": "logistics",
+    "task_inv_check": "logistics",
+    "task_inv_commit": "logistics",
+    "task_profile_sync": "generator",
+    "task_search": "researcher",
+    "task_search_overrides_inv_check": "researcher",
+    "task_summarize": "generator"
+  },
+  "route_after_research": {
+    "error_payload": "generator",
+    "fallback_to_route_by_task_search": "researcher",
+    "fallback_to_route_by_task_search_only": "researcher",
+    "has_candidates": "generator",
+    "has_requirements": "logistics",
+    "idle_stack": "generator"
+  },
+  "route_after_clarify": {
+    "no_search_task": "generator",
+    "with_search_task": "researcher"
+  },
+  "route_after_generator": {
+    "clarify_wait_user": "__END__",
+    "empty_stack_end": "__END__",
+    "loop_guard_force_end": "__END__",
+    "nonempty_delegates_to_route_by_task": "researcher"
+  }
+}

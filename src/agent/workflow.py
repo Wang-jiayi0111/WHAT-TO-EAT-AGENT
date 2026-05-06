@@ -1,15 +1,23 @@
 """
 WHAT-TO-EAT-AGENT 主工作流
- 
+
+同轮共享状态由 LangGraph **单线程**按边执行，天然满足 FR-51 串行写；多任务顺序由
+`task_stack` 与 `router` 的 FR-50 意图仲裁（`intent_priority.sort_intents_by_fr50`）共同决定。
+
+方案 A（T-030 阶段 1）：状态含 **七切片**（`dialog_state`…`error_state`），与顶层扁平字段、
+**runtime_bundle**（`state_accessors.get_runtime_bundle`）；详见 `state.py` / `state_sync.py`。
+
 节点执行顺序：
   用户输入
-    → conversation_memory   窗口裁剪 + 语义压缩
-    → memory_keeper         并行：后台提取偏好（不阻塞主流）
+    → conversation_summary  L2：仅压缩/裁剪 messages 与 conversation_summary（规格 §4.2，不误清 task_stack / 切片）
+    → memory_keeper         L4 侧写：后台提取偏好（不阻塞主流）
     → router                意图识别，生成 task_stack
     → 条件路由（route_by_task）
         TASK_DIRECT_REPLY   → generator（闲聊）→ END
         TASK_SEARCH         → researcher → 条件路由（route_after_research）
-                                高置信度 → logistics(GAP_CALC) → END
+                                高置信度（已有 R）→ logistics → generator → END
+                                （logistics 内 §1.3 步 5：R 非空则静默拉取 I 并写
+                                 cached_shopping_gap / gap_basis，不要求 TASK_GAP_CALC）
                                 低置信度 → generator(CLARIFY) → 等待用户
         TASK_CLARIFY        → clarify_resolver → researcher（锁定后重新检索）
         TASK_INV_CHECK      → logistics → END
@@ -21,14 +29,15 @@ from typing import Literal
 from langgraph.graph import StateGraph, END
 from langgraph.checkpoint.memory import MemorySaver
 
-from .state import AgentState
+from .state import AgentState, empty_agent_slices
+from .state_accessors import get_runtime_bundle
 from .nodes.router import router_node
 from .nodes.generator import generator_node
 from .nodes.researcher import researcher_node
 from .nodes.logistics import logistics_manager_node
 from .nodes.memory_keeper import memory_keeper_node
 from .nodes.clarify_resolver import clarify_resolver_node
-from .nodes.conversation_memory import conversation_memory_node
+from .nodes.conversation_summary import conversation_summary_node
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -55,6 +64,9 @@ def route_by_task(state: AgentState) -> Literal[
     if "TASK_PROFILE_SYNC" in task_stack:
         return "generator"
 
+    if "TASK_SUMMARIZE" in task_stack:
+        return "generator"
+
 
     if "TASK_INV_ADD" in task_stack:
         print(f"🔍 [Router→] TASK_INV_ADD → logistics")
@@ -71,7 +83,7 @@ def route_by_task(state: AgentState) -> Literal[
  
     # 歧义解析（用户回复候选菜谱选择）
     if "TASK_CLARIFY" in task_stack:
-        lb = state.get("logistics_buffer", {})
+        lb = get_runtime_bundle(state)
         if lb.get("recipe_candidates"):
             return "clarify_resolver"
         return "generator"
@@ -84,13 +96,13 @@ def route_after_research(state: AgentState):
     researcher 节点后的路由。
     - 高置信度（已锁定菜谱）→ logistics 计算购物清单
     - 低置信度（歧义）→ generator 询问用户
-    - 出错 → END
+    - 出错 → generator（降级说明）
     """
-    lb = state.get("logistics_buffer", {})
+    lb = get_runtime_bundle(state)
  
-    # 出错
+    # 出错：统一进入 generator 生成可解释降级回复，不直接静默结束
     if state.get("expert_payloads", {}).get("error"):
-        return END
+        return "generator"
  
     # 低置信度，有候选列表
     if lb.get("recipe_candidates"):
@@ -122,6 +134,11 @@ def route_after_generator(state: AgentState):
     - 否则回到 router 进行新一轮意图识别
     """
     task_stack = state.get("task_stack", [])
+    loop_guard_count = state.get("loop_guard_count", 0)
+
+    if loop_guard_count >= 8:
+        logger.warning("[Workflow] loop_guard_count exceeded threshold, force END")
+        return END
 
     if "TASK_CLARIFY" in task_stack:
         print(f"🔍 [Generator→] 继续等待用户澄清选择")
@@ -142,7 +159,7 @@ def build_graph(checkpointer=None) -> StateGraph:
     graph = StateGraph(AgentState)
  
     # ── 注册节点 ──────────────────────────────────────────
-    graph.add_node("conversation_memory", conversation_memory_node)
+    graph.add_node("conversation_summary", conversation_summary_node)
     graph.add_node("memory_keeper",       memory_keeper_node)
     graph.add_node("router",              router_node)
     graph.add_node("researcher",          researcher_node)
@@ -151,11 +168,11 @@ def build_graph(checkpointer=None) -> StateGraph:
     graph.add_node("clarify_resolver",    clarify_resolver_node)
  
     # ── 入口 ──────────────────────────────────────────────
-    graph.set_entry_point("conversation_memory")
+    graph.set_entry_point("conversation_summary")
  
     # ── 固定边 ────────────────────────────────────────────
-    # conversation_memory → memory_keeper（并行提取，不影响主流）
-    graph.add_edge("conversation_memory", "memory_keeper")
+    # conversation_summary → memory_keeper（并行提取，不影响主流）
+    graph.add_edge("conversation_summary", "memory_keeper")
     # memory_keeper → router（提取完成后继续）
     graph.add_edge("memory_keeper", "router")
  
@@ -271,6 +288,7 @@ async def run_turn(
         existing_messages = []
  
     input_state = {
+        **empty_agent_slices(),
         "messages": [HumanMessage(content=user_message)],
         "active_user_id": user_id,
         "conversation_summary": current.values.get("conversation_summary", "")

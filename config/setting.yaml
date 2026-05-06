@@ -55,6 +55,11 @@ llm:
   timeout: 60                     # 旗舰模型推理较重，建议增加超时阈值
   retry_limit: 3                  # 遇到网络抖动自动重试
 
+# 意图与置信度（规格 §8；FR-03 / §11.6）
+intent:
+  confidence:
+    clarify_threshold: 0.55       # 低于则 needs_clarification；禁触发写库类任务展开
+
 # Embedding 配置
 embedding:
   provider: dashscope             # 百炼

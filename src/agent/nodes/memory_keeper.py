@@ -1,6 +1,7 @@
+import copy
 import logging
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Any, List, Optional
 from langchain_core.messages import BaseMessage
 from pathlib import Path
@@ -10,9 +11,10 @@ from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
 from ...libs.base.user_profiles import UserProfileManager
 from ...libs.adapters.llm.llm_factory import LLMFactory
 from ..state import AgentState
+from ..state_accessors import get_runtime_bundle
+from ..state_sync import runtime_bundle_to_slice_patches
 from .schema import MemoryKeeperOutput
 from ...libs.base.settings import Settings
-from ..state import AgentState
 
 logger = logging.getLogger(__name__)
 
@@ -182,7 +184,7 @@ class MemoryKeeper:
 async def memory_keeper_node(state: AgentState) -> AgentState:
     """
     LangGraph 节点入口。
-    后台静默运行，不修改消息列表，只更新数据库并将短期状态注入 logistics_buffer。
+    后台静默运行，不修改消息列表，只更新数据库并将短期状态写入 memory_state / 展平 bundle。
     """
     messages: List[BaseMessage] = state.get("messages", [])
     user_id: str = state.get("active_user_id", "default_user")
@@ -210,7 +212,7 @@ async def memory_keeper_node(state: AgentState) -> AgentState:
                 else dict(result.long_term_updates)
             keeper._apply_long_term_updates(user_id, long_term_dict, result.intent_type)
  
-        # 写入短期状态，并注入 logistics_buffer 供当次推理使用
+        # 写入短期状态，并注入 memory_state / bundle 供当次推理使用
         short_term_injected = []
         if result.short_term_states and result.short_term_states.is_temporary:
             short_term_dict = result.short_term_states.model_dump() \
@@ -219,14 +221,19 @@ async def memory_keeper_node(state: AgentState) -> AgentState:
             keeper._apply_short_term_states(user_id, short_term_dict)
             short_term_injected = result.short_term_states.conditions or []
  
-        # 将短期状态注入当次 logistics_buffer，让 researcher 节点能感知
         if short_term_injected:
-            logistics_buffer = state.get("logistics_buffer", {})
+            logistics_buffer = copy.deepcopy(get_runtime_bundle(state))
             existing_constraints = logistics_buffer.get("short_term_constraints", [])
             logistics_buffer["short_term_constraints"] = list(
                 set(existing_constraints + short_term_injected)
             )
-            return {"logistics_buffer": logistics_buffer}
+            patches = runtime_bundle_to_slice_patches(logistics_buffer)
+            patches["memory_state"] = {
+                **patches.get("memory_state", {}),
+                "short_term_constraints": logistics_buffer["short_term_constraints"],
+                "last_memory_update_at": datetime.now(timezone.utc).isoformat(),
+            }
+            return patches
  
         return {}
  

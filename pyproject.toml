@@ -2,6 +2,7 @@
 minversion = "6.0"
 addopts = "-ra -q"
 testpaths = ["tests"]
+python_files = ["test_*.py"]
 
 [tool.black]
 line-length = 88

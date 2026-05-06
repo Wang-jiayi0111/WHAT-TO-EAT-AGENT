@@ -1,0 +1,662 @@
+# WHAT-TO-EAT-AGENT 测试报告
+
+项目：WHAT-TO-EAT-AGENT  
+规格基线：docs/规格设计.md v2.4 · docs/项目说明.md（SRS v1.7）  
+维护者：测试 Agent  
+格式：v1.0  
+
+> 只追加，不修改历史记录。缺陷编号由测试 Agent 分配，从 BUG-001 开始。
+
+---
+
+## 测试进度总表
+
+| 任务编号 | 功能描述 | 测试状态 | 关联 BUG | 复审状态 | 最后更新 |
+|---------|---------|---------|---------|---------|---------|
+| T-001 | 建立测试夹具与快照用例 | ✅ 通过（已完成，基线） | — | — | 2026-05-06 |
+| T-002 | 意图分流 + §1.3 步 5 静默缺口预计算（logistics） | ✅ 通过 | BUG-001 | 已关闭（见 [TR-010]） | 2026-05-06 |
+| T-003 | 任务队列 `task_stack` 消费与调度 | ✅ 通过 | — | — | 2026-05-06 |
+| T-004 | 路由节点结构化输出（FR-01） | ✅ 通过 | — | — | 2026-05-06 |
+| T-005 | 低置信阈值 `clarify_threshold`（FR-03 / §8） | ✅ 通过 | — | — | 2026-05-06 |
+| T-006 | 元意图 help / 超范围 / `dietary_advice` / `recipe_adopt`（FR-02） | ✅ 通过 | — | — | 2026-05-06 |
+| T-007 | 多意图 FR-50 排序（`sort_intents_by_fr50`） | ✅ 通过 | — | — | 2026-05-06 |
+| T-008 | 次意图合并答复（`generator` FR-52） | ✅ 通过 | — | — | 2026-05-06 |
+| T-030 | 方案 A 七切片 AgentState（§1.2.0～1.2.1） | ✅ 通过 | — | — | 2026-05-06（[TR-011]） |
+| T-031 | 槽位归一、`missing_slots`、`apply_slot_guards`（§11） | ✅ 通过 | — | — | 2026-05-06（[TR-012]） |
+| INT-LLM | 集成：真实 LLM 意图识别（`IntentClassifier` 端到端） | ✅ 通过 | — | — | 2026-05-06（[TR-013]） |
+
+---
+
+## 验证记录
+
+<!-- 测试 Agent 从此处开始追加验证记录，格式见 docs/dev_log_format.md 中的测试报告规范 -->
+
+## [TR-001] T-001 功能验证
+
+**验证任务**：T-001 建立核心路径 pytest 夹具与 `workflow` 路由快照用例（`tests/unit/test_workflow_routing_baseline.py`，锚定 `docs/规格设计.md` §10 / `workflow.py`）
+
+**验证时间**：2026-05-06
+
+**最终结论**：✅ 通过
+
+### 测试执行（自动化）
+
+在仓库根目录执行：`python -m pytest tests -v --tb=short`
+
+| 项目 | 结果 |
+|------|------|
+| 收集用例数 | 2（`pytest.ini` 仅匹配 `test_*.py`） |
+| `test_minimal_agent_state_fixture` | ✅ 通过 |
+| `test_workflow_routing_matches_snapshot` | ✅ 通过 |
+
+**说明**：`tests/unit/bm25_test.py`、`tests/unit/chroma_test.py` 为本地调试脚本（无 `test_*` 函数、依赖外部 DB），未纳入 pytest 收集，本次不作为自动化回归项。
+
+### 测试用例执行情况
+
+| 用例 | 描述 | 对应场景 / 依据 | 结果 |
+|------|------|-----------------|------|
+| TC-001 | 夹具最小状态：`task_stack` 为空、`recipe_candidates` 为空 | T-001 夹具语义 | ✅ 通过 |
+| TC-002 | `route_by_task` / `route_after_research` / `route_after_clarify` / `route_after_generator` 与快照 JSON 一致 | NFR-05；规格 §10 编排目录 | ✅ 通过 |
+| TC-003 | `TASK_INV_CHECK` 栈顶让位于 `TASK_SEARCH`（覆盖路由优先级） | 规格 §1.3 / 工作流边 | ✅ 通过 |
+
+### 禁止行为与基线合规（通用检查）
+
+| 检查项 | 结果 | 说明 |
+|--------|------|------|
+| `task_stack` 为任务队列名；禁用 `task_queue` | ✅ 合规 | `src` 下未发现 `task_queue` |
+| 库存访问未使用 `thread_id` 作为键 | ✅ 合规 | `InventoryManager` 按食材 `name`；`workflow` 中 `thread_id` 仅用于 LangGraph checkpointer |
+| L2 摘要节点是否误改菜谱业务字段 | ⚠️ 观察项 | `conversation_summary_node` 在 `task_stack` 为空时会写入不完整 `logistics_buffer`，与规格 §4.2「摘要不误清业务现场」及 T-009 目标存在偏差风险；未单独建 BUG（待 T-009 专项验收） |
+| AgentState 七切片顶层结构 | ⚠️ 未达标（已知基线） | 当前仍为扁平 `AgentState` + `logistics_buffer`；开发计划 **T-030** 待实施 |
+| `inventory_snapshot` 为规格 §1.2.1 字典型 **I** | ⚠️ 未达标（已知基线） | `LogisticsBuffer` 注解为 `List`；`logistics` 节点写入 `Dict`，形态与类型不一致；对齐依赖 **T-030 / T-020** |
+
+### 缺陷列表
+
+- 本次验证未登记新 BUG（未发现阻断 T-001 基线通过的缺陷）。
+
+---
+
+## [TR-002] T-002 功能验证
+
+**验证任务**：T-002 静默缺口预计算（规格 §1.3 步 5 / §7.1），实现见 `src/agent/nodes/logistics.py`（`_apply_silent_gap_precalc` 等）；依据 `docs/开发计划.md`、DEV-002。
+
+**验证时间**：2026-05-06
+
+**最终结论**：✅ 通过
+
+### 测试执行（自动化）
+
+命令：`python -m pytest tests -v --tb=short`
+
+| 项目 | 结果 |
+|------|------|
+| 收集用例数 | 6 |
+| 全部用例 | ✅ 通过（约 5.7s） |
+
+| 文件 | 用例数 | 说明 |
+|------|--------|------|
+| `tests/unit/test_logistics_silent_gap.py` | 4 | T-002；`LogisticsManager` 已 mock，不碰真实 `inventory.db` |
+| `tests/unit/test_workflow_routing_baseline.py` | 2 | T-001 路由快照回归 |
+
+### 测试用例执行情况
+
+| 用例 | 描述 | 对应规格 / 任务 | 结果 |
+|------|------|-----------------|------|
+| TC-101 | `_stable_r_fingerprint` 与 R 列表顺序无关 | §7.1 / gap_basis | ✅ 通过 |
+| TC-102 | `_inventory_fingerprint` 对同一 I 稳定 | 缓存失效语义 | ✅ 通过 |
+| TC-103 | 栈上无 `TASK_GAP_CALC` 时仍写入 `cached_shopping_gap`、`gap_basis`（含菜谱标题） | §1.3 步 5 静默预计算 | ✅ 通过 |
+| TC-104 | `TASK_INV_COMMIT` 后仍执行静默预计算并刷新缓存 | R+I 就绪后预计算 | ✅ 通过 |
+| TC-105～106 | T-001 路由快照（回归） | NFR-05；§10 | ✅ 通过 |
+
+### 禁止行为与基线合规（抽样）
+
+| 检查项 | 结果 |
+|--------|------|
+| `task_stack` / 禁用 `task_queue` | ✅（未回归） |
+| 本轮未发现阻断 T-002 的新缺陷 | ✅ |
+
+### 缺陷列表
+
+- 未登记新 BUG。
+
+---
+
+## [TR-003] 全量自动化回归（T-001～T-003）
+
+**验证任务**：在当前代码基线上执行 `tests/` 下全部 pytest 用例，覆盖 T-001 路由快照、T-002 静默缺口预计算、T-003 `task_stack` 工具函数。
+
+**验证时间**：2026-05-06
+
+**最终结论**：✅ 通过
+
+### 测试执行
+
+命令：`python -m pytest tests -v --tb=short`（工作目录：仓库根）
+
+| 项目 | 结果 |
+|------|------|
+| 收集用例数 | 8 |
+| 通过 / 失败 | 8 / 0 |
+| 耗时（约） | 6.4s |
+
+| 测试文件 | 用例数 | 关联任务 |
+|----------|--------|----------|
+| `tests/unit/test_workflow_routing_baseline.py` | 2 | T-001 |
+| `tests/unit/test_logistics_silent_gap.py` | 4 | T-002 |
+| `tests/unit/test_task_stack.py` | 2 | T-003 |
+
+### 禁止行为（抽样）
+
+| 检查项 | 结果 |
+|--------|------|
+| `src` 内 `task_queue` | ✅ 未发现 |
+
+### 缺陷列表
+
+- 未登记新 BUG。
+
+### 开发计划同步
+
+`docs/开发计划.md` §3：`T-001`～`T-003` 行「测试状态」已为 **已完成**，本轮结论一致，无需修改。
+
+---
+
+## [TR-004] T-004 验证 + 全量回归（T-001～T-004）
+
+**验证任务**：T-004 `router` 节点输出 `primary_intent`、`intents`、`confidence`、`needs_clarification`（FR-01），单测见 `tests/unit/test_router_structured_output.py`；并执行仓库内全部 pytest 回归。
+
+**验证时间**：2026-05-06
+
+**最终结论**：✅ 通过
+
+### 测试执行
+
+命令：`python -m pytest tests -v --tb=short`
+
+| 项目 | 结果 |
+|------|------|
+| 收集用例数 | 11 |
+| 通过 / 失败 | 11 / 0 |
+| 耗时（约） | 6.2s |
+
+| 测试文件 | 用例数 | 关联任务 |
+|----------|--------|----------|
+| `tests/unit/test_router_structured_output.py` | 3 | T-004 |
+| `tests/unit/test_workflow_routing_baseline.py` | 2 | T-001 |
+| `tests/unit/test_logistics_silent_gap.py` | 4 | T-002 |
+| `tests/unit/test_task_stack.py` | 2 | T-003 |
+
+### T-004 用例摘要
+
+| 用例 | 描述 | 结果 |
+|------|------|------|
+| — | 分类器返回完整 detail 时写入 FR-01 相关字段 | ✅ |
+| — | `TASK_CLARIFY` 等待澄清时跳过 LLM | ✅ |
+| — | 空 messages 返回安全默认值 | ✅ |
+
+### 缺陷列表
+
+- 未登记新 BUG。
+
+### 开发计划同步
+
+已更新 `docs/开发计划.md` §3：**T-004**「测试状态」**待测试** → **已完成**。
+
+---
+
+## [TR-005] T-005 验证 + 全量回归（T-001～T-005）
+
+**验证任务**：T-005 `Settings.get_intent_clarify_threshold`（`intent.confidence.clarify_threshold`，规格 §8）；单测 `tests/unit/test_settings_intent_threshold.py`。并执行全部 pytest 回归。
+
+**验证时间**：2026-05-06
+
+**最终结论**：✅ 通过
+
+### 测试执行
+
+命令：`python -m pytest tests -v --tb=short`
+
+| 项目 | 结果 |
+|------|------|
+| 收集用例数 | 13 |
+| 通过 / 失败 | 13 / 0 |
+| 耗时（约） | 5.6s |
+
+| 测试文件 | 用例数 | 关联任务 |
+|----------|--------|----------|
+| `tests/unit/test_settings_intent_threshold.py` | 2 | T-005 |
+| `tests/unit/test_router_structured_output.py` | 3 | T-004 |
+| `tests/unit/test_workflow_routing_baseline.py` | 2 | T-001 |
+| `tests/unit/test_logistics_silent_gap.py` | 4 | T-002 |
+| `tests/unit/test_task_stack.py` | 2 | T-003 |
+
+### T-005 用例摘要
+
+| 用例 | 描述 | 结果 |
+|------|------|------|
+| `test_default_clarify_threshold_when_key_missing` | 缺省配置时默认阈值 0.55 | ✅ |
+| `test_clarify_threshold_from_config` | `intent.confidence.clarify_threshold` 从 YAML 读取 | ✅ |
+
+### 缺陷列表
+
+- 未登记新 BUG。
+
+### 开发计划同步
+
+已更新 `docs/开发计划.md` §3：**T-005**「测试状态」**待测试** → **已完成**。
+
+---
+
+## [TR-006] T-006 验证 + 全量回归（T-001～T-006）
+
+**验证任务**：T-006 元意图直达回复（`GeneratorNode.handle_direct_reply`：help、out_of_scope、recipe_adopt、`dietary_advice` 委托）；单测 `tests/unit/test_meta_intent_replies.py`。并执行全部 pytest 回归。
+
+**验证时间**：2026-05-06
+
+**最终结论**：✅ 通过
+
+### 测试执行
+
+命令：`python -m pytest tests -v --tb=short`
+
+| 项目 | 结果 |
+|------|------|
+| 收集用例数 | 17 |
+| 通过 / 失败 | 17 / 0 |
+| 耗时（约） | 5.7s |
+
+| 测试文件 | 用例数 | 关联任务 |
+|----------|--------|----------|
+| `tests/unit/test_meta_intent_replies.py` | 4 | T-006 |
+| `tests/unit/test_settings_intent_threshold.py` | 2 | T-005 |
+| `tests/unit/test_router_structured_output.py` | 3 | T-004 |
+| `tests/unit/test_workflow_routing_baseline.py` | 2 | T-001 |
+| `tests/unit/test_logistics_silent_gap.py` | 4 | T-002 |
+| `tests/unit/test_task_stack.py` | 2 | T-003 |
+
+### T-006 用例摘要
+
+| 用例 | 描述 | 结果 |
+|------|------|------|
+| `test_handle_direct_reply_help` | `help` → 帮助话术 | ✅ |
+| `test_handle_direct_reply_out_of_scope` | `out_of_scope` → 超范围话术 | ✅ |
+| `test_handle_direct_reply_recipe_adopt` | `recipe_adopt` → 采纳提示 | ✅ |
+| `test_handle_direct_reply_dietary_delegates` | `dietary_advice` → 委托主生成链路 | ✅ |
+
+### 缺陷列表
+
+- 未登记新 BUG。
+
+### 开发计划同步
+
+已更新 `docs/开发计划.md` §3：**T-006**「测试状态」**待测试** → **已完成**。
+
+---
+
+## [TR-007] T-007 验证 + 全量回归（T-001～T-007）
+
+**验证任务**：T-007 `intent_priority.sort_intents_by_fr50`（FR-50 多意图优先级）；单测 `tests/unit/test_intent_priority_fr50.py`。并执行全部 pytest 回归。
+
+**验证时间**：2026-05-06
+
+**最终结论**：✅ 通过
+
+### 测试执行
+
+命令：`python -m pytest tests -v --tb=short`
+
+| 项目 | 结果 |
+|------|------|
+| 收集用例数 | 20 |
+| 通过 / 失败 | 20 / 0 |
+| 耗时（约） | 6.1s |
+
+| 测试文件 | 用例数 | 关联任务 |
+|----------|--------|----------|
+| `tests/unit/test_intent_priority_fr50.py` | 3 | T-007 |
+| `tests/unit/test_meta_intent_replies.py` | 4 | T-006 |
+| `tests/unit/test_settings_intent_threshold.py` | 2 | T-005 |
+| `tests/unit/test_router_structured_output.py` | 3 | T-004 |
+| `tests/unit/test_workflow_routing_baseline.py` | 2 | T-001 |
+| `tests/unit/test_logistics_silent_gap.py` | 4 | T-002 |
+| `tests/unit/test_task_stack.py` | 2 | T-003 |
+
+### T-007 用例摘要
+
+| 用例 | 描述 | 结果 |
+|------|------|------|
+| `test_recipe_search_before_inventory_check` | `recipe_search` 先于 `inventory_check` | ✅ |
+| `test_profile_sync_first` | `profile_sync` 优先于其它示例意图 | ✅ |
+| `test_stable_when_same_tier` | 同秩意图保持输入顺序 | ✅ |
+
+### 缺陷列表
+
+- 未登记新 BUG。
+
+### 开发计划同步
+
+已更新 `docs/开发计划.md` §3：**T-007**「测试状态」**待测试** → **已完成**。
+
+---
+
+## [TR-008] T-008 验证 + 全量回归（T-001～T-008）及 T-030 回归暴露项
+
+**验证任务**：执行仓库 `tests/` 下全部 pytest；覆盖 T-008 `tests/unit/test_generator_merged_replies.py`（FR-52 合并答复）；并对提示词中的通用项做静态抽查（`task_queue`、`task_stack`、§1.2.0 七切片顶层键）。
+
+**验证时间**：2026-05-06
+
+**最终结论**：❌ 有缺陷（2 例失败，登记 BUG-001；其余 23 例通过）
+
+### 测试执行
+
+命令：`python -m pytest tests -v --tb=short`（工作目录：仓库根）
+
+| 项目 | 结果 |
+|------|------|
+| 收集用例数 | 25 |
+| 通过 / 失败 | 23 / 2 |
+| 耗时（约） | 8.2s |
+
+| 测试文件 | 用例数 | 关联任务 |
+|----------|--------|----------|
+| `tests/unit/test_generator_merged_replies.py` | 5 | T-008 |
+| `tests/unit/test_intent_priority_fr50.py` | 3 | T-007 |
+| `tests/unit/test_logistics_silent_gap.py` | 4 | T-002 |
+| `tests/unit/test_meta_intent_replies.py` | 4 | T-006 |
+| `tests/unit/test_router_structured_output.py` | 3 | T-004 |
+| `tests/unit/test_settings_intent_threshold.py` | 2 | T-005 |
+| `tests/unit/test_task_stack.py` | 2 | T-003 |
+| `tests/unit/test_workflow_routing_baseline.py` | 2 | T-001 |
+
+### 失败用例
+
+| 用例 | 描述 | 结果 |
+|------|------|------|
+| `test_silent_precalc_writes_cached_gap_without_gap_calc_task` | 静默预计算写入缓存 | ❌ `KeyError: 'logistics_buffer'` |
+| `test_silent_precalc_runs_after_inv_commit` | `TASK_INV_COMMIT` 后静默预计算 | ❌ 同上 |
+
+**原因（测试侧结论）**：`logistics_manager_node`（`src/agent/nodes/logistics.py`）在 T-030 阶段改为 `return` **`recipe_state` / `inventory_state` 等切片补丁**（`runtime_bundle_to_slice_patches`），不再返回顶层 `logistics_buffer`；`tests/unit/test_logistics_silent_gap.py` 仍断言 `out["logistics_buffer"]`，与当前契约不一致。静默预计算逻辑仍在运行（日志可见「静默缺口预计算完成」）。
+
+### T-008 用例摘要（全部通过）
+
+| 用例 | 结果 |
+|------|------|
+| `test_merge_two_tasks_order_and_double_newline` | ✅ |
+| `test_non_mergeable_token_kept_in_place` | ✅ |
+| `test_summarize_consumes_and_appends_pending_tasks` | ✅ |
+| `test_direct_reply_degraded_skips_llm` | ✅ |
+| `test_duplicate_mergeable_occurrences_stacked_twice` | ✅ |
+
+### 禁止行为与基线合规（抽查）
+
+| 检查项 | 结果 |
+|--------|------|
+| `task_stack`；`src` 内禁用名 `task_queue`（代码路径） | ✅ 仅 `task_stack.py` 注释提及 `task_queue` |
+| `AgentState` 七切片一级键 | ✅ `state.py` 含 `dialog_state`～`error_state` 与 `merge_slice` |
+| 库存 `thread_id` 作键 | ✅ `src/libs/base` 下 inventory 相关未见 `thread_id` 作 WHERE 键 |
+
+### 缺陷列表
+
+- **BUG-001**：T-002 静默缺口单测未对齐 T-030 节点返回形态（P2，待修复）
+
+### 开发计划同步
+
+已更新 `docs/开发计划.md` §3：**T-002**「测试状态」**已完成** → **待修改**；**T-008** 维持 **已完成**（单测全绿）。
+
+---
+
+## [BUG-001] T-002 单测仍断言 `logistics_buffer`，与 logistics 节点切片返回不一致
+
+**严重程度**：`P2-一般`
+
+**所属任务**：T-030（契约变更）/ 验收用例归属 T-002
+
+**违反规格**：NFR-05（基线回归）；规格 §1.2.0 演进阶段与 §10 编排一致性（间接）
+
+**发现时间**：2026-05-06
+
+**状态**：`已关闭`（复审见 [TR-010]）
+
+### 问题描述
+
+T-030 阶段 `logistics_manager_node` 返回 `recipe_state`、`inventory_state` 等切片更新，不再包含顶层 `logistics_buffer`。`tests/unit/test_logistics_silent_gap.py` 中两条用例仍访问 `out["logistics_buffer"]`，导致 `KeyError`，全量 pytest 无法绿。
+
+### 复现步骤
+
+1. 在仓库根执行：`python -m pytest tests/unit/test_logistics_silent_gap.py::test_silent_precalc_writes_cached_gap_without_gap_calc_task -v`
+2. 同样执行 `test_silent_precalc_runs_after_inv_commit`
+
+### 预期行为
+
+针对 T-002 的自动化验收应断言 **`inventory_state`（或节点实际返回键）** 中的 `cached_shopping_gap`、`gap_basis` 等字段，与 `src/agent/state_sync.py` 中 `inventory_state_from_logistics_buffer` 约定一致。
+
+### 实际行为
+
+测试在读取 `out["logistics_buffer"]` 时抛出 `KeyError`。
+
+### 根因分析（测试侧初步判断）
+
+`src/agent/nodes/logistics.py` 文末 `return out` 已改为合并 `runtime_bundle_to_slice_patches`；单测未同步更新断言路径。
+
+### 影响范围
+
+- 影响场景：M1 基线回归、CI 中 `pytest tests`
+- 影响任务：T-002 显示「待修改」直至单测与实现对齐
+
+---
+
+## [TR-009] BUG-001 修复验证（T-002 / T-030 切片契约）
+
+**验证任务**：确认 `tests/unit/test_logistics_silent_gap.py` 以 `empty_agent_slices()` 与 `runtime_bundle_to_slice_patches` 构造输入（无顶层 `logistics_buffer`），并直接断言 `out["inventory_state"]` 中的 `cached_shopping_gap`、`gap_basis` 等字段。
+
+**执行命令**：`python -m pytest tests/unit/test_logistics_silent_gap.py -q`；`python -m pytest tests/unit -q`
+
+**结果**：4 passed；`tests/unit` 全量 25 passed。
+
+**结论**：单测与 `logistics_manager_node` 的切片返回形态一致；BUG-001 关闭。
+
+---
+
+## [TR-010] BUG-001 复审（开发修复后再验证）
+
+**验证任务**：对 BUG-001 原复现路径做回归；并执行 `tests/` 全量 pytest，确认未引入新问题。
+
+**验证时间**：2026-05-06
+
+**关联开发记录**：`docs/dev_log.md` [DEV-030]（切片返回、`tests/unit` 断言对齐）
+
+### 【复审结论 BUG-001】
+
+复现步骤验证：
+
+1. `python -m pytest tests/unit/test_logistics_silent_gap.py::test_silent_precalc_writes_cached_gap_without_gap_calc_task -v` → ✅ 通过  
+2. `python -m pytest tests/unit/test_logistics_silent_gap.py::test_silent_precalc_runs_after_inv_commit -v` → ✅ 通过  
+
+回归检查：`python -m pytest tests -v --tb=short` → **25 passed**，约 **5.4s**；未发现新失败用例。
+
+**结论**：BUG-001 **关闭** ✅
+
+### 开发计划同步
+
+已将 `docs/开发计划.md` §3：**T-002**「测试状态」**待修改** → **已完成**。
+
+---
+
+## [TR-011] T-030 功能验证（方案 A 七切片与访问器）
+
+**验证任务**：T-030 **方案 A**——`AgentState` 一级七切片 + `active_user_id`；`get_runtime_bundle` / `runtime_bundle_to_slice_patches`；移除顶层 `logistics_buffer`（**规格 §1.2.0～1.2.1**；`docs/dev_log.md` [DEV-030]）。
+
+**验证时间**：2026-05-06
+
+**最终结论**：✅ 通过（自动化全绿 + 静态验收项无违规；L2 与 §4.2 仍为观察项，见下表）
+
+### 测试执行（自动化）
+
+命令：`python -m pytest tests -v --tb=short`（仓库根）
+
+| 项目 | 结果 |
+|------|------|
+| 收集用例数 | 25 |
+| 通过 / 失败 | 25 / 0 |
+| 耗时（约） | 5.3s |
+
+**说明**：当前无独立文件名 `test_t030*.py`；T-030 由 **T-001 夹具**（`conftest.make_minimal_agent_state` + `empty_agent_slices` + `runtime_bundle_to_slice_patches`）、**T-002** `test_logistics_silent_gap`（切片断言）、**workflow 基线**（`get_runtime_bundle`）等共同覆盖。
+
+### 测试用例执行情况（T-030 映射）
+
+| 用例 | 描述 | 对应规格 / 任务 | 结果 |
+|------|------|-----------------|------|
+| TC-T030-01 | `empty_agent_slices()` 含且仅含 7 个切片键 | §1.2.0 | ✅（脚本校验） |
+| TC-T030-02 | `runtime_bundle_to_slice_patches(make_logistics_buffer())` 产出 `recipe_state` / `inventory_state` / `control_state` 等补丁 | §1.2.0～1.2.1 | ✅（脚本校验） |
+| TC-T030-03 | 全仓库 `tests/` pytest 回归 | NFR-05 | ✅ 25/25 |
+
+### 禁止行为与基线合规（通用检查）
+
+| 检查项 | 结果 | 说明 |
+|--------|------|------|
+| `AgentState` 使用七切片结构（`dialog_state`～`error_state`） | ✅ | `src/agent/state.py` |
+| `AgentState` TypedDict **无** `logistics_buffer` 键 | ✅ | `state.py` 内 `grep` 无匹配 |
+| `task_stack` 唯一；业务代码禁用 `task_queue` | ✅ | `src/**/*.py` 仅 `task_stack.py` 文档串提及 `task_queue` |
+| `inventory_snapshot` 字典型 **I**（归一化路径） | ✅ | `state_sync._normalize_inventory_snapshot`；夹具中列表形态经补丁进入切片后可被消费 |
+| L2 摘要节点是否误清业务切片（`recipe_state` 等） | ⚠️ 观察项 | `conversation_summary_node` 在 `task_stack` 为空时合并 `runtime_bundle_to_slice_patches(empty_runtime_bundle())`，会重置多切片；与 **FR-14 / §4.2** 及计划 **T-009** 专项验收相关；**本轮不登记新 BUG**（与 [TR-001] 观察一致） |
+
+### 缺陷列表
+
+- 本轮未登记新 BUG。
+
+### 开发计划同步
+
+`docs/开发计划.md` §3：**T-030**「测试状态」已为 **已完成**，与本轮结论一致，**无需修改**。
+
+---
+
+## [TR-012] T-031 功能验证（槽位 §11.2～11.5 与路由守卫）
+
+**验证任务**：T-031——`slot_filling.py` 归一与 `compute_missing_slots`；`router.apply_slot_guards_to_task_stack`；`IntentResult.slots` / `missing_slots` 与 `intent_prompt.md` 契约（**规格 §11**；`docs/dev_log.md` [DEV-031]）。
+
+**验证时间**：2026-05-06
+
+**最终结论**：✅ 通过（pytest 全绿 + 手工脚本覆盖核心槽位与映射；**未新增仓库单测**，与 DEV-031 说明一致）
+
+### 测试执行（自动化）
+
+命令：`python -m pytest tests -v --tb=short`
+
+| 项目 | 结果 |
+|------|------|
+| 收集用例数 | 25 |
+| 通过 / 失败 | 25 / 0 |
+| 耗时（约） | 5.4s |
+
+**与 T-031 间接相关的既有单测**：`tests/unit/test_router_structured_output.py`（`slots` / `missing_slots` 透传）；未覆盖 `compute_missing_slots` 全分支。
+
+### 测试用例执行情况（手工脚本 + 抽查）
+
+在仓库根执行一次性校验（导入 `tests.conftest.make_minimal_agent_state`、`IntentClassifier`、`slot_filling`）：
+
+| 用例 | 描述 | 对应规格 / 任务 | 结果 |
+|------|------|-----------------|------|
+| TC-T031-01 | `recipe_search` 且无 `recipe_query`/`recipe_name`/食材 → `missing_slots` 含 `recipe_search_anchor` | §11.5 | ✅ |
+| TC-T031-02 | 有上述缺失时 `apply_slot_guards_to_task_stack` 去掉 `TASK_SEARCH`、队首插入 `TASK_CLARIFY`，保留未阻塞意图任务 | §11.5、裁剪 | ✅ |
+| TC-T031-03 | 同轮 `recipe_search`+`shopping_list` 且仅有 `recipe_name` 锚点、无 **R** → 不追加 `shopping_list_context` | DEV-031 豁免语义 | ✅ |
+| TC-T031-04 | `entities.amounts` → `slots.restock_items` 行结构 | §11.2 | ✅ |
+| TC-T031-05 | `merge_slots` 对值为 `None` 的键不覆盖基槽 | — | ✅ |
+| TC-T031-06 | `IntentClassifier.INTENT_TASK_MAPPING` 的意图键 ⊆ `IntentResult.intents` 的 Literal 集合 | §11.3～11.4 | ✅ |
+
+### 文档与 Prompt 抽查
+
+| 检查项 | 结果 |
+|--------|------|
+| `intent_prompt.md` 含 `slots` / `missing_slots` 与 §11.2 说明 | ✅ |
+| 规范码 `recipe_search_anchor` 与常量 `MISSING_RECIPE_SEARCH_ANCHOR` 一致 | ✅ |
+
+### 禁止行为与基线合规
+
+| 检查项 | 结果 |
+|--------|------|
+| `task_stack` 守卫不引入 `task_queue` | ✅ |
+
+### 缺陷列表
+
+- 本轮未登记新 BUG。
+
+### 遗留与建议（非阻塞）
+
+- 建议在后续迭代为 `slot_filling.py` 增加 **`tests/unit/test_slot_filling.py`**，固化 §11.5 边界（`inventory_commit`、`recipe_adopt`、`profile_sync` 等），减少对手工脚本的依赖。
+
+### 开发计划同步
+
+已更新 `docs/开发计划.md` §3：**T-031**「测试状态」**待测试** → **已完成**。
+
+---
+
+## [TR-013] 集成：真实 LLM 意图识别（`tests/integration/test_intent_recognition_llm.py`）
+
+**验证任务**：在启用真实大模型调用的情况下，对 **`IntentClassifier.get_intent_details`**（与 `router` 同源：`intent_prompt.md` + 结构化 `IntentResult` + FR-50 排序 + T-031 槽位/守卫）进行**集成验收**；覆盖单意图、**多意图**（如 `recipe_search`+`shopping_list`）、元意图及与 prompt **Example 1 / 3 / 5 / 7** 对齐的话术。
+
+**验证时间**：2026-05-06
+
+**最终结论**：✅ 通过（本机执行：**12 passed**，约 **161s**；依赖 `config/setting.yaml` 中 LLM 可用）
+
+### 测试执行
+
+**前置**：已配置可用的 LLM（如 DashScope/OpenAI 等，与项目 `Settings` / `LLMFactory` 一致）。
+
+```powershell
+cd <仓库根>
+$env:WHAT_TO_EAT_RUN_LLM_INTENT = "1"
+# 可选：$env:WHAT_TO_EAT_INTENT_REPORT = "logs/intent_llm_report.json"
+# 可选：$env:WHAT_TO_EAT_INTENT_LLM_JUDGE = "1"
+python -m pytest tests/integration/test_intent_recognition_llm.py -v --tb=short
+```
+
+| 项目 | 结果（本轮实测） |
+|------|------------------|
+| 收集用例数 | 12 |
+| 通过 / 失败 / 跳过 | 12 / 0 / 0 |
+| 耗时（约） | 161.4s（约 2m41s） |
+
+**说明**：未设置 `WHAT_TO_EAT_RUN_LLM_INTENT=1` 时，本文件内用例 **全部 skip**（不计入上述通过数）；CI 默认不跑真实 LLM，避免密钥与费用问题。
+
+### 测试用例执行情况（用例 ID 与脚本中 `INTENT_LLM_CASES` 一致）
+
+| 用例 ID | 话术要点 | 验收要点（摘要） | 结果 |
+|---------|----------|------------------|------|
+| ex01_inventory_check_meat | 「冰箱里还有肉吗？」 | 契约 + 主意图/意图含 `inventory_check`；任务栈命中库存或澄清/直达 | ✅ |
+| ex03_inventory_commit_done | 「刚才的清蒸鱼做好了。」 | 契约 + `inventory_commit`；任务含扣减或澄清等 | ✅ |
+| ex05_inventory_add_restock | 超市购入多品 | 契约 + `inventory_add`；任务含补货或澄清等 | ✅ |
+| ex07_vague_search_and_shopping | 「随便推荐…再看看缺啥要买」 | **多意图**：`intents` 必含 `recipe_search` 与 `shopping_list`；澄清/缺槽路径 | ✅ |
+| search_named_dish | 点名红烧肉做法 | 契约 + `recipe_search`；`TASK_SEARCH` 或澄清 | ✅ |
+| help_capabilities | 「你能做什么？」 | 契约 + help/闲聊；`TASK_DIRECT_REPLY` | ✅ |
+| out_of_scope_code | 写 Python 排序 | 契约 + 超范围/闲聊；直达回复 | ✅ |
+| dietary_advice_cold | 感冒饮食注意 | 契约 + 营养建议/闲聊；直达回复 | ✅ |
+| profile_peanut | 花生过敏记下 | 契约 + `profile_sync`；画像或澄清等 | ✅ |
+| multi_add_search_list | 买猪肉+红烧肉+还差什么 | **多意图场景**（补货+搜菜+缺口）；至少含 `recipe_search` | ✅ |
+| weak_chat | 天气闲聊 | 契约 + 闲聊/帮助；直达回复 | ✅ |
+| test_intent_llm_write_report_json | 汇总写 JSON | 全量再跑一遍并校验契约；报告落盘（默认 pytest 临时目录） | ✅ |
+
+### 与需求 / 任务的对应关系
+
+| 需求或任务 | 本集成项覆盖说明 |
+|------------|------------------|
+| FR-01 | `primary_intent`、`intents`、`confidence`、`needs_clarification` 等结构化输出契约（脚本内 `assert_structural_contract`） |
+| 规格 §11、`intent_prompt.md` | 意图标签合法性、`slots`/`missing_slots` 类型、§11.5 与澄清路径（`ex07_*`） |
+| FR-50（多意图） | 模型输出多意图后由路由排序；用例 `ex07_*`、`multi_add_search_list` 覆盖多意图话术 |
+| T-031 | 路由侧合并规则缺失与 `task_stack` 守卫后的可执行栈（间接随整条链路验证） |
+
+### 缺陷列表
+
+- 本轮未登记新 BUG。
+
+### 开发计划同步
+
+无单独 **T-xxx** 行对应「仅 LLM 集成」；已在 **§测试进度总表** 增加 **INT-LLM** 一行便于追溯。**T-004 / T-007 / T-031** 等既有「已完成」结论与本集成结论一致，未改 `docs/开发计划.md`。
+
+---
+
+## 缺陷汇总
+
+| BUG 编号 | 严重程度 | 所属任务 | 描述 | 状态 | 关闭日期 |
+|---------|---------|---------|------|------|---------|
+| BUG-001 | P2 | T-030 / T-002 | 静默缺口单测断言 `logistics_buffer`，与切片返回不一致 | ✅ 已关闭 | 2026-05-06 |
+
+<!-- 测试 Agent 在此追加缺陷记录 -->

@@ -3,20 +3,46 @@ ClarifyResolver - 解析用户对候选菜谱的选择
 
 当 task_stack 包含 TASK_CLARIFY 且用户已回复时，
 解析用户输入（数字 or 菜名），锁定具体菜谱，
-更新 logistics_buffer 并把 task_stack 推进到下一步。
+更新运行时 bundle（经切片写回）并把 task_stack 推进到下一步。
 """
+import copy
 import logging
 from typing import Dict, Any, List, Optional
 
 from ..state import AgentState
+from ..state_accessors import get_runtime_bundle
+from ..state_sync import runtime_bundle_to_slice_patches
+from ..task_stack import consume_tasks
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+def _normalize_candidates(raw_candidates: List[Any]) -> List[Dict[str, Any]]:
+    """将候选统一标准化为 [{title: str, raw: Any}]。"""
+    normalized: List[Dict[str, Any]] = []
+    for item in raw_candidates or []:
+        if isinstance(item, str):
+            title = item.strip()
+        elif isinstance(item, dict):
+            title = str(
+                item.get("title")
+                or item.get("name")
+                or item.get("recipe_name")
+                or ""
+            ).strip()
+        else:
+            title = str(item).strip()
+
+        if not title:
+            continue
+        normalized.append({"title": title, "raw": item})
+    return normalized
+
+
 def _parse_user_choice(
     user_input: str,
-    candidates: List[str]  
-) -> Optional[str]:
+    candidates: List[Dict[str, Any]]
+) -> Optional[Dict[str, Any]]:
     """
     解析用户的选择，支持：
     - 数字："1" / "第一个" / "第1个"
@@ -59,20 +85,20 @@ def clarify_resolver_node(state: AgentState) -> Dict[str, Any]:
               且用户已发来新的回复消息。
 
     成功时：
-      - logistics_buffer["selected_recipe_id"] 锁定为用户选择的菜谱
-      - task_stack 更新为 ["TASK_SEARCH"]（触发 researcher 获取详情）
+      - 在运行时 bundle / 切片中锁定选定菜谱
+      - task_stack 含 ["TASK_SEARCH"]（触发 researcher 获取详情）
 
     失败时（无法识别）：
       - 保留 TASK_CLARIFY，让 generator 再次询问
     """
     task_stack = state.get("task_stack", []).copy()
-    curr_task = "TASK_CLARIFY"
 
     messages = state.get("messages", [])
     print(f"🔍 [ClarifyResolver] 取到消息{messages}")  # 调试信息
 
-    logistics_buffer = state.get("logistics_buffer", {})
-    candidates: List[str] = logistics_buffer.get("recipe_candidates", [])
+    logistics_buffer = copy.deepcopy(get_runtime_bundle(state))
+    raw_candidates = logistics_buffer.get("recipe_candidates", [])
+    candidates = _normalize_candidates(raw_candidates)
     print(f"🔍 [ClarifyResolver] 取到候选菜谱{candidates}")  # 调试信息
 
     if not candidates:
@@ -88,27 +114,37 @@ def clarify_resolver_node(state: AgentState) -> Dict[str, Any]:
     
     print(f"🔍 [ClarifyResolver] 最新消息: {latest}" + f"用户输入: {user_input}")  # 调试信息
 
-    chosen = _parse_user_choice(user_input, candidates)
+    try:
+        chosen = _parse_user_choice(user_input, candidates)
+    except Exception as exc:
+        logger.warning("[ClarifyResolver] 解析异常，进入澄清兜底: %s", exc)
+        chosen = None
     print(f"🔍 [ClarifyResolver] 解析用户选择: {chosen}")  # 调试信息
 
     if chosen:
-        task_stack.remove(curr_task)
-        task_stack.append("TASK_SEARCH")  # 选择后直接进入搜索详情阶段
+        task_stack = consume_tasks(task_stack, ["TASK_CLARIFY"])
+        if "TASK_SEARCH" not in task_stack:
+            task_stack.append("TASK_SEARCH")  # 选择后直接进入搜索详情阶段
 
         print(f'[ClarifyResolver] task_stack 更新为: {task_stack}')  # 调试信息
         logger.info(f"[ClarifyResolver] 用户选择: {chosen}")
         new_buffer = {
             **logistics_buffer,
-            "selected_recipe_title": chosen, # 菜名即 Title
+            "selected_recipe_title": chosen.get("title"), # 菜名即 Title
             "recipe_candidates": [],
         }
         
         return {
-            "logistics_buffer": new_buffer,
             "task_stack": task_stack,
+            **runtime_bundle_to_slice_patches(new_buffer),
         }
     else:
         logger.info(f"[ClarifyResolver] 无法解析用户输入: {user_input!r}，重新询问")
+        lb2 = {
+                **logistics_buffer,
+                "clarify_error": "invalid_choice",
+            }
         return {
             "task_stack": ["TASK_CLARIFY"],  # 保留，让 generator 再次询问
+            **runtime_bundle_to_slice_patches(lb2),
         }

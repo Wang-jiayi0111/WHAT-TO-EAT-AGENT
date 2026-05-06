@@ -5,6 +5,7 @@ This module implements the recipe researcher functionality that communicates wit
 the MCP server to retrieve recipe information.
 """
 import asyncio
+import copy
 import sys
 
 if sys.platform == "win32":
@@ -22,12 +23,28 @@ from mcp import ClientSession, StdioServerParameters
 
 
 from ..state import AgentState
+from ..state_accessors import get_runtime_bundle
+from ..state_sync import (
+    CLEAR_ERROR_STATE,
+    error_state_from_expert_payloads,
+    recipe_state_from_logistics_buffer,
+    runtime_bundle_to_slice_patches,
+)
+from ..task_stack import consume_tasks
 from .schema import StructuredRecipe
 from ...libs.adapters.llm.llm_factory import LLMFactory
 from .schema import StructuredRecipe
 from ...libs.base.settings import Settings
 
 logger = logging.getLogger(__name__)
+
+
+def _recipe_error_slice_patch(bundle: Dict[str, Any], expert: Dict[str, Any]) -> Dict[str, Any]:
+    """方案 A：同步 recipe_state / error_state（T-030）。"""
+    patch: Dict[str, Any] = {"recipe_state": recipe_state_from_logistics_buffer(bundle)}
+    err = error_state_from_expert_payloads(expert)
+    patch["error_state"] = err if err else CLEAR_ERROR_STATE
+    return patch
 
 
 class RecipeResearcher:
@@ -154,10 +171,9 @@ async def researcher_node(state: AgentState) -> AgentState:
     菜谱检索专家节点决策流
     """
     current_stack = state.get("task_stack", []).copy()
-    current_task = "TASK_SEARCH"
 
     research = RecipeResearcher()
-    logistics_buffer = state.get("logistics_buffer", {})
+    logistics_buffer = copy.deepcopy(get_runtime_bundle(state))
     entities = logistics_buffer.get("extracted_entities", {})
 
     active_user_id = state.get("active_user_id", "default_user")
@@ -171,6 +187,8 @@ async def researcher_node(state: AgentState) -> AgentState:
         file_path = await research.get_recipe_source(query, "")
         print(f"🔍获取菜谱文件路径：{file_path}，提取菜谱所需食材")
 
+        if isinstance(file_path, dict):
+            file_path = file_path.get("file_path") or file_path.get("source") or ""
         structured_recipe = await research.parse_recipe_content(file_path=file_path)
         print(f"📊 解析结果: {structured_recipe.title}, 食材数量: {len(structured_recipe.ingredients)}")  # 调试信息
 
@@ -181,18 +199,19 @@ async def researcher_node(state: AgentState) -> AgentState:
         logistics_buffer["recipe_candidates"] = []
         logistics_buffer["selected_recipe_id"] = file_path
 
-        current_stack.remove(current_task)
+        current_stack = consume_tasks(current_stack, ["TASK_SEARCH"])
         current_stack.append("TASK_SUMMARIZE")  # 获取详情后直接进入总结阶段
 
         result = {
             "task_stack": current_stack,  
-            "logistics_buffer": logistics_buffer,
             "expert_payloads": {
                 **state.get("expert_payloads", {}),
                 "recipe_detail": structured_recipe.model_dump(),
                 "status": "success"
             }
         }
+        result.update(runtime_bundle_to_slice_patches(logistics_buffer))
+        result.update(_recipe_error_slice_patch(logistics_buffer, result["expert_payloads"]))
         return result
 
     else:
@@ -201,18 +220,43 @@ async def researcher_node(state: AgentState) -> AgentState:
     
         print(f"🔍 [Researcher] 没有选定菜谱标题，开始检索菜谱，query: {query}, user_id: {active_user_id}")  # 调试信息
 
+        if search_res.get("error"):
+            current_stack = consume_tasks(current_stack, ["TASK_SEARCH"])
+            if "TASK_DIRECT_REPLY" not in current_stack:
+                current_stack.append("TASK_DIRECT_REPLY")
+            logistics_buffer["degraded_reply"] = "检索服务暂时不可用，我先根据常见做法给您一些通用建议，或您可以稍后再试。"
+            result = {
+                "task_stack": current_stack,
+                "expert_payloads": {
+                    **state.get("expert_payloads", {}),
+                    "error": search_res.get("error"),
+                    "status": "recoverable_error",
+                },
+            }
+            result.update(runtime_bundle_to_slice_patches(logistics_buffer))
+            result.update(_recipe_error_slice_patch(logistics_buffer, result["expert_payloads"]))
+            return result
+
         recipes = search_res.get("recipes", [])
 
         print(f"📋 [Researcher] 搜索结果数量: {len(recipes)}, 分数最高的结果: {recipes[0] if recipes else 'None'}")  # 调试信息
 
         if not recipes:
+            current_stack = consume_tasks(current_stack, ["TASK_SEARCH"])
+            if "TASK_DIRECT_REPLY" not in current_stack:
+                current_stack.append("TASK_DIRECT_REPLY")
+            logistics_buffer["degraded_reply"] = "暂时没有找到匹配的菜谱，您可以换个菜名、口味或食材再试试。"
             result = {
+                        "task_stack": current_stack,
                         "expert_payloads": {
                             **state.get("expert_payloads", {}),
-                            "error": "No recipes found"
+                            "error": "No recipes found",
+                            "status": "recoverable_error",
                         }
                     }
             print(f"❌ [Researcher] 未找到菜谱，返回: {result}")  # 调试信息
+            result.update(runtime_bundle_to_slice_patches(logistics_buffer))
+            result.update(_recipe_error_slice_patch(logistics_buffer, result["expert_payloads"]))
             return result
 
         top_recipe = recipes[0]  # 取分数最高
@@ -248,14 +292,11 @@ async def researcher_node(state: AgentState) -> AgentState:
             logistics_buffer["selected_recipe_id"] = top_recipe.get("source")
             logistics_buffer["recipe_candidates"] = []
 
-            
-            if current_task in current_stack:
-                current_stack.remove(current_task)
+            current_stack = consume_tasks(current_stack, ["TASK_SEARCH"])
 
             result = {
                 # 第一个结果置信度足够高，提供菜谱信息
                 "task_stack": current_stack,  
-                "logistics_buffer": logistics_buffer,
                 "expert_payloads": {
                     **state.get("expert_payloads", {}),
                     "recipe_detail": structured_recipe.model_dump(),
@@ -263,6 +304,8 @@ async def researcher_node(state: AgentState) -> AgentState:
                 }
             }
             print(f"✅ 成功返回结果，包含 {len(logistics_buffer['recipe_requirements'])} 项食材")  # 调试信息
+            result.update(runtime_bundle_to_slice_patches(logistics_buffer))
+            result.update(_recipe_error_slice_patch(logistics_buffer, result["expert_payloads"]))
             return result
 
         else:
@@ -289,7 +332,6 @@ async def researcher_node(state: AgentState) -> AgentState:
 
             result = {
                 # 第一个结果置信度不足，返回所有候选菜谱
-                "logistics_buffer": logistics_buffer,
                 "expert_payloads": {
                     **state.get("expert_payloads", {}),
                     "search_results": recipes, # 供 Generator 展示给用户
@@ -299,4 +341,6 @@ async def researcher_node(state: AgentState) -> AgentState:
                 "task_stack": current_stack
             }
             print(f"⚠️ 低置信度返回，候选菜谱数量: {len(recipes)}, 状态: ambiguous")  # 调试信息
+            result.update(runtime_bundle_to_slice_patches(logistics_buffer))
+            result.update(_recipe_error_slice_patch(logistics_buffer, result["expert_payloads"]))
             return result
