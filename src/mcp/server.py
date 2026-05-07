@@ -36,6 +36,7 @@ from src.libs.base.bm25_indexer import BM25Indexer
 from src.libs.adapters.embed.embed_factory import EmbedFactory
 from src.libs.base.settings import Settings
 from src.rag.rag_core import SemanticSearchEngine, HybridSearchEngine, KeywordSearchEngine
+from src.mcp.protocol import mcp_validation_error
 
 logging.basicConfig(
     filename="mcp_debug.log", 
@@ -106,7 +107,7 @@ async def handle_list_tools() -> list[types.Tool]:
                 "properties": {
                     "query": {"type": "string"},
                     "user_id": {"type": "string"},
-                    "top_k": {"type": "integer", "default": 10},
+                    "top_k": {"type": "integer", "default": 5},
                     "effective_constraint": {
                         "type": "object",
                         "description": "与 Agent **C** 一致的有效约束（规格 §3.5）；含 hard_exclusions 等",
@@ -136,9 +137,17 @@ async def handle_call_tool(name: str, arguments: dict | None) -> list[types.Text
             arguments = {}
 
         if name == "search_recipes":
-            result = await search_heandler.execute(**arguments)
+            q = arguments.get("query")
+            if not isinstance(q, str) or not q.strip():
+                result = mcp_validation_error("query must be a non-empty string")
+            else:
+                result = await search_heandler.execute(**arguments)
         elif name == "get_recipe_source":
-            result = await source_handler.execute(**arguments)
+            rn = arguments.get("recipe_name")
+            if not isinstance(rn, str) or not rn.strip():
+                result = mcp_validation_error("recipe_name must be a non-empty string")
+            else:
+                result = await source_handler.execute(**arguments)
         else:
             raise ValueError(f"Unknown tool: {name}")
 

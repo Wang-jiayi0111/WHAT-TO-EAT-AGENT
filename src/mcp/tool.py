@@ -4,6 +4,10 @@ from typing import Any, Dict, List, Optional
 from pathlib import Path
 
 from src.agent.effective_constraint import filter_recipes_by_hard_exclusions
+from src.mcp.protocol import (
+    mcp_validation_error,
+    normalize_search_recipes_success_body,
+)
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -59,13 +63,18 @@ class SearchRecipesService:
         self,
         query: str,
         user_id: str = "default_user",
-        top_k: int = 10,
+        top_k: int = 5,
         effective_constraint: Optional[Dict[str, Any]] = None,
     ) -> Dict:
         """
         RAG 检索。若传入 **effective_constraint**（与 researcher **C** 一致），
         按 §5.4 对候选执行 hard_exclusions 过滤（FR-11 / FR-20 / T-015）。
+
+        成功体对齐规格 §2.2（`recipes` / `query_used`）；可选 `effective_constraint_applied`（T-015）。
         """
+        if not isinstance(query, str) or not query.strip():
+            return mcp_validation_error("query must be a non-empty string")
+
         profile = self.user_profile_manager.get_user_profile(user_id)
 
         enhanced_query = query
@@ -94,11 +103,11 @@ class SearchRecipesService:
             for item in filtered:
                 item.pop("content", None)
 
-            return {
-                "recipes": filtered,
-                "query_used": enhanced_query,
-                "effective_constraint_applied": True,
-            }
+            return normalize_search_recipes_success_body(
+                filtered,
+                enhanced_query,
+                effective_constraint_applied=True,
+            )
 
         dietary_restrictions = profile.get("dietary_restrictions", []) if profile else []
         if not isinstance(dietary_restrictions, list):
@@ -118,7 +127,7 @@ class SearchRecipesService:
                 }
                 filtered_legacy.append(recipe_data)
 
-        return {"recipes": filtered_legacy, "query_used": enhanced_query}
+        return normalize_search_recipes_success_body(filtered_legacy, enhanced_query)
 
 # 业务类：获取路径
 class RecipeSourceService:
@@ -126,13 +135,15 @@ class RecipeSourceService:
     def __init__(self, document_manager):
         self.document_manager = document_manager
 
-    async def execute(self, recipe_name: str) -> Dict[str, Any]:
+    async def execute(self, recipe_name: str) -> Optional[str]:
         """
-        根据logistics_buffer[extracted_entities[recipe_name]]，获取对应菜谱的路径
+        §2.3：成功响应序列化为 JSON 时为 **字符串路径** 或 **null**（未命中）。
         """
-        logger.info(f"正在获取菜谱 '{recipe_name}' 的源文件路径...")
-        file_source = self.document_manager.get_source_by_name(recipe_name)
-
+        if not isinstance(recipe_name, str) or not recipe_name.strip():
+            raise ValueError("recipe_name must be a non-empty string")
+        name = recipe_name.strip()
+        logger.info(f"正在获取菜谱 '{name}' 的源文件路径...")
+        file_source = self.document_manager.get_source_by_name(name)
         logging.info(f"获取到的文件路径: {file_source}")
         return file_source
 

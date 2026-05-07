@@ -738,3 +738,133 @@
 
 ---
 
+## [DEV-018] 阶段一锁定与阶段二权威 **R**（T-016 / §5.1～5.2）
+
+**类型**：`功能开发`  
+**编号**：T-016  
+**对应规格**：**FR-21**；**规格 §5.1～5.3**  
+**里程碑**：M3  
+**状态**：`已完成`  
+**日期**：2026-05-06  
+
+### 做了什么
+
+- **§5.1**：`stage1_high_confidence` + **`Settings.get_retrieval_top2_relative_gap`**（`config/setting.yaml` **`retrieval.confidence.top2_relative_gap`**）；歧义分支仍 **不** 调用阶段二。  
+- **§5.2**：**`resolve_authoritative_structured_recipe`** — 仅以 **`get_recipe_source(recipe_name=锁定 title)`** 得到路径后 **`open` 全文 Markdown**，再 **`StructuredRecipe`** 抽取；失败映射 **`RECIPE_SOURCE_NOT_FOUND`** / **`RECIPE_PARSE_FAILED`**（**`error_state_from_expert_payloads`** 优先读 **`error_code`**）。  
+- **状态**：成功写入 **`recipe_title_locked`**、**`recipe_parser_version`**（常量 **`llm_structured_v1`**，§5.3）、**`selected_recipe_id`** = 解析所用 **`recipe_file_ref`**。  
+
+### 变更文件（主要）
+
+| 文件 | 说明 |
+|------|------|
+| `src/agent/nodes/researcher.py` | T-016 核心逻辑 |
+| `src/libs/base/settings.py` | `get_retrieval_top2_relative_gap` |
+| `config/setting.yaml` | `retrieval.confidence` |
+| `src/agent/state_sync.py` | `recipe_parser_version`、`error_code` |
+
+### 关联
+
+前置：T-015 ✓  
+后续：T-017（见 [DEV-019]）  
+测试覆盖：本轮未执行 pytest  
+
+---
+
+## [DEV-019] 菜谱歧义澄清（T-017 / FR-22）
+
+**类型**：`功能开发`  
+**编号**：T-017  
+**对应规格**：**FR-22**；**规格 §5.1**（有限候选 + 不调用阶段二）  
+**里程碑**：M3  
+**状态**：`已完成`  
+**日期**：2026-05-06  
+
+### 做了什么
+
+- **`build_ambiguity_candidates`**（`src/agent/recipe_ambiguity.py`）：对检索结果 **按 title 去重**、截断至 **`retrieval.ambiguity.max_candidates`**（默认 6），项含 **`title` / `score` / `rank`**。  
+- **`researcher`** 歧义分支写入结构化 **`recipe_candidates`**，**`clarification_kind`=`recipe_pick`**，载荷 **`ambiguity_candidate_count`**。  
+- **`control_state` / `materialize_runtime_bundle`**：同步 **`clarification_kind`**、**`clarify_error`**（选菜失败后再提示）。  
+- **`clarify_resolver`**：序号解析保留；菜名改为 **打分择优**（完整 > 前缀 > 子串），降低误匹配。  
+- **`generator`**：`invalid_choice` 时追加说明；展示文案对齐「相关性排序」；回复后 **清除一次性 `clarify_error`**；成功解析后 clarify **清空 `clarification_kind`**。
+
+### 变更文件（主要）
+
+| 文件 | 说明 |
+|------|------|
+| `src/agent/recipe_ambiguity.py` | 新增 |
+| `src/agent/nodes/researcher.py`、`generator.py`、`clarify_resolver.py` | T-017 |
+| `src/agent/state_sync.py`、`config/setting.yaml`、`src/libs/base/settings.py` | 配置与切片 |
+
+### 关联
+
+前置：T-016 ✓  
+后续：T-018（见 [DEV-020]）  
+测试覆盖：本轮未执行 pytest  
+
+---
+
+## [DEV-020] 检索无结果降级与软约束重试（T-018 / FR-24）
+
+**类型**：`功能开发`  
+**编号**：T-018  
+**对应规格**：**FR-24**；**规格 §5.4**（硬过滤后为空同属「无候选」处理口径）  
+**里程碑**：M3  
+**状态**：`已完成`  
+**日期**：2026-05-06  
+
+### 做了什么
+
+- **`effective_constraint_has_retryable_soft_signals`** / **`relaxed_effective_constraint_for_search_retry`**：`scope_id` 与 **`hard_exclusions`** 不变，清空 **`soft_*`、`temporal_conditions`、`dietary_target`、`summary_snippet`**，用于第二轮 query 增强与 MCP **`effective_constraint`**（§5.4 仍生效）。  
+- **`researcher_node`**：首轮 `recipes` 为空且配置 **`soft_retry_max` > 0** 且存在可放宽软信号时，循环重试（默认 1 次）；成功则继续原有置信度 / 歧义分支。  
+- **降级话术**：若已执行放宽仍空，生成说明性 **`degraded_reply`**；**`expert_payloads`** 增加 **`error_code`=`RECIPE_SEARCH_EMPTY`**、**`recipe_search_soft_retry_attempted`**。  
+- **`config/setting.yaml`**：**`retrieval.empty_search.soft_retry_max`**；**`Settings.get_recipe_search_soft_retry_max`**（上限 5）。
+
+### 变更文件（主要）
+
+| 文件 | 说明 |
+|------|------|
+| `src/agent/effective_constraint.py` | 软约束判定与放宽副本 |
+| `src/agent/nodes/researcher.py` | 空结果重试与话术 |
+| `config/setting.yaml`、`src/libs/base/settings.py` | 配置 |
+
+### 关联
+
+前置：T-015 ✓  
+后续：T-019（见 [DEV-021]）  
+测试覆盖：本轮未执行 pytest  
+
+---
+
+## [DEV-021] MCP §2 JSON 契约与错误分支（T-019 / IR-02）
+
+**类型**：`功能开发`  
+**编号**：T-019  
+**对应规格**：**IR-02**；**规格 §2.2～2.4**  
+**里程碑**：M3  
+**状态**：`已完成`  
+**日期**：2026-05-06  
+
+### 做了什么
+
+- **`src/mcp/protocol.py`**：`mcp_validation_error`、`normalize_search_recipe_item` / **`normalize_search_recipes_success_body`**（§2.2：`recipes[]` 仅 **`id`/`title`/`score`**；可选 **`effective_constraint_applied`**）、**`is_mcp_error_response`**（Agent 分支）。  
+- **`server.py`**：`search_recipes` / `get_recipe_source` 入参 **非空字符串** 校验；工具列表 **`top_k` 默认 5**（对齐 §2.2）。  
+- **`SearchRecipesService`**：空 **`query`** → 校验错误包络；成功响应走归一化；**`execute` 默认 `top_k=5`**。  
+- **`RecipeSourceService`**：§2.3 语义注释；空 **`recipe_name`** 由服务端校验或 **`ValueError`**（直接调用时）。  
+- **`researcher._call_mcp_tool`**：**JSONDecodeError** → `status`/`error`；空响应带 **`status`**；检索分支用 **`is_mcp_error_response`**（含软重试）。
+
+### 变更文件（主要）
+
+| 文件 | 说明 |
+|------|------|
+| `src/mcp/protocol.py` | 新增 |
+| `src/mcp/server.py`、`src/mcp/tool.py` | 校验与成功体 |
+| `src/agent/nodes/researcher.py` | 解析与失败判定 |
+
+### 关联
+
+前置：T-015 ✓  
+后续：—  
+测试覆盖：本轮未执行 pytest  
+
+---
+

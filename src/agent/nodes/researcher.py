@@ -27,7 +27,10 @@ from ..state_accessors import get_runtime_bundle
 from ..effective_constraint import (
     augment_search_query,
     build_effective_constraint,
+    effective_constraint_has_retryable_soft_signals,
+    relaxed_effective_constraint_for_search_retry,
 )
+from ..recipe_ambiguity import build_ambiguity_candidates
 from ..state_sync import (
     CLEAR_ERROR_STATE,
     error_state_from_expert_payloads,
@@ -37,10 +40,108 @@ from ..state_sync import (
 from ..task_stack import consume_tasks
 from .schema import StructuredRecipe
 from ...libs.adapters.llm.llm_factory import LLMFactory
-from .schema import StructuredRecipe
 from ...libs.base.settings import Settings
+from ...mcp.protocol import is_mcp_error_response
 
 logger = logging.getLogger(__name__)
+
+# 规格 §5.3
+RECIPE_PARSER_VERSION = "llm_structured_v1"
+
+
+def coerce_mcp_recipe_path(raw: Any) -> str:
+    """统一 MCP `get_recipe_source` 返回值（str / null / 错误 dict）为本地路径字符串。"""
+    if raw is None:
+        return ""
+    if isinstance(raw, dict):
+        if raw.get("error") or raw.get("status") == "error":
+            return ""
+        return str(
+            raw.get("file_path")
+            or raw.get("source")
+            or raw.get("path")
+            or raw.get("source_document_id")
+            or ""
+        ).strip()
+    if isinstance(raw, str):
+        return raw.strip()
+    return str(raw).strip()
+
+
+def stage1_high_confidence(recipes: List[Dict[str, Any]], gap: float) -> bool:
+    """规格 §5.1：单候选必锁；多候选看 top1 相对 top2 分差。"""
+    if not recipes:
+        return False
+    if len(recipes) == 1:
+        return True
+    if len(recipes) >= 2:
+        s1 = float(recipes[0].get("score") or 0)
+        s2 = float(recipes[1].get("score") or 0)
+        return (s1 - s2) / (s2 + 1e-6) > gap
+    return False
+
+
+async def resolve_authoritative_structured_recipe(
+    research: "RecipeResearcher",
+    locked_title: str,
+) -> tuple:
+    """
+    规格 §5.2：权威 **R** 仅来自 `recipe_file_ref` 指向的全文 Markdown + LLM 结构化抽取；
+    禁止仅用 `search_recipes` 返回的 content 片段定稿。
+    返回 `(StructuredRecipe|None, file_ref_str, err_kind)`；err_kind 为 '' | 'source_not_found' | 'empty_r'。
+    """
+    title = (locked_title or "").strip()
+    if not title:
+        return None, "", "source_not_found"
+
+    raw = await research.get_recipe_source(recipe_name=title)
+
+    if isinstance(raw, dict) and (raw.get("error") or raw.get("status") == "error"):
+        return None, "", "source_not_found"
+
+    path = coerce_mcp_recipe_path(raw)
+    if not path or not os.path.exists(path):
+        return None, path or "", "source_not_found"
+
+    structured_recipe = await research.parse_recipe_content(file_path=path)
+
+    if not structured_recipe.ingredients:
+        return None, path, "empty_r"
+
+    return structured_recipe, path, ""
+
+
+def _recoverable_recipe_fault(
+    state: AgentState,
+    logistics_buffer: Dict[str, Any],
+    current_stack: List[str],
+    effective_c: Dict[str, Any],
+    *,
+    user_hint: str,
+    detail: str,
+    error_code: str,
+) -> Dict[str, Any]:
+    """§5.2 失败：可恢复错误 + 清空 R，避免进入扣减链路。"""
+    stack = consume_tasks(current_stack.copy(), ["TASK_SEARCH"])
+    if "TASK_DIRECT_REPLY" not in stack:
+        stack.append("TASK_DIRECT_REPLY")
+    logistics_buffer["degraded_reply"] = user_hint
+    logistics_buffer["recipe_requirements"] = []
+    logistics_buffer["recipe_candidates"] = []
+    logistics_buffer["selected_recipe_id"] = None
+    logistics_buffer["recipe_title_locked"] = None
+    logistics_buffer["recipe_parser_version"] = None
+    expert_payloads = {
+        **(state.get("expert_payloads") or {}),
+        "error": detail,
+        "status": "recoverable_error",
+        "error_code": error_code,
+    }
+    result: Dict[str, Any] = {"task_stack": stack, "expert_payloads": expert_payloads}
+    result.update(runtime_bundle_to_slice_patches(logistics_buffer))
+    result.update(_recipe_error_slice_patch(logistics_buffer, expert_payloads))
+    _merge_effective_constraint_into_memory_patch(result, effective_c)
+    return result
 
 
 def _merge_effective_constraint_into_memory_patch(
@@ -119,8 +220,18 @@ class RecipeResearcher:
                     if result.content and len(result.content) > 0:
                         raw_text = result.content[0].text
                         print(f"🔍 Server 原始返回: {repr(raw_text[:200])}")  # ← 加这行
-                        return json.loads(raw_text)
-                    return {"error": "Empty response from MCP server"}
+                        try:
+                            return json.loads(raw_text)
+                        except json.JSONDecodeError as je:
+                            logger.warning("MCP invalid JSON: %s", je)
+                            return {
+                                "status": "error",
+                                "error": f"invalid JSON from MCP server: {je}",
+                            }
+                    return {
+                        "error": "Empty response from MCP server",
+                        "status": "error",
+                    }
         except Exception as e:
             import traceback
             # 判断是否是 ExceptionGroup
@@ -202,36 +313,58 @@ async def researcher_node(state: AgentState) -> AgentState:
     # §3.5 / §5.1：合并 **C**（L2+L3+画像）；MCP user_id 使用 C.scope_id（SCOPE_ID）
     effective_c = build_effective_constraint(state)
     scope_for_mcp = effective_c.get("scope_id") or active_user_id
+    _settings = Settings()
+    _rel_gap = _settings.get_retrieval_top2_relative_gap()
 
     if logistics_buffer.get("selected_recipe_title"):
-        query = logistics_buffer["selected_recipe_title"]
-        print(f"🔍 [Researcher] 已有选定菜谱标题{query}，直接获取菜谱")  # 调试信息
+        locked_title = str(logistics_buffer["selected_recipe_title"]).strip()
+        print(f"🔍 [Researcher] 已有选定菜谱标题「{locked_title}」，§5.2 全文解析 → **R**")
 
-        file_path = await research.get_recipe_source(query, "")
-        print(f"🔍获取菜谱文件路径：{file_path}，提取菜谱所需食材")
+        structured_recipe, file_path, err_kind = await resolve_authoritative_structured_recipe(
+            research, locked_title
+        )
 
-        if isinstance(file_path, dict):
-            file_path = file_path.get("file_path") or file_path.get("source") or ""
-        structured_recipe = await research.parse_recipe_content(file_path=file_path)
-        print(f"📊 解析结果: {structured_recipe.title}, 食材数量: {len(structured_recipe.ingredients)}")  # 调试信息
+        if err_kind == "source_not_found":
+            return _recoverable_recipe_fault(
+                state,
+                logistics_buffer,
+                current_stack,
+                effective_c,
+                user_hint="未找到该菜谱的完整文档路径，请确认菜名或稍后再试。",
+                detail="get_recipe_source 未返回可读的本地文件（§5.1～5.2）",
+                error_code="RECIPE_SOURCE_NOT_FOUND",
+            )
+        if err_kind == "empty_r":
+            return _recoverable_recipe_fault(
+                state,
+                logistics_buffer,
+                current_stack,
+                effective_c,
+                user_hint="未能从菜谱全文解析出用料清单，暂无法继续后续步骤；请换一道菜或稍后再试。",
+                detail="StructuredRecipe.ingredients 为空（§5.2）",
+                error_code="RECIPE_PARSE_FAILED",
+            )
 
+        logistics_buffer["recipe_title_locked"] = locked_title
+        logistics_buffer["selected_recipe_title"] = locked_title
         logistics_buffer["recipe_requirements"] = [
-                ing.model_dump() for ing in structured_recipe.ingredients
-            ]
+            ing.model_dump() for ing in structured_recipe.ingredients
+        ]
         logistics_buffer["recipe_cook_step"] = structured_recipe.steps
         logistics_buffer["recipe_candidates"] = []
         logistics_buffer["selected_recipe_id"] = file_path
+        logistics_buffer["recipe_parser_version"] = RECIPE_PARSER_VERSION
 
         current_stack = consume_tasks(current_stack, ["TASK_SEARCH"])
         current_stack.append("TASK_SUMMARIZE")  # 获取详情后直接进入总结阶段
 
         result = {
-            "task_stack": current_stack,  
+            "task_stack": current_stack,
             "expert_payloads": {
                 **state.get("expert_payloads", {}),
                 "recipe_detail": structured_recipe.model_dump(),
-                "status": "success"
-            }
+                "status": "success",
+            },
         }
         result.update(runtime_bundle_to_slice_patches(logistics_buffer))
         result.update(_recipe_error_slice_patch(logistics_buffer, result["expert_payloads"]))
@@ -239,12 +372,13 @@ async def researcher_node(state: AgentState) -> AgentState:
         return result
 
     else:
-        query = entities.get("recipe_name") or (state["messages"][-1].content if state.get("messages") else "")
-        query = augment_search_query(
-            str(query) if query is not None else "",
-            effective_c,
-            state,
-        )
+        base_query_raw = str(
+            entities.get("recipe_name")
+            or (state["messages"][-1].content if state.get("messages") else "")
+            or ""
+        ).strip()
+
+        query = augment_search_query(base_query_raw, effective_c, state)
         search_res = await research.search_recipes(
             query,
             scope_for_mcp,
@@ -253,7 +387,7 @@ async def researcher_node(state: AgentState) -> AgentState:
     
         print(f"🔍 [Researcher] 没有选定菜谱标题，开始检索菜谱，query: {query}, user_id: {scope_for_mcp}")  # 调试信息
 
-        if search_res.get("error"):
+        if not isinstance(search_res, dict) or is_mcp_error_response(search_res):
             current_stack = consume_tasks(current_stack, ["TASK_SEARCH"])
             if "TASK_DIRECT_REPLY" not in current_stack:
                 current_stack.append("TASK_DIRECT_REPLY")
@@ -273,21 +407,55 @@ async def researcher_node(state: AgentState) -> AgentState:
 
         recipes = search_res.get("recipes") or []
 
+        # FR-24：首轮无结果且存在软约束 → 保留 hard_exclusions，清空软字段后重试（次数可配置）
+        soft_retry_attempted = False
+        remaining_soft_retries = _settings.get_recipe_search_soft_retry_max()
+        while (
+            not recipes
+            and remaining_soft_retries > 0
+            and effective_constraint_has_retryable_soft_signals(effective_c)
+        ):
+            relaxed_c = relaxed_effective_constraint_for_search_retry(effective_c)
+            query_r = augment_search_query(base_query_raw, relaxed_c, state)
+            logger.info(
+                "FR-24: empty recipe search, retry with relaxed soft constraint (hard_exclusions unchanged)"
+            )
+            search_res_r = await research.search_recipes(
+                query_r,
+                scope_for_mcp,
+                effective_constraint=relaxed_c,
+            )
+            soft_retry_attempted = True
+            remaining_soft_retries -= 1
+            if not isinstance(search_res_r, dict) or is_mcp_error_response(search_res_r):
+                break
+            recipes = search_res_r.get("recipes") or []
+
         print(f"📋 [Researcher] 搜索结果数量: {len(recipes)}, 分数最高的结果: {recipes[0] if recipes else 'None'}")  # 调试信息
 
         if not recipes:
             current_stack = consume_tasks(current_stack, ["TASK_SEARCH"])
             if "TASK_DIRECT_REPLY" not in current_stack:
                 current_stack.append("TASK_DIRECT_REPLY")
-            logistics_buffer["degraded_reply"] = "暂时没有找到匹配的菜谱，您可以换个菜名、口味或食材再试试。"
+            if soft_retry_attempted:
+                logistics_buffer["degraded_reply"] = (
+                    "没有找到匹配的菜谱；已自动放宽口味偏好、近期饮食状态与摘要中的偏好描述后再次检索，仍未找到结果。"
+                    "您可以换个菜名或说法再试；若有食材禁忌，结果也会被过滤，可选范围会相应变窄。"
+                )
+            else:
+                logistics_buffer["degraded_reply"] = (
+                    "暂时没有找到匹配的菜谱，您可以换个菜名、口味或食材再试试。"
+                )
             result = {
-                        "task_stack": current_stack,
-                        "expert_payloads": {
-                            **state.get("expert_payloads", {}),
-                            "error": "No recipes found",
-                            "status": "recoverable_error",
-                        }
-                    }
+                "task_stack": current_stack,
+                "expert_payloads": {
+                    **state.get("expert_payloads", {}),
+                    "error": "No recipes found",
+                    "status": "recoverable_error",
+                    "error_code": "RECIPE_SEARCH_EMPTY",
+                    "recipe_search_soft_retry_attempted": soft_retry_attempted,
+                },
+            }
             print(f"❌ [Researcher] 未找到菜谱，返回: {result}")  # 调试信息
             result.update(runtime_bundle_to_slice_patches(logistics_buffer))
             result.update(_recipe_error_slice_patch(logistics_buffer, result["expert_payloads"]))
@@ -296,87 +464,92 @@ async def researcher_node(state: AgentState) -> AgentState:
 
         top_recipe = recipes[0]  # 取分数最高
         top_score = top_recipe["score"]
-        print(f"🎯 [Researcher] 选择最高评分菜谱: {top_recipe['title']} (评分: {top_score})")  # 调试信息
+        locked_title = str(top_recipe.get("title") or "").strip()
+        print(f"🎯 [Researcher] 最高分候选: {locked_title} (评分: {top_score})")
 
-        # 判断置信度is_confident：如果只有一个结果，或者 top1 明显领先于 top2，则认为高置信度
-        if len(recipes) == 1:
-            is_confident = True
-
-        elif len(recipes) >= 2:
-            second_score = recipes[1]["score"]
-            # top1 比 top2 分数高出 15%（相对差距），认为明显领先
-            is_confident = (top_score - second_score) / (second_score + 1e-6) > 0.15
-        else:
-            is_confident = False
-
+        is_confident = stage1_high_confidence(recipes, _rel_gap)
 
         if is_confident:
-            # 高置信度，直接获取详情
-            file_path = top_recipe.get("source", "")
-            if not file_path:
-                file_path = await research.get_recipe_source(recipe_name=top_recipe["title"])
+            # §5.1：高置信仅锁定 title；§5.2：**R** 必须通过 get_recipe_source(锁定 title) → 全文解析
+            structured_recipe, file_path, err_kind = await resolve_authoritative_structured_recipe(
+                research, locked_title
+            )
 
-            print(f"获取文件路径：{file_path}")
-            
-            structured_recipe = await research.parse_recipe_content(file_path=file_path)
-            print(f"📊 解析结果: {structured_recipe.title}, 食材数量: {len(structured_recipe.ingredients)}")  # 调试信息
+            if err_kind == "source_not_found":
+                return _recoverable_recipe_fault(
+                    state,
+                    logistics_buffer,
+                    current_stack,
+                    effective_c,
+                    user_hint="未找到该菜谱的完整文档路径，请换个菜名或稍后再试。",
+                    detail="get_recipe_source 未返回可读的本地文件（§5.1～5.2）",
+                    error_code="RECIPE_SOURCE_NOT_FOUND",
+                )
+            if err_kind == "empty_r":
+                return _recoverable_recipe_fault(
+                    state,
+                    logistics_buffer,
+                    current_stack,
+                    effective_c,
+                    user_hint="未能从菜谱全文解析出用料清单，暂无法生成购物建议；请换一道菜或稍后再试。",
+                    detail="StructuredRecipe.ingredients 为空（§5.2）",
+                    error_code="RECIPE_PARSE_FAILED",
+                )
 
+            logistics_buffer["recipe_title_locked"] = locked_title
+            logistics_buffer["selected_recipe_title"] = locked_title
             logistics_buffer["recipe_requirements"] = [
                 ing.model_dump() for ing in structured_recipe.ingredients
             ]
-            logistics_buffer["selected_recipe_id"] = top_recipe.get("source")
+            logistics_buffer["recipe_cook_step"] = structured_recipe.steps
+            logistics_buffer["selected_recipe_id"] = file_path
             logistics_buffer["recipe_candidates"] = []
+            logistics_buffer["recipe_parser_version"] = RECIPE_PARSER_VERSION
 
             current_stack = consume_tasks(current_stack, ["TASK_SEARCH"])
 
             result = {
-                # 第一个结果置信度足够高，提供菜谱信息
-                "task_stack": current_stack,  
+                "task_stack": current_stack,
                 "expert_payloads": {
                     **state.get("expert_payloads", {}),
                     "recipe_detail": structured_recipe.model_dump(),
-                    "status": "success"
-                }
+                    "status": "success",
+                },
             }
-            print(f"✅ 成功返回结果，包含 {len(logistics_buffer['recipe_requirements'])} 项食材")  # 调试信息
+            print(f"✅ §5.2 权威 R：{len(logistics_buffer['recipe_requirements'])} 项食材")
             result.update(runtime_bundle_to_slice_patches(logistics_buffer))
             result.update(_recipe_error_slice_patch(logistics_buffer, result["expert_payloads"]))
             _merge_effective_constraint_into_memory_patch(result, effective_c)
             return result
 
         else:
-            # 低置信度，返回候选列表
-            extracted_names = []
-            for r in recipes:
-                recipe_id = r.get("id", "")
-                if ".md" in recipe_id:
-                    file_name = recipe_id.replace('\\', '/').split('/')[-1] 
-                    pure_name = file_name.split('.md')[0] 
-                    extracted_names.append(pure_name)
-                else:
-                    extracted_names.append(r.get("title", "未知菜谱"))
-            
-            # 去重
-            unique_candidate_names = list(dict.fromkeys(extracted_names))
-            logistics_buffer["recipe_candidates"] = unique_candidate_names
+            # 低置信度（§5.1）：歧义 → 有限候选 + TASK_CLARIFY，**不** 调用阶段二（FR-22）
+            _ambig_cap = Settings().get_ambiguity_max_candidates()
+            capped = build_ambiguity_candidates(recipes, _ambig_cap)
+            logistics_buffer["recipe_candidates"] = capped
             logistics_buffer["selected_recipe_id"] = None
-        
-            logistics_buffer["pending_tasks"] = [t for t in current_stack if t not in ("TASK_CLARIFY", "TASK_SEARCH")]
-            print(f"🔍 [Researcher] 低置信度，准备进入歧义处理，保留待办任务: {logistics_buffer['pending_tasks']}")  # 调试信息
+            logistics_buffer["clarification_kind"] = "recipe_pick"
 
-            current_stack = ["TASK_SEARCH", "TASK_CLARIFY"]  # 追加歧义解决任务
+            logistics_buffer["pending_tasks"] = [
+                t for t in current_stack if t not in ("TASK_CLARIFY", "TASK_SEARCH")
+            ]
+            print(
+                f"🔍 [Researcher] 低置信度歧义：展示 {len(capped)} 项候选（上限 {_ambig_cap}），"
+                f"pending_tasks={logistics_buffer['pending_tasks']}"
+            )
+
+            current_stack = ["TASK_SEARCH", "TASK_CLARIFY"]
 
             result = {
-                # 第一个结果置信度不足，返回所有候选菜谱
                 "expert_payloads": {
                     **state.get("expert_payloads", {}),
-                    "search_results": recipes, # 供 Generator 展示给用户
-                    "status": "ambiguous"      # 标记为歧义状态
+                    "search_results": recipes,
+                    "status": "ambiguous",
+                    "ambiguity_candidate_count": len(capped),
                 },
-                # 追加任务栈，引导 Generator 询问用户选哪个
-                "task_stack": current_stack
+                "task_stack": current_stack,
             }
-            print(f"⚠️ 低置信度返回，候选菜谱数量: {len(recipes)}, 状态: ambiguous")  # 调试信息
+            print(f"⚠️ 歧义分支：原始检索 {len(recipes)} 条，展示 {len(capped)} 条")  # 调试信息
             result.update(runtime_bundle_to_slice_patches(logistics_buffer))
             result.update(_recipe_error_slice_patch(logistics_buffer, result["expert_payloads"]))
             _merge_effective_constraint_into_memory_patch(result, effective_c)

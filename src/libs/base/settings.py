@@ -82,3 +82,51 @@ class Settings:
         if v is None:
             return default
         return bool(v)
+
+    def get_retrieval_top2_relative_gap(self, default: float = 0.15) -> float:
+        """规格 §5.1：`(s1-s2)/(s2+ε) > gap` 时高置信锁定 top1。"""
+        ret = self._config.get("retrieval")
+        if not isinstance(ret, dict):
+            return default
+        conf = ret.get("confidence")
+        if not isinstance(conf, dict):
+            return default
+        v = conf.get("top2_relative_gap")
+        if v is None:
+            return default
+        try:
+            return float(v)
+        except (TypeError, ValueError):
+            return default
+
+    def get_ambiguity_max_candidates(self, default: int = 6) -> int:
+        """FR-22 / §5.1：歧义澄清展示的候选上限。"""
+        ret = self._config.get("retrieval")
+        if not isinstance(ret, dict):
+            return default
+        amb = ret.get("ambiguity")
+        if not isinstance(amb, dict):
+            return default
+        v = amb.get("max_candidates")
+        if v is None:
+            return default
+        try:
+            return max(2, min(20, int(v)))
+        except (TypeError, ValueError):
+            return default
+
+    def get_recipe_search_soft_retry_max(self, default: int = 1) -> int:
+        """FR-24：`retrieval.empty_search.soft_retry_max`，首轮空结果后的放宽软约束重试次数。"""
+        ret = self._config.get("retrieval")
+        if not isinstance(ret, dict):
+            return default
+        es = ret.get("empty_search")
+        if not isinstance(es, dict):
+            return default
+        v = es.get("soft_retry_max")
+        if v is None:
+            return default
+        try:
+            return max(0, min(5, int(v)))
+        except (TypeError, ValueError):
+            return default

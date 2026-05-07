@@ -125,11 +125,11 @@ class GeneratorNode:
         """
         logger.info(f"[logger-Generator] 构建歧义询问消息，候选菜谱: {candidates}")
         print(f"[Generator] 构建歧义询问消息，候选菜谱: {candidates}")  # 调试信息 --- IGNORE ---
-        lines = ["我找到了以下几个相关菜谱，请问您想做哪一个？\n"]
+        lines = ["我找到了以下几个相关菜谱（按检索相关性排序），请问您想做哪一个？\n"]
         normalized_titles = self._normalize_candidate_titles(candidates)
         for i, recipe_name in enumerate(normalized_titles, start=1):
             lines.append(f"  {i}. {recipe_name}")
-        lines.append("\n请回复数字或菜名即可。")
+        lines.append("\n请回复序号数字（如 1）或菜名即可。")
         print(f"[Generator] 构建的歧义询问消息:\n{lines}")  # 调试信息 --- IGNORE ---
         return "\n".join(lines)
 
@@ -215,12 +215,20 @@ class GeneratorNode:
         return await self.handle_chitchat(state)
 
     def handle_clarify(self, state: AgentState) -> str:
-        """生成歧义询问文本，不需要调用 LLM。"""
-        candidates = get_runtime_bundle(state).get("recipe_candidates", [])
+        """生成歧义询问文本（FR-22：有限候选 + 序号/菜名选择提示）。不需要调用 LLM。"""
+        lb = get_runtime_bundle(state)
+        candidates = lb.get("recipe_candidates", [])
         normalized_titles = self._normalize_candidate_titles(candidates)
         if not normalized_titles:
             return "抱歉，我没有找到合适的菜谱，请换个关键词再试试？"
-        return self._build_clarify_message(normalized_titles)
+        body = self._build_clarify_message(candidates)
+        if lb.get("clarify_error") == "invalid_choice":
+            return (
+                "抱歉，没能识别您的选择。请回复列表中的序号（1～"
+                f"{len(normalized_titles)}），或直接输入菜名（可输入部分关键词）。\n\n"
+                + body
+            )
+        return body
 
     def handle_inv_check(self, state: AgentState) -> str:
         """格式化库存快照返回给用户。"""
@@ -404,6 +412,9 @@ async def generator_node(state: AgentState) -> Dict[str, Any]:
         # 如果有澄清任务，必须立即停止其他汇报，优先向用户提问
         logger.info("[Generator] 处理歧义澄清任务")
         clarify_reply = generator.handle_clarify(state)
+        lb_out = copy.deepcopy(lb)
+        if lb_out.get("clarify_error"):
+            lb_out["clarify_error"] = None
         new_message = AIMessage(content=clarify_reply)
         cand_raw = lb.get("recipe_candidates", [])
         has_candidates = bool(generator._normalize_candidate_titles(cand_raw))
@@ -417,11 +428,13 @@ async def generator_node(state: AgentState) -> Dict[str, Any]:
         print(f"🔍 [Generator] 最终返回: task_stack={task_stack}")
         updated_messages = list(state.get("messages", [])) + [new_message]
         schedule_memory_keeper_after_reply(resolve_scope_id(state), updated_messages)
-        return {
+        ret = {
             "messages": updated_messages,
             "task_stack": task_stack,
             **_generator_slice_patch(clarify_reply, task_stack, loop_guard_count),
+            **runtime_bundle_to_slice_patches(lb_out),
         }
+        return ret
 
 
     # ════════════════════════════════════════════════════════════

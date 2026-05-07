@@ -76,6 +76,7 @@ def recipe_state_from_logistics_buffer(lb: Dict[str, Any]) -> Dict[str, Any]:
         "recipe_steps": _recipe_steps_from_buffer(lb),
         "recipe_title_locked": lb.get("recipe_title_locked")
         or lb.get("selected_recipe_title"),
+        "recipe_parser_version": lb.get("recipe_parser_version"),
     }
 
 
@@ -118,6 +119,10 @@ def control_state_from_logistics_buffer(lb: Dict[str, Any]) -> Dict[str, Any]:
         out["pending_tasks"] = list(lb["pending_tasks"])
     if "degraded_reply" in lb:
         out["degraded_reply"] = lb["degraded_reply"]
+    if "clarification_kind" in lb:
+        out["clarification_kind"] = lb["clarification_kind"]
+    if "clarify_error" in lb:
+        out["clarify_error"] = lb["clarify_error"]
     return out
 
 
@@ -136,8 +141,11 @@ def error_state_from_expert_payloads(payloads: Optional[Dict[str, Any]]) -> Dict
     if err is None:
         return {}
     recoverable = pl.get("status") != "fatal_error"
+    code = pl.get("error_code")
+    if code is None:
+        code = pl.get("status") or "unknown"
     return {
-        "error_code": str(pl.get("status") or "unknown"),
+        "error_code": str(code),
         "recoverable": recoverable,
         "error_detail": str(err),
     }
@@ -178,6 +186,10 @@ def materialize_runtime_bundle_from_slices(state: Mapping[str, Any]) -> Dict[str
         flat["pending_tasks"] = list(ctrl.get("pending_tasks") or [])
     if "degraded_reply" in ctrl:
         flat["degraded_reply"] = ctrl["degraded_reply"]
+    if "clarification_kind" in ctrl:
+        flat["clarification_kind"] = ctrl.get("clarification_kind")
+    if "clarify_error" in ctrl:
+        flat["clarify_error"] = ctrl.get("clarify_error")
 
     flat["recipe_candidates"] = _recipe_candidates_to_legacy_shape(rs.get("recipe_candidates"))
     sid = rs.get("selected_recipe_id") or rs.get("recipe_file_ref")
@@ -185,6 +197,8 @@ def materialize_runtime_bundle_from_slices(state: Mapping[str, Any]) -> Dict[str
     flat["selected_recipe_title"] = rs.get("selected_recipe_title")
     flat["recipe_requirements"] = list(rs.get("recipe_requirements") or [])
     flat["recipe_title_locked"] = rs.get("recipe_title_locked")
+    if rs.get("recipe_parser_version") is not None:
+        flat["recipe_parser_version"] = rs.get("recipe_parser_version")
 
     steps = rs.get("recipe_steps") or []
     if isinstance(steps, list) and steps:

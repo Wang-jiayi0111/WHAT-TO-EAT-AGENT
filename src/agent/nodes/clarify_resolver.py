@@ -45,13 +45,15 @@ def _parse_user_choice(
 ) -> Optional[Dict[str, Any]]:
     """
     解析用户的选择，支持：
-    - 数字："1" / "第一个" / "第1个"
-    - 菜名关键词："南派" / "南派红烧肉"
+    - 数字："1" / "第一个" / "第1个" / "选2"
+    - 菜名：完整或部分匹配（取得分最高的唯一命中，避免短串误匹配）
 
     Returns:
         匹配到的候选菜谱 dict，或 None（无法识别）
     """
     text = user_input.strip()
+    if not text:
+        return None
 
     # 尝试数字匹配
     digit_map = {"一": 1, "二": 2, "三": 3, "四": 4, "五": 5,
@@ -67,12 +69,34 @@ def _parse_user_choice(
         if 0 <= idx < len(candidates):
             return candidates[idx]
 
-    # 尝试菜名关键词匹配
-    text_lower = text.lower()
+    # 菜名：打分取最优（FR-22：明确选择方式）
+    text_lower = text.strip().lower()
+
+    def _match_score(user_l: str, title: str) -> int:
+        tl = title.strip().lower()
+        if not tl:
+            return 0
+        if user_l == tl:
+            return 10000 + len(tl)
+        if tl.startswith(user_l) or user_l.startswith(tl):
+            return 5000 + min(len(user_l), len(tl)) * 10
+        if user_l in tl:
+            return 2000 + len(user_l) * 5
+        if tl in user_l:
+            return 1000 + len(tl) * 5
+        return 0
+
+    best: Optional[Dict[str, Any]] = None
+    best_score = 0
     for candidate in candidates:
-        title = candidate.get("title", "").lower()
-        if text_lower in title or title in text_lower:
-            return candidate
+        title = str(candidate.get("title") or "")
+        sc = _match_score(text_lower, title)
+        if sc > best_score:
+            best_score = sc
+            best = candidate
+
+    if best is not None and best_score >= 1000:
+        return best
 
     return None
 
@@ -130,8 +154,10 @@ def clarify_resolver_node(state: AgentState) -> Dict[str, Any]:
         logger.info(f"[ClarifyResolver] 用户选择: {chosen}")
         new_buffer = {
             **logistics_buffer,
-            "selected_recipe_title": chosen.get("title"), # 菜名即 Title
+            "selected_recipe_title": chosen.get("title"),
             "recipe_candidates": [],
+            "clarification_kind": None,
+            "clarify_error": None,
         }
         
         return {

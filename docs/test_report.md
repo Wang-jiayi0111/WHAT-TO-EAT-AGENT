@@ -31,6 +31,12 @@
 | T-013 | 短期状态 TTL / 懒清理 / purge（FR-13 / §3.4） | ✅ 通过 | — | — | 2026-05-06（[TR-018]） |
 | T-014 | 长期画像 patch / IR-05 / SCOPE 迁移 | ✅ 通过 | — | — | 2026-05-06（[TR-019]） |
 | INT-M2 | 记忆子系统模块间集成（L3→**C**→query→§5.4；T-013 清理；T-014 库→C） | ✅ 通过 | — | — | 2026-05-07（[TR-020]） |
+| T-015 | 检索链路传入统一 **C**（`researcher` / `SearchRecipesService` / MCP） | ✅ 通过 | — | — | 2026-05-07（[TR-021]） |
+| T-016 | 高置信锁定 + §5.2 权威 **R**（`resolve_authoritative_structured_recipe` / 错误码） | ✅ 通过 | — | — | 2026-05-07（[TR-022]） |
+| T-017 | 菜谱歧义：有限候选、`clarify_resolver`、`clarify_error`、generator 重问话术 | ✅ 通过 | — | — | 2026-05-07（[TR-023]） |
+| T-018 | 无结果降级：软约束放宽重试、`RECIPE_SEARCH_EMPTY`、降级话术 | ✅ 通过 | — | — | 2026-05-07（[TR-024]） |
+| T-019 | MCP 契约：`protocol` 归一、`SearchRecipesService` / `RecipeSourceService` | ✅ 通过 | — | — | 2026-05-07（[TR-025]） |
+| INT-M3 | 菜谱子系统 M3 模块间集成（**C**→query→§2.2；FR-24；歧义+澄清；高置信 **R**） | ✅ 通过 | — | — | 2026-05-07（[TR-026]） |
 
 ---
 
@@ -934,6 +940,275 @@ python -m pytest tests/integration/test_memory_stack_m2_integration.py -q --tb=n
 ### 开发计划同步
 
 - 不新增开发计划任务行；**INT-M2** 为对 **T-009～T-014** 的**集成层补充验收**，与各任务 [TR-014]～[TR-019] 并列可查。
+
+---
+
+## [TR-021] T-015 功能验证（检索链路统一 **C**）
+
+**验证任务**：T-015 / **FR-11**、**FR-20**——`RecipeResearcher.search_recipes` 向 MCP 传入 `effective_constraint`；`SearchRecipesService.execute` 在传入 **C** 时按 §5.4 硬过滤并标记 `effective_constraint_applied`；`researcher_node` 检索分支将 `build_effective_constraint` 与 `scope_for_mcp` 贯通至 MCP，并把 **C** 写入 `memory_state.effective_constraint`。
+
+**验证时间**：2026-05-07
+
+**最终结论**：✅ 通过
+
+### 测试执行（自动化）
+
+命令：
+
+```text
+python -m pytest tests/unit/test_t015_retrieval_effective_constraint.py -v --tb=short
+```
+
+| 项目 | 结果 |
+|------|------|
+| 用例数 | 5 |
+| 结果 | 5 passed |
+
+**需求追溯**：FR-11，FR-20；实现见 `researcher.search_recipes`、`SearchRecipesService.execute`、MCP `search_recipes` 可选 `effective_constraint`（`docs/dev_log.md` [DEV-015]）。
+
+### 测试用例与验收点
+
+| 测试函数 | 验收点 |
+|----------|--------|
+| `test_search_recipes_includes_effective_constraint_in_mcp_args` | `RecipeResearcher.search_recipes` 调用 MCP 时参数包含 `effective_constraint` |
+| `test_search_recipes_omits_constraint_key_when_none` | 未传 **C** 时不下发该字段 |
+| `test_search_recipes_service_applies_hard_exclusions_section_54` | `SearchRecipesService.execute` 带 **C** 时 §5.4 硬过滤 + `effective_constraint_applied` |
+| `test_merge_effective_constraint_into_memory_patch_writes_memory_state` | `memory_state.effective_constraint` 写入 |
+| `test_researcher_node_forwards_c_to_search_recipes_and_memory` | `researcher_node` 检索分支将 **C** 传给 `search_recipes`，返回态含同一 **C** |
+
+### 说明
+
+- 未启动真实 MCP 子进程：`RecipeResearcher` 侧 mock `_call_mcp_tool`；`researcher_node` 侧 mock `RecipeResearcher`。
+- 与 `tests/unit/test_effective_constraint_t011.py`（T-011）互补：T-011 侧重 **C** 合成与过滤函数；T-015 侧重检索边界与 **C** 在 researcher / MCP 服务层贯通。
+
+### 缺陷列表
+
+- 本轮未登记新 BUG。
+
+### 开发计划同步
+
+已更新 `docs/开发计划.md` §3：**T-015**「测试状态」**待测试** → **已完成**。
+
+---
+
+## [TR-022] T-016 功能验证（高置信锁定与全文解析 **R**）
+
+**验证任务**：T-016 / **FR-21**、**规格 §5.1～§5.2**——`stage1_high_confidence`（`retrieval.confidence.top2_relative_gap`）；高置信后仅锁定 title，**R** 经 `get_recipe_source` → 全文 `parse_recipe_content`（`resolve_authoritative_structured_recipe`）；`RECIPE_PARSER_VERSION`；失败分支 `RECIPE_SOURCE_NOT_FOUND`、`RECIPE_PARSE_FAILED`（与 §9 话术对齐的可恢复错误）。
+
+**验证时间**：2026-05-07
+
+**最终结论**：✅ 通过
+
+### 测试执行（自动化）
+
+命令：
+
+```text
+python -m pytest tests/unit/test_t016_high_confidence_structured_r.py -v --tb=short
+```
+
+| 项目 | 结果 |
+|------|------|
+| 用例数 | 13 |
+| 结果 | 13 passed |
+
+### 测试用例与验收点
+
+| 测试函数 | 验收点 |
+|----------|--------|
+| `test_stage1_high_confidence_*` | §5.1：单候选锁定；双候选相对分差与 gap |
+| `test_coerce_mcp_recipe_path_variants` | MCP 路径统一 |
+| `test_resolve_authoritative_*` | §5.2：`source_not_found` / `empty_r` / 成功路径 |
+| `test_researcher_node_high_confidence_sets_parser_version_and_requirements` | 高置信：`recipe_parser_version`、`recipe_requirements`、`recipe_title_locked` |
+| `test_researcher_node_low_confidence_ambiguous_branch` | 低置信：`ambiguous`、`recipe_candidates` |
+| `test_researcher_node_high_confidence_source_not_found` | `error_code == RECIPE_SOURCE_NOT_FOUND` |
+| `test_researcher_node_high_confidence_parse_failed_empty_r` | `error_code == RECIPE_PARSE_FAILED` |
+
+### 说明
+
+- `researcher_node` 与 `RecipeResearcher` 全程 mock，不拉起 MCP 子进程。
+- 实现见 `src/agent/nodes/researcher.py`（`RECIPE_PARSER_VERSION`、`resolve_authoritative_structured_recipe`、`_recoverable_recipe_fault`）。
+
+### 缺陷列表
+
+- 本轮未登记新 BUG。
+
+### 开发计划同步
+
+已更新 `docs/开发计划.md` §3：**T-016**「测试状态」**待测试** → **已完成**。
+
+---
+
+## [TR-023] T-017 功能验证（多候选澄清 / FR-22）
+
+**验证任务**：T-017 / **FR-22**、**规格 §5.1**——`build_ambiguity_candidates` 与 `retrieval.ambiguity.max_candidates`；低置信歧义分支 `clarification_kind=recipe_pick`、`ambiguity_candidate_count`；`clarify_resolver_node` 数字/菜名解析、成功推进 `TASK_SEARCH`、失败 `clarify_error=invalid_choice`；`GeneratorNode.handle_clarify` 对无效选择的补充提示。
+
+**验证时间**：2026-05-07
+
+**最终结论**：✅ 通过
+
+### 测试执行（自动化）
+
+命令：
+
+```text
+python -m pytest tests/unit/test_t017_recipe_ambiguity_clarify.py -v --tb=short
+```
+
+| 项目 | 结果 |
+|------|------|
+| 用例数 | 10 |
+| 结果 | 10 passed |
+
+### 测试用例与验收点
+
+| 测试函数 | 验收点 |
+|----------|--------|
+| `test_build_ambiguity_candidates_*` | 去重、条数上限、空输入 |
+| `test_parse_user_choice_*` | 序号、菜名子串、无法识别 |
+| `test_clarify_resolver_*` | 成功锁定 title / 失败栈与标志 / 无候选短路 |
+| `test_generator_handle_clarify_invalid_choice_prefix` | 无效选择时前缀话术 + 重列候选 |
+| `test_researcher_low_confidence_sets_structured_candidates_and_clarification_kind` | 歧义上限、`recipe_pick`、展平 bundle 中候选标题列表 |
+
+### 说明
+
+- 运行时 bundle 中 `recipe_candidates` 经 `materialize_runtime_bundle_from_slices` 多为**标题字符串列表**（legacy 形状）；`build_ambiguity_candidates` 产出的 dict 在切片内保留完整字段。
+- `researcher_node` 用例 mock MCP，不拉起子进程。
+
+### 缺陷列表
+
+- 本轮未登记新 BUG。
+
+### 开发计划同步
+
+已更新 `docs/开发计划.md` §3：**T-017**「测试状态」**待测试** → **已完成**。
+
+---
+
+## [TR-024] T-018 功能验证（无结果说明与软约束重试 / FR-24）
+
+**验证任务**：T-018 / **FR-24**——`effective_constraint_has_retryable_soft_signals`、`relaxed_effective_constraint_for_search_retry`（保留 `hard_exclusions` / `scope_id`）；`researcher_node` 首轮空结果后在 `get_recipe_search_soft_retry_max` 允许次数内用放宽 **C** 重试；仍空时 `expert_payloads.error_code=RECIPE_SEARCH_EMPTY`、`recipe_search_soft_retry_attempted` 与对应 `degraded_reply`；无软信号或 `soft_retry_max=0` 时不二次检索。
+
+**验证时间**：2026-05-07
+
+**最终结论**：✅ 通过
+
+### 测试执行（自动化）
+
+命令：
+
+```text
+python -m pytest tests/unit/test_t018_fr24_empty_search_soft_retry.py -v --tb=short
+```
+
+| 项目 | 结果 |
+|------|------|
+| 用例数 | 8 |
+| 结果 | 8 passed |
+
+### 测试用例与验收点
+
+| 测试函数 | 验收点 |
+|----------|--------|
+| `test_effective_constraint_has_retryable_soft_signals_*` | 软提示 / 时间态 / 目标 / 摘要触发；仅 hard 不触发 |
+| `test_relaxed_effective_constraint_keeps_hard_and_scope_clears_soft` | 放宽后软字段清空、硬排除与 scope 保留 |
+| `test_researcher_empty_then_soft_retry_still_empty_sets_fr24_flags` | 二次 `search_recipes`、`RECIPE_SEARCH_EMPTY`、重试标记、长文案含「放宽」 |
+| `test_researcher_empty_no_soft_signals_no_second_search` | 单次检索、短文案、无重试标记 |
+| `test_researcher_soft_retry_max_zero_skips_retry` | `soft_retry_max=0` 不进入重试 |
+| `test_researcher_second_search_returns_recipes_stops_retry_loop` | 放宽后命中结果则成功路径，无空检索错误码 |
+
+### 说明
+
+- `RecipeResearcher` mock，不拉起 MCP；`build_effective_constraint` 注入固定 **C**。
+- 实现见 `src/agent/effective_constraint.py`、`src/agent/nodes/researcher.py`、`Settings.get_recipe_search_soft_retry_max`。
+
+### 缺陷列表
+
+- 本轮未登记新 BUG。
+
+### 开发计划同步
+
+已更新 `docs/开发计划.md` §3：**T-018**「测试状态」**待测试** → **已完成**。
+
+---
+
+## [TR-025] T-019 功能验证（MCP JSON 契约 / IR-02 / §2）
+
+**验证任务**：T-019 / **IR-02**、**规格 §2**——`mcp_validation_error`、`is_mcp_error_response`；`normalize_search_recipe_item` / `normalize_search_recipes_success_body` 仅暴露 `id`/`title`/`score`；`SearchRecipesService.execute` 空 query 校验、`top_k` 默认 **5**、带 **C** 时输出无 `content` 且含 `effective_constraint_applied`；`RecipeSourceService.execute` 空菜名校验与路径返回。
+
+**验证时间**：2026-05-07
+
+**最终结论**：✅ 通过
+
+### 测试执行（自动化）
+
+命令：
+
+```text
+python -m pytest tests/unit/test_t019_mcp_contract.py -v --tb=short
+```
+
+| 项目 | 结果 |
+|------|------|
+| 用例数 | 17 |
+| 结果 | 17 passed |
+
+### 说明
+
+- 未导入 `src.mcp.server`（避免模块级初始化 RAG/Chroma）；`server.py` 中 `query` / `recipe_name` 非空字符串校验与 Service 层一致，由 Service 与 `protocol` 单测覆盖。
+- `is_mcp_error_response` 对无 `recipes`、无 `status=error`、无 `error` 键的任意 dict 返回 **False**（与当前实现一致）。
+
+### 缺陷列表
+
+- 本轮未登记新 BUG。
+
+### 开发计划同步
+
+已更新 `docs/开发计划.md` §3：**T-019**「测试状态」**待测试** → **已完成**。
+
+---
+
+## [TR-026] 集成：M3 菜谱子系统模块间验收（`tests/integration/test_recipe_stack_m3_integration.py`）
+
+**验证任务**：在 **T-015～T-019** 单测之外，对 M3 菜谱链路做**跨模块串联**：`build_effective_constraint` → `augment_search_query` → `normalize_search_recipes_success_body`（§2.2，无 `content`）；`build_ambiguity_candidates` 与低置信上限一致；`researcher_node` 空结果 **FR-24** 软重试与 `RECIPE_SEARCH_EMPTY`；低置信歧义后 `clarify_resolver_node` 数字选择锁定 `selected_recipe_title`；单候选高置信经 `get_recipe_source` + 全文解析得到 **R** 与 `recipe_parser_version`。
+
+**验证时间**：2026-05-07
+
+**最终结论**：✅ 通过
+
+### 测试执行（自动化）
+
+命令：
+
+```text
+python -m pytest tests/integration/test_recipe_stack_m3_integration.py -v --tb=short
+```
+
+| 项目 | 结果 |
+|------|------|
+| 用例数 | 5 |
+| 结果 | 5 passed |
+
+| 用例 | 覆盖 |
+|------|------|
+| `test_m3_chain_c_to_query_to_mcp_success_body_contract` | T-015、T-019 |
+| `test_m3_build_ambiguity_candidates_aligns_with_low_confidence_cap` | T-017 |
+| `test_m3_researcher_fr24_soft_retry_then_recipe_search_empty` | T-018 |
+| `test_m3_ambiguous_researcher_then_clarify_numeric` | T-016、T-017 |
+| `test_m3_high_confidence_authoritative_r_after_research` | T-016 |
+
+### 说明
+
+- **不启动** 真实 MCP 子进程：`RecipeResearcher` 全程 mock。
+- **INT-M3** 为对 **T-015～T-019** 的集成层补充验收，与 [TR-021]～[TR-025] 并列可查。
+
+### 缺陷列表
+
+- 本轮未登记新 BUG。
+
+### 开发计划同步
+
+- 不新增开发计划任务行；里程碑 **M3 菜谱检索** 的集成验收以本 **[TR-026]** 与既有单测为准。
 
 ---
 

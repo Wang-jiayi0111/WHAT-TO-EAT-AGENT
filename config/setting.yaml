@@ -29,6 +29,15 @@ retrieval:
   top_k_dense: 20
   top_k_sparse: 20
   top_k_final: 10
+  # §5.1 阶段一：top1 相对 top2 分数优势超过该比例则高置信锁定（与 researcher 一致）
+  confidence:
+    top2_relative_gap: 0.15
+  # §5.1 / FR-22：歧义分支展示的最大候选数（有限列表 + 序号选择）
+  ambiguity:
+    max_candidates: 6
+  # FR-24：首轮无结果时，额外使用「放宽软约束」的检索次数（仍保留 hard_exclusions / §5.4）
+  empty_search:
+    soft_retry_max: 1
   rerank:
     enabled: true             # 增加开关，方便调试时跳过精排
     backend: cross_encoder 

@@ -177,6 +177,39 @@ def _text_matches_kw(title: str, content: str, kw: str) -> bool:
     return k in t or k in c2
 
 
+def effective_constraint_has_retryable_soft_signals(c: Mapping[str, Any]) -> bool:
+    """是否存在可通过「放宽」改善检索的软约束（FR-24；§3.5）。"""
+    sn = c.get("soft_negative_hints") or []
+    sp = c.get("soft_positive_hints") or []
+    tc = c.get("temporal_conditions") or []
+    dt = c.get("dietary_target")
+    ss = c.get("summary_snippet")
+    if isinstance(sn, list) and any(str(x).strip() for x in sn):
+        return True
+    if isinstance(sp, list) and any(str(x).strip() for x in sp):
+        return True
+    if isinstance(tc, list) and any(str(x).strip() for x in tc):
+        return True
+    if isinstance(dt, str) and dt.strip():
+        return True
+    if isinstance(ss, str) and ss.strip():
+        return True
+    return False
+
+
+def relaxed_effective_constraint_for_search_retry(c: Mapping[str, Any]) -> Dict[str, Any]:
+    """
+    FR-24：保留 hard_exclusions / scope_id，清空检索增强用的软字段后重试阶段一。
+    """
+    base = dict(c)
+    base["soft_negative_hints"] = []
+    base["soft_positive_hints"] = []
+    base["temporal_conditions"] = []
+    base["dietary_target"] = None
+    base["summary_snippet"] = None
+    return base
+
+
 def filter_recipes_by_hard_exclusions(
     recipes: List[Dict[str, Any]],
     hard_exclusions: Sequence[str],
