@@ -71,8 +71,10 @@ def normalize_legacy_entities_to_slots(
         "deduct_confirm",
         "list_action",
         "list_edit_ops",
+        "mark_bought_items",
         "inventory_query_targets",
         "restock_items",
+        "restock_confirm",
         "recipe_name_for_commit",
         "profile_fragments",
     )
@@ -158,7 +160,11 @@ def compute_missing_slots(
                 missing.add("restock_items")
 
         elif intent == "inventory_commit":
-            if not (
+            # §6.3：会话已锁定菜名时，允许不显式报 recipe_name_for_commit
+            has_locked_title = bool(
+                lb.get("recipe_title_locked") or lb.get("selected_recipe_title")
+            )
+            if not has_locked_title and not (
                 slots.get("recipe_name_for_commit") or slots.get("recipe_name")
             ):
                 missing.add("recipe_name_for_commit")

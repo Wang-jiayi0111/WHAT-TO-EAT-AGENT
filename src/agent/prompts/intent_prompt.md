@@ -19,6 +19,7 @@
 | `deduct_confirm` | 扣减前用户已口头确认等（若适用）。 |
 | `list_action` | 购物清单：`show` \| `edit_overlay` \| `refresh_gap` \| `mark_bought`（缺省 `show`）。 |
 | `list_edit_ops` | 对清单的结构化编辑描述（若用户要改清单）。 |
+| `mark_bought_items` | `list_action=mark_bought` 时：已买到/可划掉的食材名列表（将收敛为 overlay `remove`）。 |
 
 **仍可在 `entities` 中使用的迁移字段**（路由会映射到上面键）：
 - `preferences` / 忌口文案 → 合并进 **`profile_fragments`**。
@@ -60,6 +61,8 @@
 # 关键区分：inventory_add vs inventory_commit
 - **inventory_add**：买了、购入、拿了、收到、带回来了 → **只标** `inventory_add`，**不要**顺带加 `inventory_check`，除非用户**另有一句明确问库存**。
 - **inventory_commit**：做好了、做完了、烹饪完成 → `inventory_commit`。
+- **§6.3 扣减**：用户须先**采纳当前菜谱**（`recipe_adopt` 或明确「就做这道」→ `recipe_adoption`），再 `inventory_commit`；可与采纳**同一轮**合并表述。
+- **补货预览已展示后**：用户仅说「确认」「好的」「确定」等同意入库时，输出 **`inventory_add`** + **`slots.restock_confirm: true`**（可不重复填 `restock_items`；系统也会用规则识别短句确认）。
 
 # Current Context
 - 当前操作用户: $active_user_id

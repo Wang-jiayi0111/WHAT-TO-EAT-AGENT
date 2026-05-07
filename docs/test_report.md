@@ -37,6 +37,14 @@
 | T-018 | 无结果降级：软约束放宽重试、`RECIPE_SEARCH_EMPTY`、降级话术 | ✅ 通过 | — | — | 2026-05-07（[TR-024]） |
 | T-019 | MCP 契约：`protocol` 归一、`SearchRecipesService` / `RecipeSourceService` | ✅ 通过 | — | — | 2026-05-07（[TR-025]） |
 | INT-M3 | 菜谱子系统 M3 模块间集成（**C**→query→§2.2；FR-24；歧义+澄清；高置信 **R**） | ✅ 通过 | — | — | 2026-05-07（[TR-026]） |
+| INT-M4 | M4 库存与清单模块集成（§6～§7；**I**、扣减、补货、缺口缓存、overlay）；`tests/integration/test_m4_inventory_list_module.py` | ✅ 通过 | — | — | 2026-05-07（[TR-037]） |
+| T-032 | `inventory` 表 `household_id` 迁移与 SCOPE 对齐（§6.2、§8）；单测 `tests/unit/test_t032_inventory_migration.py` | ✅ 通过 | — | — | 2026-05-07（[TR-027]） |
+| T-020 | 库存快照 **I** → `inventory_state.inventory_snapshot`（FR-30 / §6.1 / §1.2.1）；单测 `tests/unit/test_t020_inventory_snapshot.py` | ✅ 通过 | — | — | 2026-05-07（[TR-028]） |
+| T-033 | 补货预览/确认 §6.5、`add_preview`、`restock_confirm`；单测 `tests/unit/test_t033_restock_preview.py` | ✅ 通过 | BUG-002 | 已关闭（见 [TR-031]） | 2026-05-07（[TR-029] 初审；[TR-031] 复审） |
+| T-021 | §6.3 `TASK_INV_COMMIT`、`recipe_use_confirmed`、菜名锚点；单测 `tests/unit/test_t021_inv_commit_section63.py` | ✅ 通过 | — | — | 2026-05-07（[TR-032]） |
+| T-022 | 扣减/补货写失败显式反馈（FR-32 / §6.4、§6.5.5）；单测 `tests/unit/test_t022_inventory_write_feedback.py` | ✅ 通过 | — | — | 2026-05-07（[TR-034]） |
+| T-023 | 购物缺口缓存 §7.3、`gap_delivery_mode`、`GAP_CACHE_MISS`；单测 `tests/unit/test_t023_gap_cache.py` | ✅ 通过 | — | — | 2026-05-07（[TR-035]） |
+| T-024 | 清单 overlay、`list_action`、`mark_bought_items`（§7.4、FR-41/43）；单测 `tests/unit/test_t024_shopping_list_overlay.py` | ✅ 通过 | — | — | 2026-05-07（[TR-036]） |
 
 ---
 
@@ -1212,10 +1220,540 @@ python -m pytest tests/integration/test_recipe_stack_m3_integration.py -v --tb=s
 
 ---
 
+## [TR-027] T-032 功能验证（inventory `household_id` 迁移与 SCOPE）
+
+**验证任务**：T-032 / [DEV-022]——`InventoryManager` 默认 `Settings.get_inventory_db_path()` 与 `get_scope_id()`；`_migrate_to_v62`（无表建 §6.2、已有 `household_id` 跳过、否则自 legacy 迁移）；读写 SQL 均带 `WHERE household_id = ?`；`ON CONFLICT(household_id, name)`；`LogisticsManager` 与 `InventoryManager` 路径/作用域一致；`integrity._initialize_inventory_db` 建表与业务一致（**规格 §6.2、§8**）。
+
+**验证时间**：2026-05-07
+
+**最终结论**：✅ 通过
+
+**测试文档与用例位置**：`tests/unit/test_t032_inventory_migration.py`（模块级字符串说明 = 测试计划与追溯；用例为 pytest 函数，**不**另建 `docs/` 下测试说明文件）。
+
+### 测试过程信息（执行记录）
+
+以下为本轮在仓库根目录（`F:\WHAT-TO-EAT-AGENT`）实际执行的命令与摘要输出，供审计与复跑对照。
+
+1. **T-032 专项文件**
+
+   ```text
+   python -m pytest tests/unit/test_t032_inventory_migration.py -v --tb=short
+   ```
+
+   **结果**：收集 **4** 条；**4 passed**，约 **4.5s**；节点：`test_t032_tc001_empty_db_creates_section62_schema` … `test_t032_tc004_two_households_isolated_on_same_file` 均通过。
+
+2. **全量回归**
+
+   ```text
+   python -m pytest tests -q --tb=no
+   ```
+
+   **结果**：**131 passed**，**12 skipped**，约 **26s**（相较纳入 T-032 单测前 +4 条用例）。
+
+### 测试执行（汇总）
+
+| 步骤 | 命令 / 方式 | 结果（本轮） |
+|------|-------------|--------------|
+| T-032 单测文件 | `pytest tests/unit/test_t032_inventory_migration.py -v` | **4 passed** |
+| 全仓库 pytest | `pytest tests -q --tb=no` | **131 passed**，12 skipped |
+
+### 测试用例执行情况
+
+| 用例 | pytest 节点 | 描述 | 对应规格 / 场景 | 结果 |
+|------|---------------|------|-----------------|------|
+| TC-001 | `test_t032_tc001_empty_db_creates_section62_schema` | 空库首次打开 → §6.2 表结构 | §6.2 | ✅ 通过 |
+| TC-002 | `test_t032_tc002_legacy_name_pk_migrates_to_household_scope` | 旧 `name` 主键表迁移 → 行绑定 SCOPE | §6.2 | ✅ 通过 |
+| TC-003 | `test_t032_tc003_legacy_integrity_shape_user_id_mapping` | integrity 旧形映射 | DEV-022 | ✅ 通过 |
+| TC-004 | `test_t032_tc004_two_households_isolated_on_same_file` | 双 `household_id` 同库隔离 | §8 | ✅ 通过 |
+| TC-005 | 全仓库收集（含本文件及既有用例） | 回归与 NFR-05 | NFR-05 | ✅ 通过 |
+
+### 禁止行为与通用检查
+
+| 检查项 | 结果 | 说明 |
+|--------|------|------|
+| `inventory` 访问未使用 `thread_id` 作键 | ✅ | `inventory.py` 仅 `household_id` |
+| `task_stack`；业务代码禁用名 `task_queue` | ✅ | `src/**/*.py` 仅 `task_stack.py` 注释提及 |
+| `get_all()` 返回 Dict 形态 **I** | ✅ | 键为食材名，值为 `amount`/`unit` |
+| AgentState 七切片 / L2 不误改 `recipe_state` | ✅（例行） | 本轮未改 `state.py`/L2；无新风险信号 |
+
+### 观察项（非缺陷、不阻塞 T-032）
+
+- **`DatabaseIntegrityChecker`** 仍使用相对路径字面量 `data/db/inventory.db`，与 `Settings.get_inventory_db_path()` 在「自定义 `paths.db_dir`」时可能不一致；若仅使用默认配置则与 DEV-022「integrity 建表对齐」目标一致。建议后续横切任务（如 T-027）统一路径来源。
+
+### 缺陷列表
+
+- 本轮未登记新 BUG。
+
+### 开发计划同步
+
+已将 `docs/开发计划.md` §3：**T-032**「测试状态」**待测试** → **已完成**。
+
+---
+
+## [TR-028] T-020 功能验证（库存快照 **I** 与 `inventory_state.inventory_snapshot`）
+
+**验证任务**：T-020 / [DEV-023]——`InventoryManager.get_inventory_snapshot_i`（`WHERE household_id = ?` 之上的规范 **I**）；`LogisticsManager.get_inventory_snapshot` 委托；`logistics_manager_node` 文末无条件 `get_inventory_snapshot()` 写入 `updates["inventory_snapshot"]`，经 `runtime_bundle_to_slice_patches` → **`inventory_state.inventory_snapshot`**（§1.2.1 字典型）；`_normalize_inventory_snapshot` 对 dict 逐项 `float`/`str`、兼容 list legacy（**FR-30**；**§6.1**；**§1.2.1**）。
+
+**验证时间**：2026-05-07
+
+**最终结论**：✅ 通过
+
+**测试文档与用例**：`tests/unit/test_t020_inventory_snapshot.py`
+
+### 测试过程信息（执行记录）
+
+仓库根目录 `F:\WHAT-TO-EAT-AGENT`：
+
+1. **T-020 专项**
+
+   ```text
+   python -m pytest tests/unit/test_t020_inventory_snapshot.py -v --tb=short
+   ```
+
+   **结果**：**4 passed**，约 **1.4s**（`test_t020_tc001`～`test_t020_tc004`）。
+
+2. **全量回归**
+
+   ```text
+   python -m pytest tests -q --tb=no
+   ```
+
+   **结果**：**135 passed**，**12 skipped**，约 **33s**（较 [TR-027] 全量 +4 条用例）。
+
+### 测试用例执行情况
+
+| 用例 | pytest 节点 | 描述 | 依据 | 结果 |
+|------|-------------|------|------|------|
+| TC-001 | `test_t020_tc001_get_inventory_snapshot_i_shape` | **I** 为 `float`/`str` | §6.1 | ✅ |
+| TC-002 | `test_t020_tc002_normalize_inventory_snapshot` | dict / list / 非法根 | §1.2.1 | ✅ |
+| TC-003 | `test_t020_tc003_logistics_node_writes_final_i_without_recipe_requirements` | 无 **R** 仍写最终快照至切片 | DEV-023 | ✅ |
+| TC-004 | `test_t020_tc004_inv_commit_then_snapshot_reflects_deduction` | 扣减后快照与 DB 一致 | FR-30 | ✅ |
+
+### 禁止行为与通用检查
+
+| 检查项 | 结果 |
+|--------|------|
+| 库存 SQL 键为 `household_id`，非 `thread_id` | ✅（与 T-032 / `inventory.py` 一致） |
+| `task_queue` 禁用名 | ✅（例行） |
+| `inventory_snapshot` 为 Dict 形态 **I** | ✅ |
+
+### 缺陷列表
+
+- 本轮未登记新 BUG。
+
+### 开发计划同步
+
+已将 `docs/开发计划.md` §3：**T-020**「测试状态」**待测试** → **已完成**。
+
+---
+
+## [TR-029] T-033 功能验证（§6.5 补货预览 / 确认 / `apply_restock`）
+
+**验证任务**：T-033 / [DEV-024]——`_build_add_preview_from_restock_rows`；`TASK_INV_ADD` 与 `slots.restock_items` / `restock_confirm`；`Settings.get_inventory_restock_confirm_required`；`InventoryManager.apply_restock`；`_restock_pending_confirm_shortcut`（**规格 §6.5**；**§9**）。
+
+**验证时间**：2026-05-07
+
+**最终结论**：❌ 有缺陷（业务路径与单测多数通过；**§9 `error_state` 未随节点返回**，见 BUG-002）
+
+**测试文档与用例**：`tests/unit/test_t033_restock_preview.py`
+
+### 测试过程信息（执行记录）
+
+```text
+python -m pytest tests/unit/test_t033_restock_preview.py -v --tb=short
+python -m pytest tests -q --tb=no
+```
+
+**结果（本轮）**：T-033 文件 **8 passed**；全量 **143 passed**，**12 skipped**，约 **30s**。
+
+**回归维护**：T-021 §6.3 扣减守卫上线后，`TASK_INV_COMMIT` 单测需会话 **`recipe_use_confirmed=True`**。已同步 **`tests/unit/t001-031Intent/test_logistics_silent_gap.py`**（`test_silent_precalc_runs_after_inv_commit`）与 **`tests/unit/test_t020_inventory_snapshot.py`**（`test_t020_tc004_*`），与扣减前置条件一致。
+
+### 测试用例执行情况
+
+| 用例 | pytest 节点 | 描述 | 结果 |
+|------|-------------|------|------|
+| TC-001 | `test_t033_tc001_build_preview_valid_row` | 预览解析与 `merge_mode` | ✅ |
+| TC-002 | `test_t033_tc002_unparsed_only_inventory_add_unparsed` | `add_status=failed` + `error_code=INVENTORY_ADD_UNPARSED` | ✅（BUG-002 关闭后补齐断言） |
+| TC-003 | `test_t033_tc003_partial_unresolved_pending` | 部分 unresolved → pending | ✅ |
+| TC-004 | `test_t033_tc004_confirm_required_pending_no_write` | 需确认时不写库 | ✅ |
+| TC-005 | `test_t033_tc005_auto_commit_single_when_confirm_off` | 单条自动写库 | ✅ |
+| TC-006 | `test_t033_tc006_two_step_confirm_writes` | 确认后轮写入 | ✅ |
+| TC-007 | `test_t033_tc007_apply_restock_add_vs_set` | `apply_restock` add/set | ✅ |
+| TC-008 | `test_t033_tc008_router_pending_confirm_shortcut` | 路由短句确认 | ✅ |
+
+### 禁止行为与通用检查
+
+| 检查项 | 结果 |
+|--------|------|
+| 库存键非 `thread_id` | ✅ |
+| `task_stack` / 禁用 `task_queue` | ✅（例行） |
+
+### 缺陷列表（初审）
+
+- **BUG-002**：见下文 **[BUG-002]**；已于 **[TR-031]** 复审关闭。
+
+### 开发计划同步（初审）
+
+已将 `docs/开发计划.md` §3：**T-033**「测试状态」标为 **待修改**（关联 BUG-002）。复审收口见 **[TR-031]**。
+
+---
+
+## [BUG-002] logistics 节点设置的 `error_state` 未写入返回补丁（§9 错误码丢失）
+
+**严重程度**：`P2-一般`
+
+**所属任务**：T-033（波及 T-022 失败话术与 §9 对齐）
+
+**违反规格**：规格 §9；DEV-024 中「`INVENTORY_ADD_UNPARSED` / `INVENTORY_WRITE_FAILED`」
+
+**发现时间**：2026-05-07
+
+**状态**：`已关闭`（复审见 **[TR-031]**；修复 **[DEV-026]** / **[TR-030]**）
+
+### 问题描述
+
+`logistics_manager_node` 在 `TASK_INV_ADD` 等分支中向 `updates` 写入 **`error_code`**（如 `INVENTORY_ADD_UNPARSED`）。合并后的 `new_logistics_buffer` 含 `error_state` 键，但 **`runtime_bundle_to_slice_patches(lb)` 仅产出 `recipe_state` / `inventory_state` / `control_state`（及可选 `memory_state`）**，未将 `lb["error_state"]` 映射到返回字典，导致节点 **`return out` 不包含 `error_state`**，校验 §9 枚举的用户可见失败路径不完整。
+
+### 复现步骤
+
+1. 构造 `task_stack` 含 `TASK_INV_ADD`，`slots.restock_items=[{"name":"鸡蛋"}]`（无 amount）。  
+2. 调用 `logistics_manager_node`。  
+3. 观察返回值：可无 **`error_state.error_code`**；inventory 侧可有 **`add_status=="failed"`**。
+
+### 预期行为
+
+返回值应包含 **`error_state`**，且 **`error_code == INVENTORY_ADD_UNPARSED`**（与规格 §9、DEV-024 一致）。
+
+### 实际行为（修复前）
+
+`out.get("error_state")` 常为缺省空结构或未携带上述 `error_code`；业务仍可能通过 `add_status` 区分失败，但 **错误码未随状态图传播**。（**修复后**：见 **[TR-031]** 复审，`runtime_bundle_to_slice_patches` 转发 `error_state`。）
+
+### 根因分析（测试侧初步判断）
+
+`src/agent/state_sync.py` 中 `runtime_bundle_to_slice_patches` 未处理展平 `lb` 的 **`error_state`** 字段；`logistics` 未在 `return` 前单独合并 `error_state` 补丁。
+
+### 影响范围
+
+- 影响场景：补货解析失败、写库部分失败等需 §9 码的交互与 T-022 显式反馈。  
+- 影响任务：T-033 初审「有缺陷」直至 BUG 修复；复审收口见 **[TR-031]**。
+
+**备注**：开发合入见 **[TR-030]** / [DEV-026]；测试 Agent 已于 **[TR-031]** 关闭 BUG 并将 **`docs/开发计划.md` §3 T-033** 标为 **已完成**。
+
+---
+
+## [TR-030] BUG-002 开发修复记录（§9 `error_state` 随 `runtime_bundle_to_slice_patches` 传播）
+
+**关联缺陷**：BUG-002 · **关联开发日志**：`docs/dev_log.md` [DEV-026]
+
+**记录时间**：2026-05-07
+
+**修复结论（开发侧）**：✅ 已合入实现；**测试复审**：见 **[TR-031]**（BUG-002 已关闭，T-033 已完成）。
+
+### 根因（与 BUG-002 一致）
+
+`logistics_manager_node` 合并后的展平 `lb` 含 **`error_state`**，但 **`runtime_bundle_to_slice_patches(lb)`** 未生成 **`error_state`** 切片补丁，节点 **`return`** 未携带 §9 字段，LangGraph **`merge_slice`** 无法更新 **`AgentState.error_state`**。
+
+### 修复要点
+
+| 项 | 说明 |
+|----|------|
+| `runtime_bundle_to_slice_patches` | 若 **`"error_state" in lb`**，则 **`patches["error_state"]`** 写入（与 **`CLEAR_ERROR_STATE`** 清场合规一致）。 |
+| `materialize_runtime_bundle_from_slices` | 将 **`state["error_state"]`** 并入展平 **`flat["error_state"]`**，保证 **`get_runtime_bundle`** 与切片往返一致。 |
+| 变更文件 | `src/agent/state_sync.py` |
+
+### 开发侧自测（非最终验收）
+
+```text
+python -m pytest tests/unit/test_t033_restock_preview.py -v --tb=short
+```
+
+**结果**：`8 passed`（与 DEV-026 一致）。全量回归以测试 Agent 命令与结论为准。
+
+### 说明
+
+- **不在本条修改** `docs/开发计划.md` 中任何任务的「测试状态」列（避免开发与测试角色混写）。  
+- BUG 关闭与 T-033 收口：见 **[TR-031]**（测试 Agent 复审）。
+
+---
+
+## [TR-031] BUG-002 复审与 T-033 收口
+
+**关联**：BUG-002 · `docs/dev_log.md` **[DEV-026]** · 初审 **[TR-029]** · 开发记录 **[TR-030]**
+
+**复审时间**：2026-05-07
+
+### 【复审结论 BUG-002】
+
+**复现步骤验证**：按 [BUG-002] 原步骤（`TASK_INV_ADD` + `restock_items=[{"name":"鸡蛋"}]`，无 amount）调用 `logistics_manager_node`；返回值 **`out["error_state"]["error_code"] == INVENTORY_ADD_UNPARSED`** ✅（单测 `test_t033_tc002_unparsed_only_inventory_add_unparsed` 已断言）。
+
+**回归检查**：`python -m pytest tests -q --tb=no` → **143 passed**，**12 skipped**，约 **29s** ✅；未发现新失败。
+
+**结论**：**BUG-002 关闭** ✅
+
+### T-033 最终结论（复审后）
+
+**§6.5 补货预览 / 确认 / §9 错误码传播**：与规格及 [DEV-024]、[DEV-026] 对齐；**T-033 功能验证通过**，可标「已完成」。
+
+### 测试过程信息（复审轮）
+
+```text
+python -m pytest tests/unit/test_t033_restock_preview.py -v --tb=short
+python -m pytest tests -q --tb=no
+```
+
+**结果**：T-033 文件 **8 passed**（含 TC-002 对 `error_state` 的硬性断言）；全量 **143 passed**，12 skipped。
+
+### 开发计划同步
+
+已将 `docs/开发计划.md` §3：**T-033**「测试状态」**待修改** → **已完成**。
+
+---
+
+## [TR-032] T-021 功能验证（§6.3 `TASK_INV_COMMIT` / FR-31）
+
+**验证任务**：T-021 / [DEV-025]——`logistics_manager_node` 在 **`TASK_INV_COMMIT`** 下：`recipe_use_confirmed` 或当轮 **`recipe_adopt`** / **`recipe_adoption`** 槽位才允许 **`batch_deduct`**；否则 **`commit_status=blocked_no_confirm`**；菜名锚点与锁定菜不一致 → **`blocked_recipe_mismatch`** + **`COMMIT_RECIPE_MISMATCH`**；成功扣减后 **`recipe_use_confirmed=False`**；**R** 空 → **`skipped`**（**规格 §6.3**；**FR-31**）。
+
+**验证时间**：2026-05-07
+
+**最终结论**：✅ 通过
+
+**测试文档与用例**：`tests/unit/test_t021_inv_commit_section63.py`
+
+### 测试过程信息
+
+```text
+python -m pytest tests/unit/test_t021_inv_commit_section63.py -v --tb=short
+python -m pytest tests -q --tb=no
+```
+
+**结果**：T-021 专项 **5 passed**（约 **3.4s**）；全量 **148 passed**，**12 skipped**，约 **33s**。
+
+### 测试用例执行情况
+
+| 用例 | pytest 节点 | 描述 | 结果 |
+|------|--------------|------|------|
+| TC-001 | `test_t021_tc001_skipped_when_no_recipe_requirements` | **R** 空 → `skipped` | ✅ |
+| TC-002 | `test_t021_tc002_blocked_no_confirm_no_deduct` | 未确认 → `blocked_no_confirm`、库存不变 | ✅ |
+| TC-003 | `test_t021_tc003_success_clears_recipe_use_confirmed` | 已确认 → 扣减成功并清除标记 | ✅ |
+| TC-004 | `test_t021_tc004_recipe_adopt_this_turn_allows_commit` | 当轮 `recipe_adopt` → 允许扣减 | ✅ |
+| TC-005 | `test_t021_tc005_blocked_recipe_mismatch_error_code` | 菜名不一致 → `COMMIT_RECIPE_MISMATCH` | ✅ |
+
+### 禁止行为与通用检查
+
+| 检查项 | 结果 |
+|--------|------|
+| `task_queue` 禁用名（例行） | ✅ |
+| §9：`error_state` 随节点返回（TC-005） | ✅ |
+
+### 缺陷列表
+
+- 本轮未登记新 BUG。
+
+### 开发计划同步
+
+已将 `docs/开发计划.md` §3：**T-021**「测试状态」**待测试** → **已完成**。
+
+---
+
+## [TR-034] T-022 功能验证（库存写失败显式反馈 / FR-32）
+
+**验证任务**：T-022 / [DEV-027]——`InventoryManager.batch_deduct_report`；`LogisticsManager.update_inventory_after_cooking_report`；`TASK_INV_COMMIT` 在 **`partial_success` / `failed`** 时写入 **`commit_succeeded_items` / `commit_failed_items`** 与 **`error_state.error_code=INVENTORY_WRITE_FAILED`**；仅 **`success`** 清除 **`recipe_use_confirmed`**；**`TASK_INV_ADD`** 确认路径的 **`add_succeeded_items` / `add_failed_items`**；**`GeneratorNode.handle_inv_commit` / `handle_inv_add`** 对齐 FR-32，禁止用笼统「已全部成功」掩盖部分失败（**FR-32**；**§6.4**；**§6.5.5**）。
+
+**验证时间**：2026-05-07
+
+**最终结论**：✅ 通过
+
+**测试文档与用例**：`tests/unit/test_t022_inventory_write_feedback.py`
+
+### 测试过程信息
+
+```text
+python -m pytest tests/unit/test_t022_inventory_write_feedback.py -v --tb=short
+python -m pytest tests -q --tb=no
+```
+
+**结果（本轮）**：T-022 专项 **5 passed**（约 **6s**）；全量 **`pytest tests`**：**153 passed**，**12 skipped**，约 **32s**。
+
+### 测试用例执行情况
+
+| 用例 | pytest 节点 | 描述 | 结果 |
+|------|--------------|------|------|
+| TC-001 | `test_t022_tc001_batch_deduct_report_partial` | `batch_deduct_report` 部分失败 | ✅ |
+| TC-002 | `test_t022_tc002_logistics_commit_partial_lists_and_error_state` | 扣减 partial → 名单 + §9；不清理 `recipe_use_confirmed` | ✅ |
+| TC-003 | `test_t022_tc003_logistics_commit_failed_all` | 扣减全失败 | ✅ |
+| TC-004 | `test_t022_tc004_generator_commit_and_add_no_false_success_wording` | generator 话术 | ✅ |
+| TC-005 | `test_t022_tc005_logistics_add_confirm_partial_success_lists` | 补货 partial 名单 | ✅ |
+
+### 禁止行为与通用检查
+
+| 检查项 | 结果 |
+|--------|------|
+| `error_state` 随节点补丁（TC-002/003/005） | ✅ |
+| `task_queue` 例行 | ✅ |
+
+### 缺陷列表
+
+- 本轮未登记新 BUG。
+
+### 开发计划同步
+
+**T-022**「测试状态」在 **`docs/开发计划.md` §3** 应为 **已完成**（与 [DEV-027] 一致）；若仍为「待测试」请保存后刷新。
+
+### 编号说明
+
+本文档中 **[TR-022]** 已用于 **T-016**（历史命名），故 **T-022 任务** 的验证记录使用 **[TR-034]**，避免与既有 TR 编号混淆。
+
+---
+
+## [TR-035] T-023 功能验证（购物缺口缓存与显式交付 / FR-40～42）
+
+**验证任务**：T-023 / [DEV-028]——**`_gap_cache_valid`**（`gap_basis` 与当前 **R**/**I** 指纹一致且 `cached_shopping_gap` 可用）；**`_apply_silent_gap_precalc`** 命中时跳过 **`calculate_shopping_gap`**、**`gap_delivery_mode=cache`**；未命中则 **§7.2** 全量重算、**`gap_delivery_mode=fresh`**；**`TASK_GAP_CALC`** 且无 **R** → **`GAP_CACHE_MISS`**、**`gap_delivery_mode=empty`**；**`GeneratorNode.handle_gap_calc`** 缓存与缺 **R** 话术；**`_merge_shopping_gap_overlay`** 最小 overlay（**FR-40～FR-42**；**§7.1～§7.3**）。
+
+**验证时间**：2026-05-07
+
+**最终结论**：✅ 通过
+
+**测试文档与用例**：`tests/unit/test_t023_gap_cache.py`
+
+### 测试过程信息
+
+```text
+python -m pytest tests/unit/test_t023_gap_cache.py -v --tb=short
+python -m pytest tests -q --tb=no
+```
+
+**结果（本轮）**：T-023 专项 **6 passed**（约 **7s**）；全量 **159 passed**，**12 skipped**，约 **40s**。
+
+### 测试用例执行情况
+
+| 用例 | pytest 节点 | 描述 | 结果 |
+|------|--------------|------|------|
+| — | `test_t023_gap_cache_valid_requires_matching_fingerprints` | `_gap_cache_valid` 正/反例 | ✅ |
+| — | `test_t023_silent_precalc_skips_recalc_when_cache_hits` | 静默路径缓存命中、不调用 `calculate_shopping_gap` | ✅ |
+| — | `test_t023_silent_precalc_fresh_when_basis_stale` | 指纹失效 → fresh | ✅ |
+| — | `test_t023_task_gap_calc_no_r_gap_cache_miss` | 无 **R** + `TASK_GAP_CALC` → §9 | ✅ |
+| — | `test_t023_generator_gap_cache_and_miss` | `handle_gap_calc` 话术 | ✅ |
+| — | `test_t023_merge_overlay_remove` | overlay `remove` | ✅ |
+
+### 禁止行为与通用检查
+
+| 检查项 | 结果 |
+|--------|------|
+| `task_stack` / 禁用 `task_queue`（例行） | ✅ |
+| §9：`GAP_CACHE_MISS` 随节点返回 | ✅ |
+
+### 缺陷列表
+
+- 本轮未登记新 BUG。
+
+### 开发计划同步
+
+已将 `docs/开发计划.md` §3：**T-023**「测试状态」**待测试** → **已完成**。
+
+---
+
+## [TR-036] T-024 功能验证（购物清单 overlay 与 `list_action` / FR-41、FR-43）
+
+**验证任务**：T-024 / [DEV-029]——**`_merge_shopping_gap_overlay`**（**`pending_manual`** + **`shopping_list`** 底表，顺序 overlay **`remove` / `adjust_note` / `add`**）；**`_apply_list_action_to_overlay_updates`**（**`refresh_gap`** 清空 **`shopping_list_overlay`** 并失效 **`gap_basis`**；**`mark_bought`** + **`mark_bought_items`** → **`remove`**；**`edit_overlay`** + **`list_edit_ops`**）；**`_coerce_list_edit_ops`**；静默路径下 **`mark_bought`** 与缓存交付叠加；**`GeneratorNode.handle_gap_calc`** overlay 非空时的手动调整提示（**§7.4**；**§11.2**）。
+
+**验证时间**：2026-05-07
+
+**最终结论**：✅ 通过
+
+**测试文档与用例**：`tests/unit/test_t024_shopping_list_overlay.py`
+
+### 测试过程信息
+
+```text
+python -m pytest tests/unit/test_t024_shopping_list_overlay.py -v --tb=short
+python -m pytest tests -q --tb=no
+```
+
+**结果（本轮）**：T-024 专项 **8 passed**（约 **8s**）；全量 **167 passed**，**12 skipped**，约 **36s**。
+
+### 测试用例执行情况
+
+| 用例 | pytest 节点 | 描述 | 结果 |
+|------|--------------|------|------|
+| — | `test_t024_merge_base_order_pending_manual_then_shopping_list` | 底表顺序 | ✅ |
+| — | `test_t024_merge_overlay_adjust_note_then_add` | overlay 备注与 `add` | ✅ |
+| — | `test_t024_apply_refresh_gap_clears_overlay_and_invalidates_basis` | `refresh_gap` | ✅ |
+| — | `test_t024_apply_mark_bought_appends_remove` | `mark_bought` | ✅ |
+| — | `test_t024_apply_edit_overlay_list_edit_ops` | `edit_overlay` | ✅ |
+| — | `test_t024_coerce_list_edit_ops_add_display_alias` | `_coerce_list_edit_ops` | ✅ |
+| — | `test_t024_logistics_mark_bought_merges_remove_into_display` | logistics 端到端 | ✅ |
+| — | `test_t024_generator_overlay_manual_adjust_hint` | `handle_gap_calc` | ✅ |
+
+### 禁止行为与通用检查
+
+| 检查项 | 结果 |
+|--------|------|
+| `task_stack` / 禁用 `task_queue`（例行） | ✅ |
+
+### 缺陷列表
+
+- 本轮未登记新 BUG。
+
+### 开发计划同步
+
+已将 `docs/开发计划.md` §3：**T-024**「测试状态」**待测试** → **已完成**。
+
+---
+
+## [TR-037] INT-M4 库存与清单模块集成验收（M4 / §6～§7）
+
+**验证任务**：在 **T-020、T-021、T-022、T-023、T-024、T-032、T-033** 等单测之上，对 **M4 库存与清单**做跨任务串联与话术冒烟：**TASK_INV_COMMIT** → **TASK_INV_CHECK** 与真实 DB 一致；**TASK_INV_CHECK** + **TASK_GAP_CALC** 同轮触发静默缺口 **fresh**；`materialize_runtime_bundle_from_slices` / `get_runtime_bundle` 保留 **overlay** 与展示行备注；**Generator** `handle_inv_check` / `handle_gap_calc` / `handle_inv_commit`；参数化断言任一分支后 **`inventory_snapshot`** 为 **dict**（§1.2.1）。
+
+**验证时间**：2026-05-07
+
+**最终结论**：✅ 通过
+
+**集成用例文件**：`tests/integration/test_m4_inventory_list_module.py`
+
+### 测试过程信息
+
+```text
+python -m pytest tests/integration/test_m4_inventory_list_module.py -v --tb=short
+python -m pytest tests/unit/test_t020_inventory_snapshot.py tests/unit/test_t021_inv_commit_section63.py tests/unit/test_t022_inventory_write_feedback.py tests/unit/test_t023_gap_cache.py tests/unit/test_t024_shopping_list_overlay.py tests/unit/test_t032_inventory_migration.py tests/unit/test_t033_restock_preview.py tests/integration/test_m4_inventory_list_module.py tests/unit/t001-031Intent/test_logistics_silent_gap.py -q --tb=no
+python -m pytest tests -q --tb=no
+```
+
+**结果（本轮）**：INT-M4 专项 **8 passed**（约 **9s**）；M4 相关单测 + 集成子集（上列 9 个文件）**52 passed**（约 **21s**）；全量 **175 passed**，**12 skipped**，约 **35s**。
+
+### 集成用例执行情况
+
+| 用例 | 描述 | 结果 |
+|------|------|------|
+| `test_m4_db_chain_commit_then_inv_check_snapshot_matches_db` | 扣减后再次查库存与 DB 一致 | ✅ |
+| `test_m4_combined_inv_check_and_gap_calc_triggers_silent_recalc` | 查库存 + 显式清单同轮、**fresh** | ✅ |
+| `test_m4_slice_roundtrip_overlay_preserved_in_bundle` | 切片往返与 overlay 备注 | ✅ |
+| `test_m4_generator_inventory_gap_and_commit_handles_smoke` | 生成器库存/缺口/扣减话术 | ✅ |
+| `test_m4_inventory_snapshot_always_dict_after_node` | 多 `task_stack` 形态下 **I** 为 dict | ✅ |
+
+### 关联单测清单（本模块完整回归推荐）
+
+| 任务 | 文件 |
+|------|------|
+| T-020 | `tests/unit/test_t020_inventory_snapshot.py` |
+| T-021 | `tests/unit/test_t021_inv_commit_section63.py` |
+| T-022 | `tests/unit/test_t022_inventory_write_feedback.py` |
+| T-023 | `tests/unit/test_t023_gap_cache.py` |
+| T-024 | `tests/unit/test_t024_shopping_list_overlay.py` |
+| T-032 | `tests/unit/test_t032_inventory_migration.py` |
+| T-033 | `tests/unit/test_t033_restock_preview.py` |
+| T-002 静默缺口 | `tests/unit/t001-031Intent/test_logistics_silent_gap.py` |
+
+### 缺陷列表
+
+- 本轮未登记新 BUG。
+
+---
+
 ## 缺陷汇总
 
 | BUG 编号 | 严重程度 | 所属任务 | 描述 | 状态 | 关闭日期 |
 |---------|---------|---------|------|------|---------|
 | BUG-001 | P2 | T-030 / T-002 | 静默缺口单测断言 `logistics_buffer`，与切片返回不一致 | ✅ 已关闭 | 2026-05-06 |
+| BUG-002 | P2 | T-033 | `error_state` 未随 logistics 返回补丁，§9 码丢失 | ✅ 已关闭 | 2026-05-07 |
 
 <!-- 测试 Agent 在此追加缺陷记录 -->

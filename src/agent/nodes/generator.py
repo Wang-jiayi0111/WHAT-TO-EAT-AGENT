@@ -148,17 +148,17 @@ class GeneratorNode:
         return OUT_OF_SCOPE_REPLY_TEXT
 
     def handle_recipe_adopt_reply(self, state: AgentState) -> str:
-        """recipe_adopt：占位话术；inventory_state.recipe_use_confirmed 由 T-021 衔接。"""
+        """recipe_adopt：§6.3 采纳当前锁定菜谱 → `recipe_use_confirmed` 由本节点切片补丁置位。"""
         lb = get_runtime_bundle(state)
-        title = lb.get("selected_recipe_title")
+        title = lb.get("selected_recipe_title") or lb.get("recipe_title_locked")
         if title:
             return (
                 f"好的，我们就按「{title}」准备。"
-                "做完饭后跟我说一声，我可以帮你按菜谱扣减库存。"
+                "做完饭后跟我说一声，我可以按这份菜谱帮你扣减库存。"
             )
         return (
             "好的，已记下您采纳当前这道菜。"
-            "做完饭后告诉我，我可以帮你更新库存。"
+            "做完饭后告诉我，我可以按菜谱帮你更新库存。"
         )
 
     def _extract_slots(self, state: AgentState) -> Dict[str, Any]:
@@ -243,46 +243,166 @@ class GeneratorNode:
         return "\n".join(lines)
 
     def handle_gap_calc(self, state: AgentState) -> str:
-        """格式化购物清单返回给用户。"""
+        """§7.3 / FR-40～42：购物缺口展示（缓存命中与 GAP_CACHE_MISS）。"""
         lb = get_runtime_bundle(state)
+        es = state.get("error_state") or {}
+        code = str(es.get("error_code") or "")
+        mode = str(lb.get("gap_delivery_mode") or "")
+
+        if mode == "empty" or code == "GAP_CACHE_MISS":
+            return (
+                "当前还没有可用的菜谱用料清单（**R**），无法按菜谱算购物缺口。"
+                "请先检索并锁定一道菜，或告诉我您要做的菜名。"
+            )
+
         shopping_list = lb.get("shopping_list", [])
         sufficient = lb.get("sufficient_items", [])
 
         if not shopping_list:
-            return "好消息！您家的食材已经够用，不需要额外购买。"
+            return "好消息！按当前菜谱与库存，您家的食材已经够用，不需要额外购买。"
 
-        lines = ["根据菜谱需求，您还需要购买以下食材：\n"]
+        intro = "根据菜谱需求，您还需要购买以下食材：\n"
+        if mode == "cache":
+            intro = (
+                "按当前菜谱与库存校验，**与缓存一致**，直接使用已算好的缺口清单：\n"
+            )
+        lines = [intro]
+        ov = lb.get("shopping_list_overlay") or []
+        if isinstance(ov, list) and ov:
+            lines.append("（以下待购行已包含你对清单的手动调整。）\n")
         for item in shopping_list:
             lines.append(f"  · {item['name']}：{item['amount']} {item['unit']}")
 
         if sufficient:
-            lines.append(f"\n以下食材库存充足，无需购买：")
+            lines.append("\n以下食材库存充足，无需购买：")
             for item in sufficient:
                 lines.append(f"  ✓ {item['name']}")
 
         return "\n".join(lines)
 
     def handle_inv_commit(self, state: AgentState) -> str:
-        """库存扣减完成后的确认回复。"""
+        """§6.3 / §6.4：扣减结果话术（须先 recipe_use_confirmed）。"""
         status = get_runtime_bundle(state).get("commit_status", "")
         if status == "success":
-            return "好的，已记录本次烹饪，库存已更新。"
-        elif status == "skipped":
-            return "没有找到需要扣减的食材信息，库存未变动。"
-        else:
-            return "库存更新时遇到一些问题，请稍后再试。"
+            return "好的，已按当前锁定的菜谱扣减库存。"
+        if status == "skipped":
+            return "当前没有可用的菜谱用料清单（**R** 为空），库存未变动。"
+        if status == "blocked_no_confirm":
+            return (
+                "按菜谱扣减前需要先确认您要用的是当前这道菜——可以说「就做这道」或「确认用当前菜谱」；"
+                "确认后再告诉我「做好了」或让我扣库存即可。"
+            )
+        if status == "blocked_recipe_mismatch":
+            return (
+                "您提到的菜名与当前锁定的菜谱不一致。请先选定要做的那一道，"
+                "再说明与当前菜谱一致后扣减。"
+            )
+        if status == "partial_success":
+            lb = get_runtime_bundle(state)
+            succ = lb.get("commit_succeeded_items") or []
+            fail = lb.get("commit_failed_items") or []
+            parts = [
+                "按菜谱扣减时**未能全部写入库存**（§6.4），请不要当作已全部扣减成功。"
+            ]
+            if succ:
+                parts.append("已成功扣减：" + "、".join(succ) + "。")
+            if fail:
+                parts.append("**未能写入扣减**的食材：" + "、".join(fail) + "。")
+            parts.append("请稍后重试或检查本地库存数据库。")
+            return "".join(parts)
+        if status == "failed":
+            lb = get_runtime_bundle(state)
+            fail = lb.get("commit_failed_items") or []
+            es = state.get("error_state") or {}
+            base = (
+                "**扣减未能写入库存**，本轮库存未按预期更新（错误码 "
+                + str(es.get("error_code") or "INVENTORY_WRITE_FAILED")
+                + "）。"
+            )
+            if fail:
+                base += "受影响的食材：" + "、".join(fail) + "。"
+            base += "请稍后再试；若持续失败请检查 `inventory.db` 是否可写。"
+            return base
+        return "库存更新时遇到一些问题，请稍后再试。"
         
     def handle_inv_add(self, state: AgentState) -> str:
-        status = get_runtime_bundle(state).get("add_status", "")
-        entities = get_runtime_bundle(state).get("extracted_entities", {})
-        ingredients = entities.get("ingredients", [])
-        if status == "success" and ingredients:
-            items_str = "、".join(ingredients)
-            return f"好的，已将 {items_str} 添加到您的库存中。"
-        elif status == "skipped":
-            return "没有识别到具体食材，库存未变动，您可以告诉我买了哪些东西。"
-        else:
-            return "库存更新时遇到问题，请稍后再试。"
+        lb = get_runtime_bundle(state)
+        status = lb.get("add_status", "")
+        preview = lb.get("add_preview") or {}
+        items_pv = preview.get("items") or []
+        unresolved = preview.get("unresolved") or []
+
+        if status == "pending" and items_pv:
+            lines = [
+                "即将按以下条目更新库存（确认后写入；也可直接回复「确认」）：",
+            ]
+            for it in items_pv:
+                mode = (it.get("merge_mode") or "add").strip().lower()
+                op = "累加" if mode == "add" else "设为"
+                lines.append(
+                    f"  · {it.get('name')}：{op} {it.get('delta_or_value')} {it.get('unit')}"
+                )
+            if unresolved:
+                lines.append(
+                    "以下条目信息不完整，请补充数量与单位："
+                    + "、".join(str(u) for u in unresolved)
+                )
+            return "\n".join(lines)
+
+        if status == "pending" and not items_pv and unresolved:
+            return (
+                "补货信息不完整，请说明每种食材买了多少（需带单位），"
+                "例如「买了鸡蛋 12 个」。"
+            )
+
+        if status == "success":
+            added = lb.get("added_items") or []
+            if added:
+                parts = [
+                    f"{x.get('name')} {x.get('delta_or_value')}{x.get('unit')}"
+                    for x in added
+                ]
+                return "好的，已确认并更新库存：" + "、".join(parts) + "。"
+            return "好的，已更新库存。"
+
+        if status == "partial_success":
+            succ = lb.get("add_succeeded_items") or []
+            fail = lb.get("add_failed_items") or []
+            es = state.get("error_state") or {}
+            detail = es.get("error_detail") or ""
+            head = "补货**未全部写入成功**（§6.5.5），请勿当作已全部入库。"
+            if succ:
+                head += "已成功入库：" + "、".join(succ) + "。"
+            if fail:
+                head += "**未能写入**：" + "、".join(fail) + "。"
+            if detail and detail not in head:
+                head += detail
+            return head
+
+        if status == "failed":
+            es = state.get("error_state") or {}
+            code = str(es.get("error_code") or "")
+            detail = str(es.get("error_detail") or "")
+            if code == "INVENTORY_ADD_UNPARSED":
+                return (
+                    "没能从您的话里确定买了哪些食材、各多少量（需带单位）。"
+                    "请再说具体一点，例如「买了鸡蛋 12 个」。"
+                )
+            if code == "INVENTORY_WRITE_FAILED":
+                msg = "**补货未能写入库存**，本轮未成功更新。"
+                if detail:
+                    msg += detail
+                else:
+                    msg += "请稍后再试或检查本地数据库。"
+                return msg
+            return "库存更新失败，请稍后再试。"
+
+        if status == "skipped":
+            return (
+                "没有识别到可入库的食材与数量，您可以说明买了什么、各多少（带单位）。"
+            )
+
+        return "库存更新遇到问题，请稍后再试。"
         
     def handle_profile_sync(self, state: AgentState) -> str:
         """偏好同步意图的确认话术（L4 在回复后异步写库，见 schedule_memory_keeper_after_reply）。"""
@@ -464,10 +584,16 @@ async def generator_node(state: AgentState) -> Dict[str, Any]:
     schedule_memory_keeper_after_reply(resolve_scope_id(state), updated_messages)
 
     print(f"🔍 [Generator] 最终返回: task_stack={task_stack}")
+    slice_patches = runtime_bundle_to_slice_patches(lb)
+    inv_patch = dict(slice_patches.get("inventory_state") or {})
+    intents_round = list(state.get("intents") or [])
+    if "recipe_adopt" in intents_round or state.get("primary_intent") == "recipe_adopt":
+        inv_patch["recipe_use_confirmed"] = True  # 规格 §6.3：采纳后置位
+        slice_patches["inventory_state"] = inv_patch
     return {
         "messages": updated_messages,
         "task_stack": task_stack,
         "loop_guard_count": loop_guard_count,
-        **runtime_bundle_to_slice_patches(lb),
+        **slice_patches,
         **_generator_slice_patch(reply, task_stack, loop_guard_count),
     }

@@ -17,9 +17,19 @@ CLEAR_ERROR_STATE: Dict[str, Any] = {
 
 
 def _normalize_inventory_snapshot(raw: Any) -> Dict[str, Dict[str, Any]]:
-    """§1.2.1：inventory_snapshot 最终形态为 Dict[name, {amount, unit}]。"""
+    """§1.2.1：inventory_snapshot 最终形态为 Dict[name, {amount: float, unit: str}]。"""
     if isinstance(raw, dict):
-        return dict(raw)
+        out: Dict[str, Dict[str, Any]] = {}
+        for k, v in raw.items():
+            name = str(k).strip()
+            if not name or not isinstance(v, dict):
+                continue
+            try:
+                amt = float(v.get("amount", 0))
+            except (TypeError, ValueError):
+                amt = 0.0
+            out[name] = {"amount": amt, "unit": str(v.get("unit") or "")}
+        return out
     if isinstance(raw, list):
         out: Dict[str, Dict[str, Any]] = {}
         for row in raw:
@@ -95,6 +105,8 @@ def inventory_state_from_logistics_buffer(lb: Dict[str, Any]) -> Dict[str, Any]:
         "add_preview": lb.get("add_preview"),
         "add_status": lb.get("add_status"),
     }
+    if "gap_delivery_mode" in lb:
+        inv["gap_delivery_mode"] = lb["gap_delivery_mode"]
     for k in (
         "shopping_list",
         "sufficient_items",
@@ -102,6 +114,11 @@ def inventory_state_from_logistics_buffer(lb: Dict[str, Any]) -> Dict[str, Any]:
         "ingredient_gaps",
         "action_metadata",
         "added_items",
+        "commit_failed_items",
+        "commit_succeeded_items",
+        "add_failed_items",
+        "add_succeeded_items",
+        "gap_delivery_mode",
     ):
         if k in lb:
             inv[k] = lb[k]
@@ -176,6 +193,7 @@ def materialize_runtime_bundle_from_slices(state: Mapping[str, Any]) -> Dict[str
     inv = dict(state.get("inventory_state") or {})
     ctrl = dict(state.get("control_state") or {})
     mem = dict(state.get("memory_state") or {})
+    err_slice = state.get("error_state")
 
     flat: Dict[str, Any] = {}
     if "extracted_entities" in ctrl:
@@ -225,6 +243,11 @@ def materialize_runtime_bundle_from_slices(state: Mapping[str, Any]) -> Dict[str
         "ingredient_gaps",
         "action_metadata",
         "added_items",
+        "commit_failed_items",
+        "commit_succeeded_items",
+        "add_failed_items",
+        "add_succeeded_items",
+        "gap_delivery_mode",
     ):
         if key in inv:
             flat[key] = inv[key]
@@ -234,6 +257,14 @@ def materialize_runtime_bundle_from_slices(state: Mapping[str, Any]) -> Dict[str
         flat["short_term_constraints"] = list(stc)
     if mem.get("effective_constraint") is not None:
         flat["effective_constraint"] = mem["effective_constraint"]
+
+    top_slots = state.get("slots")
+    if isinstance(top_slots, dict) and top_slots:
+        flat["slots"] = dict(top_slots)
+
+    # §9：供 logistics / researcher 等节点读取上一轮 fault（BUG-002：须与切片往返）
+    if isinstance(err_slice, dict):
+        flat["error_state"] = dict(err_slice)
 
     return flat
 
@@ -262,6 +293,14 @@ def runtime_bundle_to_slice_patches(lb: Dict[str, Any]) -> Dict[str, Any]:
     mp = memory_patch_from_logistics_buffer(lb)
     if mp:
         patches["memory_state"] = mp
+    # BUG-002 / §9：logistics 等在 lb 顶层写入的 error_state 必须回到 error_state 切片
+    if "error_state" in lb:
+        es = lb.get("error_state")
+        patches["error_state"] = dict(es) if isinstance(es, dict) else {
+            "error_code": None,
+            "recoverable": True,
+            "error_detail": None,
+        }
     return patches
 
 

@@ -868,3 +868,296 @@
 
 ---
 
+## [DEV-022] inventory 表 household_id 迁移与 SCOPE 对齐（T-032 / §6.2、§8）
+
+**类型**：`功能开发`  
+**编号**：T-032  
+**对应规格**：**规格 §6.2**（目标 Schema、INSERT 迁移 `household_id = SCOPE_ID`、`WHERE household_id = ?`）；**§8**（SCOPE_ID 与 `household.default_id`）  
+**里程碑**：M4  
+**状态**：`已完成`  
+**日期**：2026-05-07  
+
+### 做了什么
+
+- **`InventoryManager`**：`db_path` 默认 **`Settings.get_inventory_db_path()`**；**`household_id`** 默认 **`get_scope_id()`**；读写 SQL 全部带 **`household_id`**；**`ON CONFLICT(household_id, name)`** upsert。  
+- **迁移**：无表则建 §6.2 表；已有 **`household_id`** 则跳过；否则 **`ALTER TABLE … RENAME`** 后重建并 **`INSERT`**——旧 **`name` PRIMARY KEY** 行写入当前 **`household_id` 参数**（即迁移时 SCOPE）；含 **`item_name`/`quantity`** 的 integrity 旧表按行映射（有 **`user_id`** 则以其为 **`household_id`**）。  
+- **`LogisticsManager`**：默认库存路径与 **`InventoryManager`** 一致；可选传入 **`household_id`**（否则走配置 SCOPE）。  
+- **`Settings.get_inventory_db_path`**：与画像库同 **`paths.db_dir` + `databases.inventory`**。  
+- **`DatabaseIntegrityChecker._initialize_inventory_db`**：建表定义与 §6.2 一致，避免与业务库两套 schema。
+
+### 变更文件（主要）
+
+| 文件 | 说明 |
+|------|------|
+| `src/libs/base/inventory.py` | §6.2 表 + 迁移 + 作用域 API |
+| `src/libs/base/settings.py` | `get_inventory_db_path` |
+| `src/agent/nodes/logistics.py` | `LogisticsManager` 绑定 Settings / SCOPE |
+| `src/libs/base/integrity.py` | 初始化建表对齐 §6.2 |
+
+### 规格对齐要点
+
+- [§6.2] 复合主键 **`(household_id, name)`**；所有 API **`WHERE household_id = ?`**。  
+- [§6.2] 自旧表迁移时 legacy 行绑定 **SCOPE_ID**（简单表）或保留 **user_id** 作为 household（integrity 多用户行）。  
+- [§8] 禁止 **`thread_id`** 作库存键；本模块仅用 **`household_id`/`get_scope_id()`**。
+
+### 关联
+
+前置：T-001 ✓  
+后续：**T-020**（快照写入 `inventory_state`）  
+测试覆盖：按用户要求本轮**未**执行 pytest；结论以测试 Agent 为准  
+
+---
+
+## [DEV-023] 库存快照 API 与 inventory_state.I 落盘（T-020 / FR-30）
+
+**类型**：`功能开发`  
+**编号**：T-020  
+**对应规格**：**FR-30**；**规格 §6.1**（**I**）；**§1.2.1**（`inventory_snapshot` 字典型）  
+**里程碑**：M4  
+**状态**：`已完成`  
+**日期**：2026-05-07  
+
+### 做了什么
+
+- **`InventoryManager.get_inventory_snapshot_i`**：在已有 **`WHERE household_id = ?`** 读取之上，对外提供规范 **I** API，返回 **`Dict[str, {"amount": float, "unit": str}]`**。  
+- **`LogisticsManager.get_inventory_snapshot`**：改为调用 **`get_inventory_snapshot_i`**。  
+- **`logistics_manager_node`**：在 **§7.1 静默预计算**之后**无条件**再拉一次 DB 快照写入 **`updates["inventory_snapshot"]`**，保证 **TASK_INV_COMMIT / TASK_INV_ADD** 等改库后、以及仅 **TASK_GAP_CALC** 等路径下，**`runtime_bundle_to_slice_patches` → `inventory_state.inventory_snapshot`** 均为当前 **I**。  
+- **`_normalize_inventory_snapshot`**：对 **dict** 输入逐项 **`float(amount)`** / **`str(unit)`**，与 §1.2.1 禁止 **List** 形态为规范 **I** 的口径一致。
+
+### 变更文件（主要）
+
+| 文件 | 说明 |
+|------|------|
+| `src/libs/base/inventory.py` | `get_inventory_snapshot_i` |
+| `src/agent/nodes/logistics.py` | 快照 API 与节点末同步 **I** |
+| `src/agent/state_sync.py` | dict 规范化 |
+
+### 关联
+
+前置：T-002 ✓、T-032 ✓  
+后续：**T-033**（补货预览）、**T-023**（清单缓存读 **I**）  
+
+---
+
+## [DEV-024] 补货预览确认与 INVENTORY_ADD_UNPARSED（T-033 / §6.5）
+
+**类型**：`功能开发`  
+**编号**：T-033  
+**对应规格**：**规格 §6.5**；**§7.5** `normalize_name`；**§9** `INVENTORY_ADD_UNPARSED` / `INVENTORY_WRITE_FAILED`  
+**里程碑**：M4  
+**状态**：`已完成`  
+**日期**：2026-05-07  
+
+### 做了什么
+
+- **`normalize_name`**（`src/libs/utils/ingredient_normalize.py`）：strip、全角数字转半角、可选 `config/ingredient_aliases.yaml`。  
+- **配置**：`config/setting.yaml` **`inventory.restock.confirm_required`**；**`Settings.get_inventory_restock_confirm_required`**。  
+- **`InventoryManager.apply_restock`**：`merge_mode` **`add` | `set`**（§6.5.2）。  
+- **`logistics` `TASK_INV_ADD`**：从 **`slots.restock_items`** 构建 **`add_preview`**（`items` / `unresolved` / `source`）；**禁止**对 unresolved 猜测写库；**`confirm_required`** 时 **`add_status=pending`**；**`restock_confirm` + 上轮 pending** 时写库；**`confirm_required=false`** 且单条高置信无 unresolved 时可自动写库。  
+- **`router`**：存在 **`add_preview` 且 pending、无 unresolved** 时，用户短句确认 → 规则 **`TASK_INV_ADD` + `restock_confirm`**（§6.5.3 与 LLM 槽位互补）。  
+- **`get_runtime_bundle`**：并入顶层 **`slots`**（T-031 槽位进 logistics）。  
+- **`generator.handle_inv_add`**：pending 预览话术、成功/部分成功/解析失败话术。  
+- **`intent_prompt.md`**：补货确认槽位说明。  
+
+### 变更文件（主要）
+
+| 文件 | 说明 |
+|------|------|
+| `src/libs/utils/ingredient_normalize.py` | 新增 |
+| `src/libs/base/inventory.py` | `apply_restock` |
+| `src/libs/base/settings.py` | `get_inventory_restock_confirm_required` |
+| `config/setting.yaml` | `inventory.restock` |
+| `src/agent/nodes/logistics.py` | §6.5 补货机 |
+| `src/agent/nodes/router.py` | 待确认短句 |
+| `src/agent/state_sync.py` | bundle 含 `slots` |
+| `src/agent/slot_filling.py` | `restock_confirm` 透传 |
+| `src/agent/nodes/generator.py` | 话术 |
+| `src/agent/prompts/intent_prompt.md` | 提示 |
+
+### 关联
+
+前置：T-020 ✓  
+后续：**T-022**（失败话术细化）、**§7.6** 指纹失效与 T-023  
+
+---
+
+## [DEV-025] 扣减守卫 recipe_use_confirmed 与 §6.3（T-021 / FR-31）
+
+**类型**：`功能开发`  
+**编号**：T-021  
+**对应规格**：**FR-31**；**规格 §6.3**（须 **R** + **`recipe_use_confirmed`** + **`TASK_INV_COMMIT`**）  
+**里程碑**：M4  
+**状态**：`已完成`  
+**日期**：2026-05-07  
+
+### 做了什么
+
+- **`logistics` `TASK_INV_COMMIT`**：`prior_confirmed` 或当轮 **`recipe_adopt` / `recipe_adoption`** → 才允许 `batch_deduct`；否则 **`commit_status=blocked_no_confirm`**（§6.3 禁止：未确认即扣减）。**`_commit_recipe_matches_r_and_slots`**：有 **`recipe_name_for_commit`/`recipe_name`** 时须与锁定菜名（经 **`normalize_name`**）一致，否则 **`blocked_recipe_mismatch`** + **`COMMIT_RECIPE_MISMATCH`**。成功扣减后 **`recipe_use_confirmed=False`**。  
+- **`researcher`**：产出新权威 **R** 时 **`recipe_use_confirmed=False`**（换菜须重新采纳）。  
+- **`generator`**：`recipe_adopt` 话术路径下 **`inventory_state.recipe_use_confirmed=True`**；**`handle_inv_commit`** 区分 success / skipped / blocked / failed。  
+- **`slot_filling`**：会话已有 **`recipe_title_locked`/`selected_recipe_title`** 时 **`inventory_commit`** 不再强制 **`recipe_name_for_commit`**（与 §6.3「锁定菜」一致）。  
+
+### 变更文件（主要）
+
+| 文件 | 说明 |
+|------|------|
+| `src/agent/nodes/logistics.py` | §6.3 守卫与状态 |
+| `src/agent/nodes/researcher.py` | 新 R 清 `recipe_use_confirmed` |
+| `src/agent/nodes/generator.py` | 采纳置位 + 话术 |
+| `src/agent/slot_filling.py` | 扣减槽位放宽 |
+
+### 关联
+
+前置：T-016 ✓、T-020 ✓  
+后续：**T-022**（与既有 `INVENTORY_WRITE_FAILED` 等对齐话术）  
+
+---
+
+## [DEV-028] 购物缺口缓存命中与显式交付（T-023 / §7.3、FR-40～42）
+
+**类型**：`功能开发`  
+**编号**：T-023  
+**对应规格**：**FR-40～FR-42**；**规格 §7.1～§7.3**（指纹一致不重算；**§7.4** overlay 最小合并）；**§9** `GAP_CACHE_MISS`  
+**里程碑**：M4  
+**状态**：`已完成`  
+**日期**：2026-05-07  
+
+### 做了什么
+
+- **`_gap_cache_valid`**：`r_fingerprint` / `inventory_fingerprint` 与当前 **R**、**I** 一致且 `cached_shopping_gap` 可用 → 命中。  
+- **`_apply_silent_gap_precalc`**：命中时**不调用** `calculate_shopping_gap`；**`gap_delivery_mode=cache`**；展示用 **`shopping_list`/`sufficient_items`** 经 **`_merge_shopping_gap_overlay`**；未命中则全量 §7.2 并 **`gap_delivery_mode=fresh`**，展示同样过 overlay。  
+- **`TASK_GAP_CALC`** 且无 **R**：**`GAP_CACHE_MISS`** + **`gap_delivery_mode=empty`**。  
+- **`state_sync`**：条件写入 **`gap_delivery_mode`** 切片键。  
+- **`generator.handle_gap_calc`**：缓存话术、无 R 话术、空缺口「够用」表述与 **R** 语境一致。  
+
+### 变更文件（主要）
+
+| 文件 | 说明 |
+|------|------|
+| `src/agent/nodes/logistics.py` | §7.3 / §7.4 |
+| `src/agent/state_sync.py` | `gap_delivery_mode` |
+| `src/agent/nodes/generator.py` | 显式交付话术 |
+| `tests/unit/test_t023_gap_cache.py` | 新增 |
+
+### 关联
+
+前置：T-016 ✓、T-020 ✓、T-030 ✓  
+后续：**T-024**（overlay / `list_action` 完整）  
+
+---
+
+## [DEV-026] 修复 BUG-002：`runtime_bundle_to_slice_patches` 转发 `error_state`（§9）
+
+**类型**：`缺陷修复`  
+**编号**：BUG-002（`docs/test_report.md` [TR-029] / 缺陷汇总）  
+**对应规格**：**规格 §9**；波及 T-033、T-022 错误码随图传播  
+**状态**：`已修复`  
+**日期**：2026-05-07  
+
+### 根因
+
+`logistics_manager_node` 在合并后的展平 `lb` 中写入 **`error_state`**，但 **`runtime_bundle_to_slice_patches`** 未生成 **`error_state` 切片补丁**，节点 **`return` 不携带** §9 码，LangGraph 无法合并。  
+
+### 修复
+
+- **`runtime_bundle_to_slice_patches`**：若 **`"error_state" in lb`**，则 **`patches["error_state"] = dict(...)`**（与 **CLEAR_ERROR_STATE** 清场一致）。  
+- **`materialize_runtime_bundle_from_slices`**：将 **`state["error_state"]`** 映到展平 **`flat["error_state"]`**，保证 **`get_runtime_bundle`** 与节点间往返一致。  
+
+### 变更文件
+
+| 文件 | 说明 |
+|------|------|
+| `src/agent/state_sync.py` | §9 切片往返 |
+
+### 验证
+
+`python -m pytest tests/unit/test_t033_restock_preview.py -v` → **8 passed**（开发侧自测；**结论以测试 Agent 为准**）。  
+
+### 同步
+
+修复说明已写入 **`docs/test_report.md` [TR-030]**；**未修改** `docs/开发计划.md` §3「测试状态」。  
+
+### 关联
+
+**【修复完成】BUG-002 已修复，请测试 Agent 按 [TR-029] 重新验证。**
+
+---
+
+## [DEV-027] 库存写失败显式反馈（T-022 / FR-32 / §6.4、§6.5.5）
+
+**类型**：`功能开发`  
+**编号**：T-022  
+**对应规格**：**FR-32**；**§6.4**（扣减失败明码）；**§6.5.5～6.5.6**（补货失败 / 批次逐条）  
+**里程碑**：M4  
+**状态**：`已完成`  
+**日期**：2026-05-07  
+
+### 做了什么
+
+- **`InventoryManager.batch_deduct_report`**：逐条 `deduct`，汇总 **`success` | `partial_success` | `failed`**，列出失败食材名。  
+- **`LogisticsManager.update_inventory_after_cooking_report`**：封装报表；异常时 **`failed`** + 名单。  
+- **`TASK_INV_COMMIT`**：**`commit_status`** 支持 **`partial_success`**；**`commit_failed_items` / `commit_succeeded_items`**；失败与部分失败 **`error_code=INVENTORY_WRITE_FAILED`**（§9）；仅 **`success`** 清 **`recipe_use_confirmed`**。  
+- **`TASK_INV_ADD`**：**`add_succeeded_items` / `add_failed_items`** 全覆盖确认分支与自动写库分支；**`error_detail`** 明示失败条目（禁止整体成功措辞）。  
+- **`generator`**：**`handle_inv_commit`** / **`handle_inv_add`** 对齐 FR-32 **不可用笼统「已成功」掩盖写失败**。  
+- **`state_sync`**：上述名单字段切片往返。  
+- **回归**：**`test_logistics_silent_gap`** mock **`update_inventory_after_cooking_report`**。
+
+### 变更文件（主要）
+
+| 文件 | 说明 |
+|------|------|
+| `src/libs/base/inventory.py` | `batch_deduct_report` |
+| `src/agent/nodes/logistics.py` | 扣减报表；补货名单 |
+| `src/agent/state_sync.py` | 名单字段 |
+| `src/agent/nodes/generator.py` | §6.4 / §6.5.5 话术 |
+| `tests/unit/t001-031Intent/test_logistics_silent_gap.py` | mock |
+
+### 关联
+
+前置：T-021 ✓、T-033 ✓  
+
+---
+
+## [DEV-029] 购物清单 overlay 与 `list_action`（T-024 / §7.4、FR-41/43）
+
+**类型**：`功能开发`  
+**编号**：T-024  
+**对应规格**：**FR-41、FR-43**；**规格 §7.3～§7.4**；**§11.2** 槽位  
+**里程碑**：M4  
+**状态**：`待测试`  
+**日期**：2026-05-07  
+
+### 做了什么
+
+- **`_merge_shopping_gap_overlay`**：底表为 **`pending_manual` + `shopping_list`**，按序应用 **`remove` / `adjust_note` / `add`**（兼容 `op`/`action`、`key`/`ingredient`）。  
+- **`_apply_list_action_to_overlay_updates`**：在静默缺口预计算之前合并 **`slots`**；**`refresh_gap`** 清空 **`shopping_list_overlay`** 并置空 **`gap_basis`** 以强制 §7.2 重算；**`mark_bought`** + **`mark_bought_items`** 追加 **`remove`**；**`list_edit_ops`** 经 **`_coerce_list_edit_ops`** 后追加到 overlay。  
+- **`slot_filling` / `intent_prompt.md`**：增加 **`mark_bought_items`**。  
+- **`generator.handle_gap_calc`**：overlay 非空时增加一句「已包含手动调整」类提示。  
+
+### 变更文件
+
+| 文件 | 类型 | 说明 |
+|------|------|------|
+| `src/agent/nodes/logistics.py` | 修改 | overlay 合并与 list_action 持久化 |
+| `src/agent/nodes/generator.py` | 修改 | 缺口展示提示 |
+| `src/agent/slot_filling.py` | 修改 | `mark_bought_items` 归一 |
+| `src/agent/prompts/intent_prompt.md` | 修改 | 槽位说明 |
+| `tests/unit/test_t024_shopping_list_overlay.py` | 新增 | T-024 单测 |
+| `docs/开发计划.md` | 修改 | T-024 状态 |
+
+### 规格对齐要点
+
+- [规格 §7.4] 用户编辑层与 **`refresh_gap`** 失效后全量重算路径一致。  
+- [FR-41 / FR-43] 清单可编辑、可基于 **R−I** 重算并与展示对齐。  
+
+### 规格偏差（若有）
+
+无  
+
+### 关联
+
+前置：T-023 ✓  
+后续：**T-025**  
+
+---
+

@@ -38,6 +38,7 @@ def patch_logistics_manager():
             "sufficient_items": [],
             "missing_items": [],
         }
+        inst.update_inventory_after_cooking_report.return_value = ("success", [])
         LM.return_value = inst
         yield inst
 
@@ -68,6 +69,7 @@ def test_silent_precalc_runs_after_inv_commit(patch_logistics_manager):
     lb = {
         "extracted_entities": {},
         "recipe_requirements": [{"name": "五花肉", "amount": 500, "unit": "g"}],
+        "recipe_use_confirmed": True,
     }
     state = {
         **empty_agent_slices(),
@@ -76,6 +78,6 @@ def test_silent_precalc_runs_after_inv_commit(patch_logistics_manager):
         "expert_payloads": {},
     }
     out = logistics_manager_node(state)
-    patch_logistics_manager.update_inventory_after_cooking.assert_called_once()
+    patch_logistics_manager.update_inventory_after_cooking_report.assert_called_once()
     patch_logistics_manager.get_inventory_snapshot.assert_called()
     assert "cached_shopping_gap" in (out.get("inventory_state") or {})

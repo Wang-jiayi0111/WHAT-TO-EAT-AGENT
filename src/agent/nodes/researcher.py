@@ -354,6 +354,8 @@ async def researcher_node(state: AgentState) -> AgentState:
         logistics_buffer["recipe_candidates"] = []
         logistics_buffer["selected_recipe_id"] = file_path
         logistics_buffer["recipe_parser_version"] = RECIPE_PARSER_VERSION
+        # §6.3：新锁定 **R** → 需重新「采纳」后才能扣减
+        logistics_buffer["recipe_use_confirmed"] = False
 
         current_stack = consume_tasks(current_stack, ["TASK_SEARCH"])
         current_stack.append("TASK_SUMMARIZE")  # 获取详情后直接进入总结阶段
@@ -505,6 +507,7 @@ async def researcher_node(state: AgentState) -> AgentState:
             logistics_buffer["selected_recipe_id"] = file_path
             logistics_buffer["recipe_candidates"] = []
             logistics_buffer["recipe_parser_version"] = RECIPE_PARSER_VERSION
+            logistics_buffer["recipe_use_confirmed"] = False
 
             current_stack = consume_tasks(current_stack, ["TASK_SEARCH"])
 

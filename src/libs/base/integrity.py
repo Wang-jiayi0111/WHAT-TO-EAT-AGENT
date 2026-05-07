@@ -78,23 +78,22 @@ class DatabaseIntegrityChecker:
             conn = sqlite3.connect(self.db_paths['inventory'])
             cursor = conn.cursor()
 
-            # Create inventory table
+            # 规格 §6.2：与 InventoryManager 一致，避免与业务库两套 schema
             cursor.execute('''
                 CREATE TABLE IF NOT EXISTS inventory (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    user_id TEXT NOT NULL,
-                    item_name TEXT NOT NULL,
-                    quantity REAL NOT NULL,
-                    unit TEXT,
-                    expiry_date DATE,
-                    category TEXT,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    household_id TEXT NOT NULL DEFAULT 'default',
+                    name         TEXT NOT NULL,
+                    amount       REAL NOT NULL DEFAULT 0,
+                    unit         TEXT NOT NULL,
+                    updated_at   TEXT NOT NULL,
+                    PRIMARY KEY (household_id, name)
                 )
             ''')
 
-            # Create indexes
-            cursor.execute('CREATE INDEX IF NOT EXISTS idx_user_item ON inventory(user_id, item_name)')
+            cursor.execute(
+                'CREATE INDEX IF NOT EXISTS idx_inventory_household '
+                'ON inventory(household_id)'
+            )
 
             conn.commit()
             conn.close()

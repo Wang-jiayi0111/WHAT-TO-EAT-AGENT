@@ -19,6 +19,79 @@ from ...libs.base.settings import Settings
 # 配置日志
 logger = logging.getLogger(__name__)
 
+_RESTOCK_CONFIRM_PHRASES = frozenset(
+    (
+        "确认",
+        "确定",
+        "好的",
+        "好",
+        "行",
+        "嗯",
+        "可以",
+        "入库",
+        "就这样",
+        "没错",
+        "ok",
+        "yes",
+    )
+)
+
+
+def _is_restock_confirmation_message(text: str) -> bool:
+    """§6.5.3：待补货预览时，短句确认（与 LLM 输出的 restock_confirm 槽位等价入口）。"""
+    t = (text or "").strip().lower()
+    if not t:
+        return False
+    if t in _RESTOCK_CONFIRM_PHRASES:
+        return True
+    compact = "".join(t.split())
+    if compact in _RESTOCK_CONFIRM_PHRASES:
+        return True
+    if "确认" in t or "确定" in t:
+        if len(t) <= 24:
+            return True
+    return False
+
+
+def _restock_pending_confirm_shortcut(state: AgentState) -> Dict[str, Any] | None:
+    """待确认的 add_preview + 用户短句确认 → 本轮直接走 TASK_INV_ADD + restock_confirm。"""
+    if "TASK_CLARIFY" in state.get("task_stack", []):
+        return None
+    inv = state.get("inventory_state") or {}
+    if inv.get("add_status") != "pending":
+        return None
+    preview = inv.get("add_preview") or {}
+    if not preview.get("items"):
+        return None
+    if preview.get("unresolved"):
+        return None
+    messages = state.get("messages") or []
+    if not messages:
+        return None
+    last = messages[-1]
+    content = getattr(last, "content", str(last))
+    if not _is_restock_confirmation_message(str(content)):
+        return None
+    details: Dict[str, Any] = {
+        "intent": "inventory_add",
+        "primary_intent": "inventory_add",
+        "intents": ["inventory_add"],
+        "secondary_intents": [],
+        "confidence": 1.0,
+        "needs_clarification": False,
+        "task_stack": ["TASK_INV_ADD"],
+        "entities": {},
+        "slots": {"restock_confirm": True},
+        "missing_slots": [],
+        "reasoning": "rule: pending add_preview + confirm utterance (§6.5.3)",
+    }
+    return {
+        "current_intent": "inventory_add",
+        **details,
+        "slots": {"restock_confirm": True},
+        "control_state": _control_state_patch(state, details),
+    }
+
 
 class IntentClassifier:
     """
@@ -220,6 +293,11 @@ def router_node(state: AgentState) -> Dict[str, Any]:
             **stub,
             "control_state": _control_state_patch(state, stub),
         }
+
+    shortcut = _restock_pending_confirm_shortcut(state)
+    if shortcut is not None:
+        logger.info("[Router] §6.5 补货预览待确认 → 规则命中确认短句，直出 TASK_INV_ADD")
+        return shortcut
 
     # 执行意图识别
     task_stack = state.get("task_stack", [])

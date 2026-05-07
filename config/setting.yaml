@@ -68,6 +68,11 @@ llm:
 household:
   default_id: "default_user"
 
+# 库存补货（规格 §6.5、§8）
+inventory:
+  restock:
+    confirm_required: true   # true：仅预览，用户确认后再写库；false：单条高置信时可免确认（见 Settings）
+
 # 意图与置信度（规格 §8；FR-03 / §11.6）
 intent:
   confidence:

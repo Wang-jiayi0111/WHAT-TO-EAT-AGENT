@@ -54,6 +54,28 @@ class Settings:
         root_dir = Path(__file__).resolve().parents[3]
         return str(root_dir / db_dir / name)
 
+    def get_inventory_db_path(self) -> str:
+        """SQLite 库存库路径（规格 §6.2、§8；与画像库同 `paths.db_dir` 根）。"""
+        paths = self.get("paths") or {}
+        db_dir = paths.get("db_dir") or "data/db"
+        dbs = self.get("databases") or {}
+        name = dbs.get("inventory") or "inventory.db"
+        root_dir = Path(__file__).resolve().parents[3]
+        return str(root_dir / db_dir / name)
+
+    def get_inventory_restock_confirm_required(self, default: bool = True) -> bool:
+        """`inventory.restock.confirm_required`（规格 §6.5.3）。"""
+        inv = self._config.get("inventory")
+        if not isinstance(inv, dict):
+            return default
+        rs = inv.get("restock")
+        if not isinstance(rs, dict):
+            return default
+        v = rs.get("confirm_required")
+        if v is None:
+            return default
+        return bool(v)
+
     def get_short_term_ttl_days(self, default: int = 7) -> int:
         """`memory.short_term_ttl.default_days`（规格 §3.4；与 `DEFAULT_SHORT_TERM_TTL_DAYS` 对齐）。"""
         mem = self._config.get("memory")
