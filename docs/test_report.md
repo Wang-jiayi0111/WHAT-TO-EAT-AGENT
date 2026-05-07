@@ -24,6 +24,13 @@
 | T-030 | 方案 A 七切片 AgentState（§1.2.0～1.2.1） | ✅ 通过 | — | — | 2026-05-06（[TR-011]） |
 | T-031 | 槽位归一、`missing_slots`、`apply_slot_guards`（§11） | ✅ 通过 | — | — | 2026-05-06（[TR-012]） |
 | INT-LLM | 集成：真实 LLM 意图识别（`IntentClassifier` 端到端） | ✅ 通过 | — | — | 2026-05-06（[TR-013]） |
+| T-009 | L2 摘要与业务清场解耦（§4.2） | ✅ 通过 | — | — | 2026-05-06（[TR-014]） |
+| T-010 | L3 当轮约束 + 检索 query 增强（FR-17 / §4.3） | ✅ 通过 | — | — | 2026-05-06（[TR-015]） |
+| T-011 | 有效约束 **C** 合并 + §5.4 硬过滤 | ✅ 通过 | — | — | 2026-05-06（[TR-016]） |
+| T-012 | L4 MemoryKeeper 异步与安全壳（§4.5） | ✅ 通过 | — | — | 2026-05-06（[TR-017]） |
+| T-013 | 短期状态 TTL / 懒清理 / purge（FR-13 / §3.4） | ✅ 通过 | — | — | 2026-05-06（[TR-018]） |
+| T-014 | 长期画像 patch / IR-05 / SCOPE 迁移 | ✅ 通过 | — | — | 2026-05-06（[TR-019]） |
+| INT-M2 | 记忆子系统模块间集成（L3→**C**→query→§5.4；T-013 清理；T-014 库→C） | ✅ 通过 | — | — | 2026-05-07（[TR-020]） |
 
 ---
 
@@ -462,7 +469,7 @@ T-030 阶段 `logistics_manager_node` 返回 `recipe_state`、`inventory_state` 
 
 **验证时间**：2026-05-06
 
-**关联开发记录**：`docs/dev_log.md` [DEV-030]（切片返回、`tests/unit` 断言对齐）
+**关联开发记录**：`docs/dev_log.md` [DEV-009]（切片返回、`tests/unit` 断言对齐）
 
 ### 【复审结论 BUG-001】
 
@@ -483,7 +490,7 @@ T-030 阶段 `logistics_manager_node` 返回 `recipe_state`、`inventory_state` 
 
 ## [TR-011] T-030 功能验证（方案 A 七切片与访问器）
 
-**验证任务**：T-030 **方案 A**——`AgentState` 一级七切片 + `active_user_id`；`get_runtime_bundle` / `runtime_bundle_to_slice_patches`；移除顶层 `logistics_buffer`（**规格 §1.2.0～1.2.1**；`docs/dev_log.md` [DEV-030]）。
+**验证任务**：T-030 **方案 A**——`AgentState` 一级七切片 + `active_user_id`；`get_runtime_bundle` / `runtime_bundle_to_slice_patches`；移除顶层 `logistics_buffer`（**规格 §1.2.0～1.2.1**；`docs/dev_log.md` [DEV-009]）。
 
 **验证时间**：2026-05-06
 
@@ -531,11 +538,11 @@ T-030 阶段 `logistics_manager_node` 返回 `recipe_state`、`inventory_state` 
 
 ## [TR-012] T-031 功能验证（槽位 §11.2～11.5 与路由守卫）
 
-**验证任务**：T-031——`slot_filling.py` 归一与 `compute_missing_slots`；`router.apply_slot_guards_to_task_stack`；`IntentResult.slots` / `missing_slots` 与 `intent_prompt.md` 契约（**规格 §11**；`docs/dev_log.md` [DEV-031]）。
+**验证任务**：T-031——`slot_filling.py` 归一与 `compute_missing_slots`；`router.apply_slot_guards_to_task_stack`；`IntentResult.slots` / `missing_slots` 与 `intent_prompt.md` 契约（**规格 §11**；`docs/dev_log.md` [DEV-010]）。
 
 **验证时间**：2026-05-06
 
-**最终结论**：✅ 通过（pytest 全绿 + 手工脚本覆盖核心槽位与映射；**未新增仓库单测**，与 DEV-031 说明一致）
+**最终结论**：✅ 通过（pytest 全绿 + 手工脚本覆盖核心槽位与映射；**未新增仓库单测**，与 DEV-010 说明一致）
 
 ### 测试执行（自动化）
 
@@ -557,7 +564,7 @@ T-030 阶段 `logistics_manager_node` 返回 `recipe_state`、`inventory_state` 
 |------|------|-----------------|------|
 | TC-T031-01 | `recipe_search` 且无 `recipe_query`/`recipe_name`/食材 → `missing_slots` 含 `recipe_search_anchor` | §11.5 | ✅ |
 | TC-T031-02 | 有上述缺失时 `apply_slot_guards_to_task_stack` 去掉 `TASK_SEARCH`、队首插入 `TASK_CLARIFY`，保留未阻塞意图任务 | §11.5、裁剪 | ✅ |
-| TC-T031-03 | 同轮 `recipe_search`+`shopping_list` 且仅有 `recipe_name` 锚点、无 **R** → 不追加 `shopping_list_context` | DEV-031 豁免语义 | ✅ |
+| TC-T031-03 | 同轮 `recipe_search`+`shopping_list` 且仅有 `recipe_name` 锚点、无 **R** → 不追加 `shopping_list_context` | DEV-010 豁免语义 | ✅ |
 | TC-T031-04 | `entities.amounts` → `slots.restock_items` 行结构 | §11.2 | ✅ |
 | TC-T031-05 | `merge_slots` 对值为 `None` 的键不覆盖基槽 | — | ✅ |
 | TC-T031-06 | `IntentClassifier.INTENT_TASK_MAPPING` 的意图键 ⊆ `IntentResult.intents` 的 Literal 集合 | §11.3～11.4 | ✅ |
@@ -650,6 +657,283 @@ python -m pytest tests/integration/test_intent_recognition_llm.py -v --tb=short
 ### 开发计划同步
 
 无单独 **T-xxx** 行对应「仅 LLM 集成」；已在 **§测试进度总表** 增加 **INT-LLM** 一行便于追溯。**T-004 / T-007 / T-031** 等既有「已完成」结论与本集成结论一致，未改 `docs/开发计划.md`。
+
+---
+
+## [TR-014] T-009 功能验证（L2 `conversation_summary_node` 与 §4.2）
+
+**验证任务**：T-009 / [DEV-011]——L2 节点**仅**返回 `messages`、`conversation_summary`、`memory_state` 中摘要镜像；**不得**返回 `task_stack`、`recipe_state`、`inventory_state` 等业务键（**规格 §4.2**；**FR-14 / FR-16**）。
+
+**验证时间**：2026-05-06
+
+**最终结论**：✅ 通过
+
+### 测试执行（自动化）
+
+命令：`python -m pytest tests -q --tb=no`（仓库根；未设置 `WHAT_TO_EAT_RUN_LLM_INTENT` 时集成用例 skip）
+
+| 项目 | 结果 |
+|------|------|
+| 收集用例数 | 41 |
+| 通过 / 失败 / 跳过 | 29 / 0 / 12 |
+| 耗时（约） | 8.1s |
+
+| 测试文件 | 用例数 | 关联任务 |
+|----------|--------|----------|
+| `tests/unit/t001-031/test_conversation_summary_l2.py` | 4 | T-009 |
+| 其余 `tests/unit/t001-031/*.py` + `tests/integration/...` | 25 + 12 skip | T-001～T-008 等 |
+
+### 测试用例执行情况（T-009）
+
+| 用例 | 描述 | 对应规格 / 任务 | 结果 |
+|------|------|-----------------|------|
+| `test_l2_empty_messages_returns_empty` | 无 messages 返回 `{}` | §4.2 边界 | ✅ |
+| `test_l2_under_compress_threshold_no_llm_preserves_business_fields_untouched` | 短对话不触发压缩、不调用 LLM；返回键不含业务切片 | §4.2 | ✅ |
+| `test_l2_compress_path_mocked_does_not_return_business_keys` | `maybe_compress` mock 触发压缩路径；返回不含 `task_stack` / `inventory_state` | §4.2 | ✅ |
+| `test_l2_on_failure_returns_empty` | 压缩异常时返回 `{}` | 健壮性 | ✅ |
+
+### 回归与夹具修复（T-001）
+
+| 项 | 说明 |
+|----|------|
+| 路由快照路径 | `test_workflow_routing_baseline.py` 在 `tests/unit/t001-031/` 下时，`_SNAPSHOT` 已改为指向 **`tests/snapshots/workflow_routing_baseline.json`**（三级 `parent`），修复 `FileNotFoundError`，**T-001** 快照用例恢复绿。 |
+
+### 缺陷列表
+
+- 本轮未登记新 BUG。
+
+### 开发计划同步
+
+已更新 `docs/开发计划.md` §3：**T-009**「测试状态」**待测试** → **已完成**。
+
+---
+
+## [TR-015] T-010 功能验证（L3 当轮约束与 `augment_query_for_search`）
+
+**验证任务**：T-010 / [DEV-012]——`l3_short_term` 规则抽取与 `merge_short_term_constraints`；`build_l3_memory_patch` / `short_term_constraints_node` 仅写 `memory_state`；`researcher` 使用的 **`augment_query_for_search`** 将 L3 与 `active_constraints` 并入检索 query（**FR-17**；**规格 §4.3**）。
+
+**验证时间**：2026-05-06
+
+**最终结论**：✅ 通过
+
+### 测试执行（自动化）
+
+命令：`python -m pytest tests -q --tb=no`（未设置 `WHAT_TO_EAT_RUN_LLM_INTENT`）
+
+| 项目 | 结果 |
+|------|------|
+| 全库用例 | 37 passed，12 skipped |
+| 耗时（约） | 5.4s |
+
+| 测试文件 | 用例数 | 说明 |
+|----------|--------|------|
+| `tests/unit/t001-031/test_l3_short_term.py` | 8 | T-010；无真实 LLM / 无 MCP |
+
+### 测试用例摘要
+
+| 用例 | 内容 | 结果 |
+|------|------|------|
+| 关键词抽取 | 含「感冒」「清淡」用户句命中默认规则 | ✅ |
+| 合并去重 | `merge_short_term_constraints` 顺序与去重 | ✅ |
+| `latest_user_text` | 取最近 `HumanMessage` | ✅ |
+| `build_l3_memory_patch` | 有命中时写入 `short_term_constraints` 与 `memory_confidence`；无新信息时 `{}` | ✅ |
+| `short_term_constraints_node` | 与 `build_l3_memory_patch` 结果一致 | ✅ |
+| `augment_query_for_search` | 拼接 `memory_state` 中 L3 与 `active_constraints`；空 base query 时 `[饮食约束]` 前缀 | ✅ |
+
+### 缺陷列表
+
+- 本轮未登记新 BUG。
+
+### 开发计划同步
+
+已更新 `docs/开发计划.md` §3：**T-010**「测试状态」**待测试** → **已完成**。
+
+---
+
+## [TR-016] T-011 功能验证（`effective_constraint`：C 合并、query 增强、§5.4 过滤）
+
+**验证任务**：T-011 / [DEV-013]——`build_effective_constraint`（注入 `profile` 避免读库）、`resolve_scope_id`、`augment_search_query`、`filter_recipes_by_hard_exclusions`（**规格 §3.5、§5.4**；**FR-10 / FR-11 / FR-19**）。
+
+**验证时间**：2026-05-06
+
+**最终结论**：✅ 通过
+
+### 测试执行（自动化）
+
+命令：`python -m pytest tests -q --tb=no`（未设置 `WHAT_TO_EAT_RUN_LLM_INTENT`）
+
+| 项目 | 结果 |
+|------|------|
+| 全库用例 | 47 passed，12 skipped |
+| 耗时（约） | 9.2s |
+
+| 测试文件 | 用例数 | 说明 |
+|----------|--------|------|
+| `tests/unit/test_effective_constraint_t011.py` | 10 | T-011；置于 **`tests/unit/`**；无 MCP / 无真实 LLM |
+
+### 测试用例摘要
+
+| 主题 | 内容 | 结果 |
+|------|------|------|
+| `resolve_scope_id` | `household.default_id` 优先，否则 `active_user_id` | ✅ |
+| `build_effective_constraint` | 合并 L3、DB 短期、过敏原/口味/摘要截断（`profile` 注入） | ✅ |
+| `augment_search_query` | **C** 与 `active_constraints` 拼入检索 query | ✅ |
+| `filter_recipes_by_hard_exclusions` | 中文子串与 ASCII 大小写不敏感命中 title/snippet/content | ✅ |
+
+### 说明
+
+- `hard_exclusions` 使用 `_unique_strs(..., min_len=2)`：**单字符**食材码会被忽略；单测使用长度 ≥2 的过敏原（如 `peanut`），与实现一致。
+
+### 缺陷列表
+
+- 本轮未登记新 BUG。
+
+### 开发计划同步
+
+已更新 `docs/开发计划.md` §3：**T-011**「测试状态」**待测试** → **已完成**。
+
+---
+
+## [TR-017] T-012 功能验证（L4 `schedule_memory_keeper` / `run_memory_keeper_safe`）
+
+**验证任务**：T-012 / [DEV-014]——消息快照序列化、`build_memory_keeper_snapshot`；`run_memory_keeper_safe` 吞并 `run_memory_keeper_persist` 异常（**FR-18**；**规格 §4.5**）；`schedule_memory_keeper_after_reply` 在有/无事件循环下的行为。
+
+**验证时间**：2026-05-06
+
+**最终结论**：✅ 通过
+
+### 测试执行（自动化）
+
+命令：`python -m pytest tests -q --tb=no`
+
+| 项目 | 结果 |
+|------|------|
+| 全库用例 | 53 passed，12 skipped |
+| 耗时（约） | 7.6s |
+
+| 测试文件 | 用例数 | 说明 |
+|----------|--------|------|
+| `tests/unit/test_memory_keeper_t012.py` | 6 | T-012；mock 持久化层，无真实 LLM 写库 |
+
+### 测试用例摘要
+
+| 用例 | 内容 | 结果 |
+|------|------|------|
+| `serialize` / 往返 | Human/AI 文本快照与 `messages_from_keeper_snapshot` | ✅ |
+| `build_memory_keeper_snapshot` | `scope_id` + `messages` 形状 | ✅ |
+| `run_memory_keeper_safe` | `run_memory_keeper_persist` 抛错时不向外抛出 | ✅ |
+| `schedule_memory_keeper_after_reply` | 在异步上下文中调度并传入正确快照 | ✅ |
+| 无运行中 loop | 同步调用不崩溃（跳过调度） | ✅ |
+
+### 缺陷列表
+
+- 本轮未登记新 BUG。
+
+### 开发计划同步
+
+已更新 `docs/开发计划.md` §3：**T-012**「测试状态」**待测试** → **已完成**。
+
+---
+
+## [TR-018] T-013 功能验证（`user_short_term_states` TTL）
+
+**验证任务**：T-013 / **FR-13**、**§3.4**——`add_short_term_state`、`get_active_short_term_states`（懒清理）、`purge_expired_states`、`deactivate_short_term_state`。
+
+**验证时间**：2026-05-06
+
+**最终结论**：✅ 通过
+
+### 测试执行
+
+- 文件：`tests/unit/test_user_profiles_ttl_t013.py`（6 条，临时 SQLite）
+
+### 开发计划同步
+
+`docs/开发计划.md` §3：**T-013** 测试状态 **已完成**（与本轮一致）。
+
+---
+
+## [TR-019] T-014 功能验证（`apply_long_term_patch`、IR-05、遗留 SCOPE 迁移）
+
+**验证任务**：T-014 / [DEV-017]——`UserProfileManager.apply_long_term_patch`（passive / explicit）；幂等跳过 UPSERT；`scope_id_for_migration` 迁移 `default_user` 长期画像（**IR-05**；**§3.2、§3.3**）。
+
+**验证时间**：2026-05-06
+
+**最终结论**：✅ 通过
+
+### 测试执行（自动化）
+
+命令：`python -m pytest tests -q --tb=no`
+
+| 项目 | 结果 |
+|------|------|
+| 全库用例 | 66 passed，12 skipped |
+| 耗时（约） | 22s |
+
+| 测试文件 | 用例数 |
+|----------|--------|
+| `tests/unit/test_user_profiles_t014_long_term.py` | 7 |
+
+### 测试用例摘要
+
+| 主题 | 结果 |
+|------|------|
+| passive 并集、幂等（`last_updated` 不变） | ✅ |
+| explicit 替换过敏原、清空 `dietary_target`、部分更新 `taste_tags` | ✅ |
+| 迁移：仅长期表 `default_user` → scope | ✅ |
+| 迁移：目标已存在时删除遗留行 | ✅ |
+
+### 缺陷列表
+
+- 本轮未登记新 BUG。
+
+### 开发计划同步
+
+已更新 `docs/开发计划.md` §3：**T-014**「测试状态」**待测试** → **已完成**。
+
+---
+
+## [TR-020] 集成：M2 记忆子系统模块间验收（`tests/integration/test_memory_stack_m2_integration.py`）
+
+**验证任务**：在 T-009～T-014 单测之外，对记忆相关模块做**跨模块串联**回归：L3 约束抽取与 `memory_state` 合并 → `build_effective_constraint`（**C**）→ `augment_search_query` 与 `augment_query_for_search` → `filter_recipes_by_hard_exclusions`（**§5.4**）；`run_short_term_ttl_cleanup` 与临时库 **T-013** 物理清理；`apply_long_term_patch` 写入后 `get_user_profile` 再入 **C**（**T-014** / **IR-05** 读路径）。  
+**不替代** 单测文件；**不覆盖** 完整 LangGraph 工作流（非 E2E）。
+
+**验证时间**：2026-05-07
+
+**最终结论**：✅ 通过
+
+### 测试执行（自动化）
+
+命令：
+
+```text
+python -m pytest tests/integration/test_memory_stack_m2_integration.py -q --tb=no
+```
+
+| 项目 | 结果 |
+|------|------|
+| 用例数 | 3 |
+| 结果 | 3 passed |
+| 耗时（约） | 2.6s（本机，供参考） |
+
+| 用例 | 说明 | 覆盖 |
+|------|------|------|
+| `test_m2_pipeline_L3_to_C_to_queries_and_hard_filter` | 用户句 → `build_l3_memory_patch` → 注入 profile → **C** → 双路 query 增强 → 硬排除过滤 | T-010、T-011（串联） |
+| `test_m2_T013_run_short_term_ttl_cleanup_purges_expired` | `Settings` mock 开启 purge；过期 `user_short_term_states` 行被删除 | T-013（清理入口 + 真 SQLite） |
+| `test_m2_T014_long_term_patch_roundtrip_with_chain` | 临时库 `apply_long_term_patch` 后 `get_user_profile` → `build_effective_constraint` 的 `hard_exclusions` | T-014（写库→读→C） |
+
+### 说明
+
+- 测试文件位于 **`tests/integration/`**，与 `tests/unit/` 中单点验收区分；全库回归时 `pytest` 会一并收集（视 `pytest.ini` / 工作目录而定）。
+- 中文菜名与 **hard_exclusions** 关键词需可互相匹配（本用例用「花生」与菜名中的「花生」子串，与 `filter_recipes_by_hard_exclusions` 实现一致）。
+
+### 缺陷列表
+
+- 本轮未登记新 BUG。
+
+### 开发计划同步
+
+- 不新增开发计划任务行；**INT-M2** 为对 **T-009～T-014** 的**集成层补充验收**，与各任务 [TR-014]～[TR-019] 并列可查。
 
 ---
 

@@ -15,17 +15,59 @@ from datetime import datetime, timedelta
 # 短期状态默认存活天数
 DEFAULT_SHORT_TERM_TTL_DAYS = 7
 
+# 历史遗留 user_id，规格 §3.2：一次性迁移到当前 SCOPE_ID
+_LEGACY_SCOPE_USER_ID = "default_user"
+
+
+def _merge_union_unique(existing: List[Any], incoming: List[Any]) -> List[str]:
+    """被动抽取：并集去重（顺序稳定，略去空串）。"""
+    seen: set[str] = set()
+    out: List[str] = []
+    for item in list(existing or ()) + list(incoming or ()):
+        s = str(item).strip()
+        if not s or s in seen:
+            continue
+        seen.add(s)
+        out.append(s)
+    return out
+
+
+def _norm_long_term_compare_row(d: Optional[Dict[str, Any]]) -> tuple:
+    """用于幂等判断：列表按字典序归一，字符串 strip。"""
+    if not d:
+        d = {}
+    tt = d.get("taste_tags") or {}
+    if not isinstance(tt, dict):
+        tt = {}
+    like = sorted({str(x).strip() for x in (tt.get("like") or []) if str(x).strip()})
+    dislike = sorted({str(x).strip() for x in (tt.get("dislike") or []) if str(x).strip()})
+    return (
+        tuple(sorted({str(x).strip() for x in (d.get("allergens") or []) if str(x).strip()})),
+        tuple(sorted({str(x).strip() for x in (d.get("medical_restrictions") or []) if str(x).strip()})),
+        (d.get("dietary_target") or "").strip(),
+        tuple(like),
+        tuple(dislike),
+        tuple(sorted({str(x).strip() for x in (d.get("cooking_habits") or []) if str(x).strip()})),
+    )
+
 
 class UserProfileManager:
     """Manages user profiles including preferences, dietary restrictions, and personal information."""
 
-    def __init__(self, db_path: str = "data/db/user_profiles.db"):
+    def __init__(
+        self,
+        db_path: str = "data/db/user_profiles.db",
+        *,
+        scope_id_for_migration: Optional[str] = None,
+    ):
         self.db_path = db_path
         os.makedirs(
             os.path.dirname(db_path) if os.path.dirname(db_path) else '.',
             exist_ok=True
         )
         self._init_db()
+        if scope_id_for_migration:
+            self._migrate_legacy_scope(scope_id_for_migration.strip())
 
     # ─────────────────────────────────────────────────────────
     # 初始化
@@ -84,6 +126,55 @@ class UserProfileManager:
  
         conn.commit()
         conn.close()
+
+    def _migrate_legacy_scope(self, target_scope_id: str) -> None:
+        """规格 §3.2：历史 `default_user` 并入当前 SCOPE_ID（幂等；主键冲突时丢弃遗留行）。"""
+        if not target_scope_id or target_scope_id == _LEGACY_SCOPE_USER_ID:
+            return
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        leg = _LEGACY_SCOPE_USER_ID
+        try:
+
+            def _pk_row(table: str, uid: str) -> bool:
+                cursor.execute(
+                    f"SELECT 1 FROM {table} WHERE user_id = ? LIMIT 1",
+                    (uid,),
+                )
+                return cursor.fetchone() is not None
+
+            # user_profiles：UNIQUE(user_id)
+            if _pk_row("user_profiles", leg):
+                if not _pk_row("user_profiles", target_scope_id):
+                    cursor.execute(
+                        "UPDATE user_profiles SET user_id = ? WHERE user_id = ?",
+                        (target_scope_id, leg),
+                    )
+                else:
+                    cursor.execute("DELETE FROM user_profiles WHERE user_id = ?", (leg,))
+
+            # user_long_term_profile：PRIMARY KEY(user_id)
+            if _pk_row("user_long_term_profile", leg):
+                if not _pk_row("user_long_term_profile", target_scope_id):
+                    cursor.execute(
+                        "UPDATE user_long_term_profile SET user_id = ? WHERE user_id = ?",
+                        (target_scope_id, leg),
+                    )
+                else:
+                    cursor.execute(
+                        "DELETE FROM user_long_term_profile WHERE user_id = ?", (leg,)
+                    )
+
+            # 短期表：无 UNIQUE(user_id)，直接改写字段
+            cursor.execute(
+                "UPDATE user_short_term_states SET user_id = ? WHERE user_id = ?",
+                (target_scope_id, leg),
+            )
+            conn.commit()
+        except Exception as e:
+            print(f"Warning: legacy scope migration skipped: {e}")
+        finally:
+            conn.close()
 
     def create_user_profile(self,
                             user_id: str,
@@ -236,7 +327,7 @@ class UserProfileManager:
     # ─────────────────────────────────────────────────────────
  
     def get_long_term_profile(self, user_id: str) -> Optional[Dict[str, Any]]:
-        """读取长期画像，返回结构化字典。"""
+        """读取长期画像（IR-05：与 `get_user_profile`、`apply_long_term_patch` 及检索侧 **C** 合并同源）。"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         cursor.execute('''
@@ -259,7 +350,96 @@ class UserProfileManager:
             'cooking_habits': json.loads(row[5]) if row[5] else [],
             'last_updated': row[6],
         }
- 
+
+    def apply_long_term_patch(self, user_id: str, patch: Dict[str, Any], intent_type: str) -> bool:
+        """
+        长期画像写入（规格 §3.3；IR-05）：被动并集 / 显式按字段替换；无实质变更则跳过 UPSERT（幂等）。
+        intent_type：passive_extract | explicit_correction（与 FR-12 / MemoryKeeper 一致）
+        """
+        snapshot_before = self.get_long_term_profile(user_id)
+        empty_taste = {"like": [], "dislike": []}
+        if snapshot_before is None:
+            base = {
+                "allergens": [],
+                "medical_restrictions": [],
+                "dietary_target": "",
+                "taste_tags": dict(empty_taste),
+                "cooking_habits": [],
+            }
+        else:
+            base = {
+                "allergens": list(snapshot_before.get("allergens") or []),
+                "medical_restrictions": list(snapshot_before.get("medical_restrictions") or []),
+                "dietary_target": (snapshot_before.get("dietary_target") or "").strip(),
+                "taste_tags": dict(snapshot_before.get("taste_tags") or empty_taste),
+                "cooking_habits": list(snapshot_before.get("cooking_habits") or []),
+            }
+            if not isinstance(base["taste_tags"], dict):
+                base["taste_tags"] = dict(empty_taste)
+            for k in ("like", "dislike"):
+                if k not in base["taste_tags"]:
+                    base["taste_tags"][k] = []
+
+        merged: Dict[str, Any]
+
+        if intent_type == "explicit_correction":
+            merged = base
+            if "allergens" in patch:
+                merged["allergens"] = [str(x).strip() for x in (patch.get("allergens") or []) if str(x).strip()]
+            if "medical_restrictions" in patch:
+                merged["medical_restrictions"] = [
+                    str(x).strip() for x in (patch.get("medical_restrictions") or []) if str(x).strip()
+                ]
+            if "dietary_target" in patch:
+                v = patch.get("dietary_target")
+                merged["dietary_target"] = "" if v is None else str(v).strip()
+            if "cooking_habits" in patch:
+                merged["cooking_habits"] = [
+                    str(x).strip() for x in (patch.get("cooking_habits") or []) if str(x).strip()
+                ]
+            tt_in = patch.get("taste_tags")
+            if isinstance(tt_in, dict):
+                if "like" in tt_in:
+                    merged["taste_tags"]["like"] = [
+                        str(x).strip() for x in (tt_in.get("like") or []) if str(x).strip()
+                    ]
+                if "dislike" in tt_in:
+                    merged["taste_tags"]["dislike"] = [
+                        str(x).strip() for x in (tt_in.get("dislike") or []) if str(x).strip()
+                    ]
+        else:
+            merged = dict(base)
+            merged["allergens"] = _merge_union_unique(
+                base["allergens"], patch.get("allergens") or []
+            )
+            merged["medical_restrictions"] = _merge_union_unique(
+                base["medical_restrictions"], patch.get("medical_restrictions") or []
+            )
+            merged["cooking_habits"] = _merge_union_unique(
+                base["cooking_habits"], patch.get("cooking_habits") or []
+            )
+            dt_new = patch.get("dietary_target")
+            if dt_new and str(dt_new).strip() and not (base.get("dietary_target") or "").strip():
+                merged["dietary_target"] = str(dt_new).strip()
+            pt = patch.get("taste_tags") or {}
+            if not isinstance(pt, dict):
+                pt = {}
+            merged["taste_tags"] = {
+                "like": _merge_union_unique(
+                    base["taste_tags"].get("like", []),
+                    pt.get("like") or [],
+                ),
+                "dislike": _merge_union_unique(
+                    base["taste_tags"].get("dislike", []),
+                    pt.get("dislike") or [],
+                ),
+            }
+
+        if _norm_long_term_compare_row(merged) == _norm_long_term_compare_row(snapshot_before):
+            return True
+
+        return self.upsert_long_term_profile(user_id, merged)
+
     def upsert_long_term_profile(self, user_id: str, updates: Dict[str, Any]) -> bool:
         """
         写入或更新长期画像（UPSERT）。

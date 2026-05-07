@@ -1,50 +1,47 @@
-import copy
+import asyncio
 import logging
 import json
-from datetime import datetime, timezone
-from typing import Dict, Any, List, Optional
-from langchain_core.messages import BaseMessage
-from pathlib import Path
+from typing import Any, Dict, List, Optional, Sequence
 
-from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
+from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 
 from ...libs.base.user_profiles import UserProfileManager
 from ...libs.adapters.llm.llm_factory import LLMFactory
-from ..state import AgentState
-from ..state_accessors import get_runtime_bundle
-from ..state_sync import runtime_bundle_to_slice_patches
-from .schema import MemoryKeeperOutput
 from ...libs.base.settings import Settings
+from ..state import AgentState
+from .schema import MemoryKeeperOutput
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
+
 
 class MemoryKeeper:
     """
     记忆守护者：后台静默分析对话，提取用户画像并写入数据库。
     不直接参与对话，只做信息提取与存储。
     """
-    def __init__(self, db_path: str = "data/db/user_profiles.db"):
+
+    def __init__(self, db_path: Optional[str] = None):
         try:
             settings = Settings()
-
-            self.user_profile_manager = UserProfileManager(db_path=db_path)
+            self.user_profile_manager = UserProfileManager(
+                db_path=db_path or settings.get_user_profiles_db_path(),
+                scope_id_for_migration=settings.get_scope_id(),
+            )
             base_llm = LLMFactory.get_llm(settings)
             self.llm = base_llm.with_structured_output(MemoryKeeperOutput)
 
             prompt_path = Path(__file__).parent.parent / "prompts" / "memory_prompt.md"
             with open(prompt_path, "r", encoding="utf-8") as f:
                 self.system_prompt = f.read()
+            self._short_term_ttl_days = settings.get_short_term_ttl_days()
             logger.info("MemoryKeeper 初始化成功")
 
         except Exception as e:
-            logger.error(f"Memory Keeper 初始化失败: {e}")
+            logger.error("Memory Keeper 初始化失败: %s", e)
             raise
 
     def _format_conversation(self, messages: List[BaseMessage], window: int = 6) -> str:
-        """
-        将最近 N 条消息格式化为对话文本，供 LLM 分析。
-        只取最近的窗口，避免 token 浪费。
-        """
         recent = messages[-window:] if len(messages) > window else messages
         lines = []
         for msg in recent:
@@ -53,112 +50,45 @@ class MemoryKeeper:
             elif isinstance(msg, AIMessage):
                 lines.append(f"助手：{msg.content}")
         return "\n".join(lines)
- 
+
     def _format_existing_profile(self, profile: Optional[Dict]) -> str:
-        """将已有用户画像格式化为文本，注入 prompt 供 LLM 做对比。"""
         if not profile:
             return "（当前无已存档的用户画像）"
         return json.dumps(profile, ensure_ascii=False, indent=2)
-    
-    def _merge_list(self, existing: list, new_items: list) -> list:
-        """列表取并集，去重。"""
-        merged = list(existing)
-        for item in new_items:
-            if item and item not in merged:
-                merged.append(item)
-        return merged
- 
+
     async def analyze(self, messages: List[BaseMessage], user_id: str) -> MemoryKeeperOutput:
-        """
-        调用 LLM 分析对话，返回结构化的提取结果。
-        """
         existing_profile = self.user_profile_manager.get_user_profile(user_id)
         conversation_text = self._format_conversation(messages)
         profile_text = self._format_existing_profile(existing_profile)
- 
+
         full_prompt = (
             f"{self.system_prompt}\n\n"
             f"# 已有用户画像（供对比，避免重复写入）\n{profile_text}\n\n"
             f"# 最新对话记录\n{conversation_text}"
         )
- 
+
         result = await self.llm.ainvoke(full_prompt)
-        logger.error(f"DEBUG LLM结果: {result}") 
-        
-        if hasattr(result, 'parsed') and isinstance(result.parsed, dict):
+        logger.debug("MemoryKeeper LLM 结果: %s", result)
+
+        if hasattr(result, "parsed") and isinstance(result.parsed, dict):
             return MemoryKeeperOutput(**result.parsed)
-        if hasattr(result, 'parsed') and isinstance(result.parsed, MemoryKeeperOutput):
+        if hasattr(result, "parsed") and isinstance(result.parsed, MemoryKeeperOutput):
             return result.parsed
         return result
-    
+
     def _apply_long_term_updates(self, user_id: str, long_term: Dict, intent_type: str) -> bool:
-        """
-        将长期画像更新写入数据库。
-        - passive_extract：并集合并，不覆盖已有数据
-        - explicit_correction：显式修正，直接覆盖对应字段
-        """
+        """§3.3 / IR-05：合并策略与幂等写入由 UserProfileManager.apply_long_term_patch 统一实现。"""
         try:
-            existing = self.user_profile_manager.get_user_profile(user_id) or {}
- 
-            if intent_type == "explicit_correction":
-                # 显式修正：直接覆盖用户指定的字段
-                updated = dict(existing)
-                if long_term.get("allergens") is not None:
-                    updated["allergens"] = long_term["allergens"]
-                if long_term.get("medical_restrictions"):
-                    updated["medical_restrictions"] = long_term["medical_restrictions"]
-                if long_term.get("dietary_target"):
-                    updated["dietary_target"] = long_term["dietary_target"]
-                if long_term.get("cooking_habits"):
-                    updated["cooking_habits"] = long_term["cooking_habits"]
- 
-                taste = long_term.get("taste_tags", {})
-                if taste.get("like") or taste.get("dislike"):
-                    existing_taste = existing.get("taste_tags", {"like": [], "dislike": []})
-                    updated["taste_tags"] = {
-                        "like": taste.get("like", existing_taste.get("like", [])),
-                        "dislike": taste.get("dislike", existing_taste.get("dislike", []))
-                    }
-            else:
-                # 被动提取：并集合并
-                updated = dict(existing)
-                updated["allergens"] = self._merge_list(
-                    existing.get("allergens", []),
-                    long_term.get("allergens", [])
-                )
-                updated["medical_restrictions"] = self._merge_list(
-                    existing.get("medical_restrictions", []),
-                    long_term.get("medical_restrictions", [])
-                )
-                updated["cooking_habits"] = self._merge_list(
-                    existing.get("cooking_habits", []),
-                    long_term.get("cooking_habits", [])
-                )
-                if long_term.get("dietary_target") and not existing.get("dietary_target"):
-                    updated["dietary_target"] = long_term["dietary_target"]
- 
-                taste = long_term.get("taste_tags", {})
-                existing_taste = existing.get("taste_tags", {"like": [], "dislike": []})
-                updated["taste_tags"] = {
-                    "like": self._merge_list(
-                        existing_taste.get("like", []),
-                        taste.get("like", [])
-                    ),
-                    "dislike": self._merge_list(
-                        existing_taste.get("dislike", []),
-                        taste.get("dislike", [])
-                    )
-                }
- 
-            updated["last_updated"] = datetime.now().isoformat()
-            self.user_profile_manager.upsert_long_term_profile(user_id, updated)
-            logger.info(f"用户 {user_id} 长期画像已更新（{intent_type}）")
-            return True
-        
+            patch = dict(long_term)
+            patch.pop("last_updated", None)
+            ok = self.user_profile_manager.apply_long_term_patch(user_id, patch, intent_type)
+            if ok:
+                logger.info("用户 %s 长期画像已更新或已为幂等跳过（%s）", user_id, intent_type)
+            return ok
+
         except Exception as e:
-            logger.error(f"写入长期画像失败: {e}")
+            logger.error("写入长期画像失败: %s", e)
             return False
- 
 
     def _apply_short_term_states(self, user_id: str, short_term: Dict) -> bool:
         try:
@@ -167,78 +97,137 @@ class MemoryKeeper:
                 return True
 
             for condition in conditions:
-                # 确保是字符串
                 if isinstance(condition, dict):
                     condition = condition.get("condition", str(condition))
-                # 逐条写入，add_short_term_state 内部已处理去重
-                self.user_profile_manager.add_short_term_state(user_id, str(condition))
+                self.user_profile_manager.add_short_term_state(
+                    user_id,
+                    str(condition),
+                    ttl_days=self._short_term_ttl_days,
+                )
 
-            logger.info(f"用户 {user_id} 短期状态已写入: {conditions}")
+            logger.info("用户 %s 短期状态已写入: %s", user_id, conditions)
             return True
 
         except Exception as e:
-            logger.error(f"写入短期状态失败: {e}")
+            logger.error("写入短期状态失败: %s", e)
             return False
+
+
+def serialize_messages_for_keeper(messages: Sequence[BaseMessage]) -> List[Dict[str, str]]:
+    """不可变快照：仅 human/ai 文本（规格 §4.5）。"""
+    out: List[Dict[str, str]] = []
+    for m in messages or []:
+        if isinstance(m, HumanMessage):
+            c = m.content
+            out.append({"role": "human", "content": c if isinstance(c, str) else str(c)})
+        elif isinstance(m, AIMessage):
+            c = m.content
+            out.append({"role": "ai", "content": c if isinstance(c, str) else str(c)})
+    return out
+
+
+def messages_from_keeper_snapshot(raw: Sequence[Dict[str, Any]]) -> List[BaseMessage]:
+    out: List[BaseMessage] = []
+    for item in raw or []:
+        role = item.get("role")
+        content = item.get("content") or ""
+        if role == "human":
+            out.append(HumanMessage(content=str(content)))
+        elif role == "ai":
+            out.append(AIMessage(content=str(content)))
+    return out
+
+
+def build_memory_keeper_snapshot(
+    scope_id: str,
+    messages: Sequence[BaseMessage],
+) -> Dict[str, Any]:
+    """L4 异步任务输入快照（禁止传入可变共享 state 对象）。"""
+    return {
+        "scope_id": scope_id,
+        "messages": serialize_messages_for_keeper(messages),
+    }
+
+
+async def run_memory_keeper_persist(scope_id: str, messages: List[BaseMessage]) -> None:
+    """分析并写库；异常向上抛出，由 run_memory_keeper_safe 捕获（规格 §4.5）。"""
+    if not messages:
+        logger.info("MemoryKeeper: 消息为空，跳过")
+        return
+
+    settings = Settings()
+    keeper = MemoryKeeper(db_path=settings.get_user_profiles_db_path())
+    result: MemoryKeeperOutput = await keeper.analyze(messages, scope_id)
+
+    logger.info(
+        "MemoryKeeper 分析结果: has_update=%s, intent=%s, reasoning=%s",
+        result.has_update,
+        result.intent_type,
+        result.reasoning,
+    )
+
+    if not result.has_update:
+        logger.info("MemoryKeeper: 无新偏好，跳过写库")
+        return
+
+    if result.long_term_updates:
+        if hasattr(result.long_term_updates, "model_dump"):
+            if result.intent_type == "explicit_correction":
+                long_term_dict = result.long_term_updates.model_dump(exclude_unset=True)
+            else:
+                long_term_dict = result.long_term_updates.model_dump()
+        else:
+            long_term_dict = dict(result.long_term_updates)
+        keeper._apply_long_term_updates(scope_id, long_term_dict, result.intent_type)
+
+    if result.short_term_states and result.short_term_states.is_temporary:
+        short_term_dict = (
+            result.short_term_states.model_dump()
+            if hasattr(result.short_term_states, "model_dump")
+            else dict(result.short_term_states)
+        )
+        keeper._apply_short_term_states(scope_id, short_term_dict)
+
+
+async def run_memory_keeper_safe(snapshot: Dict[str, Any]) -> None:
+    """
+    L4 异步安全壳：规格 §4.5 — error_code=MEMORY_KEEPER_FAILED，禁止影响主回复。
+    """
+    try:
+        scope_id = str(snapshot.get("scope_id") or "default_user").strip() or "default_user"
+        raw = snapshot.get("messages") or []
+        messages = messages_from_keeper_snapshot(raw)
+        await run_memory_keeper_persist(scope_id, messages)
+    except Exception as e:
+        # 规格 §9：MEMORY_KEEPER_FAILED
+        logger.error(
+            "MEMORY_KEEPER_FAILED error_code=MEMORY_KEEPER_FAILED detail=%s",
+            e,
+            exc_info=True,
+        )
+
+
+def schedule_memory_keeper_after_reply(scope_id: str, messages: Sequence[BaseMessage]) -> None:
+    """
+    generator 在产出待发送内容后调用：asyncio.create_task（规格 §4.5～4.6）。
+    """
+    snap = build_memory_keeper_snapshot(scope_id, messages)
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        logger.warning("L4 keeper: 无运行中事件循环，跳过异步任务")
+        return
+    loop.create_task(run_memory_keeper_safe(snap))
 
 
 async def memory_keeper_node(state: AgentState) -> AgentState:
     """
-    LangGraph 节点入口。
-    后台静默运行，不修改消息列表，只更新数据库并将短期状态写入 memory_state / 展平 bundle。
+    兼容入口：同步执行一轮 L4（测试或手工调用）。
+    主流程已改为 generator 后 schedule_memory_keeper_after_reply（T-012）。
     """
-    messages: List[BaseMessage] = state.get("messages", [])
-    user_id: str = state.get("active_user_id", "default_user")
- 
-    # 消息不足时跳过分析
-    if not messages:
-        logger.info("MemoryKeeper: 消息为空，跳过")
-        return {}
- 
-    try:
-        keeper = MemoryKeeper()
-        result: MemoryKeeperOutput = await keeper.analyze(messages, user_id)
- 
-        logger.info(f"MemoryKeeper 分析结果: has_update={result.has_update}, "
-                    f"intent={result.intent_type}, reasoning={result.reasoning}")
- 
-        if not result.has_update:
-            logger.info("MemoryKeeper: 无新偏好，跳过写库")
-            return {}
- 
-        # 写入长期画像
-        if result.long_term_updates:
-            long_term_dict = result.long_term_updates.model_dump() \
-                if hasattr(result.long_term_updates, 'model_dump') \
-                else dict(result.long_term_updates)
-            keeper._apply_long_term_updates(user_id, long_term_dict, result.intent_type)
- 
-        # 写入短期状态，并注入 memory_state / bundle 供当次推理使用
-        short_term_injected = []
-        if result.short_term_states and result.short_term_states.is_temporary:
-            short_term_dict = result.short_term_states.model_dump() \
-                if hasattr(result.short_term_states, 'model_dump') \
-                else dict(result.short_term_states)
-            keeper._apply_short_term_states(user_id, short_term_dict)
-            short_term_injected = result.short_term_states.conditions or []
- 
-        if short_term_injected:
-            logistics_buffer = copy.deepcopy(get_runtime_bundle(state))
-            existing_constraints = logistics_buffer.get("short_term_constraints", [])
-            logistics_buffer["short_term_constraints"] = list(
-                set(existing_constraints + short_term_injected)
-            )
-            patches = runtime_bundle_to_slice_patches(logistics_buffer)
-            patches["memory_state"] = {
-                **patches.get("memory_state", {}),
-                "short_term_constraints": logistics_buffer["short_term_constraints"],
-                "last_memory_update_at": datetime.now(timezone.utc).isoformat(),
-            }
-            return patches
- 
-        return {}
- 
-    except Exception as e:
-        logger.error(f"MemoryKeeper 节点执行失败: {e}", exc_info=True)
-        # 节点失败不阻断主流程，返回空 state 更新
-        return {}
-    
+    from ..effective_constraint import resolve_scope_id
+
+    scope_id = resolve_scope_id(state)
+    messages = list(state.get("messages") or [])
+    await run_memory_keeper_safe(build_memory_keeper_snapshot(scope_id, messages))
+    return {}

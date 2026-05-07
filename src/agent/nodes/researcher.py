@@ -10,7 +10,7 @@ import sys
 
 if sys.platform == "win32":
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional
 import logging
 import sys
 import json
@@ -24,6 +24,10 @@ from mcp import ClientSession, StdioServerParameters
 
 from ..state import AgentState
 from ..state_accessors import get_runtime_bundle
+from ..effective_constraint import (
+    augment_search_query,
+    build_effective_constraint,
+)
 from ..state_sync import (
     CLEAR_ERROR_STATE,
     error_state_from_expert_payloads,
@@ -37,6 +41,16 @@ from .schema import StructuredRecipe
 from ...libs.base.settings import Settings
 
 logger = logging.getLogger(__name__)
+
+
+def _merge_effective_constraint_into_memory_patch(
+    patch: Dict[str, Any], c: Dict[str, Any]
+) -> Dict[str, Any]:
+    """规格 §3.5：将本轮 **C** 写入 memory_state，供下游只读。"""
+    mp = dict(patch.get("memory_state") or {})
+    mp["effective_constraint"] = c
+    patch["memory_state"] = mp
+    return patch
 
 
 def _recipe_error_slice_patch(bundle: Dict[str, Any], expert: Dict[str, Any]) -> Dict[str, Any]:
@@ -120,15 +134,23 @@ class RecipeResearcher:
                 traceback.print_exc()
             return {"error": str(e), "status": "error"}
 
-    async def search_recipes(self, query: str, user_id: str = "default_user") -> Dict:
-        """通过 stdio 调用真实的 MCP 工具"""
-        # 调用服务端定义的 'search_recipes' 工具
-        result = await self._call_mcp_tool(
-            "search_recipes", 
-            {
+    async def search_recipes(
+        self,
+        query: str,
+        user_id: str = "default_user",
+        *,
+        effective_constraint: Optional[Dict[str, Any]] = None,
+        top_k: int = 15,
+    ) -> Dict:
+        """通过 stdio 调用 MCP `search_recipes`；传入 **C** 与检索侧统一（T-015）。"""
+        args: Dict[str, Any] = {
             "query": query,
-            "user_id": user_id
-        })
+            "user_id": user_id,
+            "top_k": top_k,
+        }
+        if effective_constraint is not None:
+            args["effective_constraint"] = effective_constraint
+        result = await self._call_mcp_tool("search_recipes", args)
         print(f"📥 收到MCP服务器响应: {result}")  # 调试信息
         return result
 
@@ -177,8 +199,9 @@ async def researcher_node(state: AgentState) -> AgentState:
     entities = logistics_buffer.get("extracted_entities", {})
 
     active_user_id = state.get("active_user_id", "default_user")
-
-    
+    # §3.5 / §5.1：合并 **C**（L2+L3+画像）；MCP user_id 使用 C.scope_id（SCOPE_ID）
+    effective_c = build_effective_constraint(state)
+    scope_for_mcp = effective_c.get("scope_id") or active_user_id
 
     if logistics_buffer.get("selected_recipe_title"):
         query = logistics_buffer["selected_recipe_title"]
@@ -212,13 +235,23 @@ async def researcher_node(state: AgentState) -> AgentState:
         }
         result.update(runtime_bundle_to_slice_patches(logistics_buffer))
         result.update(_recipe_error_slice_patch(logistics_buffer, result["expert_payloads"]))
+        _merge_effective_constraint_into_memory_patch(result, effective_c)
         return result
 
     else:
-        query = entities.get("recipe_name") or (state["messages"][-1].content if state.get("messages") else "") 
-        search_res = await research.search_recipes(query, active_user_id)
+        query = entities.get("recipe_name") or (state["messages"][-1].content if state.get("messages") else "")
+        query = augment_search_query(
+            str(query) if query is not None else "",
+            effective_c,
+            state,
+        )
+        search_res = await research.search_recipes(
+            query,
+            scope_for_mcp,
+            effective_constraint=effective_c,
+        )
     
-        print(f"🔍 [Researcher] 没有选定菜谱标题，开始检索菜谱，query: {query}, user_id: {active_user_id}")  # 调试信息
+        print(f"🔍 [Researcher] 没有选定菜谱标题，开始检索菜谱，query: {query}, user_id: {scope_for_mcp}")  # 调试信息
 
         if search_res.get("error"):
             current_stack = consume_tasks(current_stack, ["TASK_SEARCH"])
@@ -235,9 +268,10 @@ async def researcher_node(state: AgentState) -> AgentState:
             }
             result.update(runtime_bundle_to_slice_patches(logistics_buffer))
             result.update(_recipe_error_slice_patch(logistics_buffer, result["expert_payloads"]))
+            _merge_effective_constraint_into_memory_patch(result, effective_c)
             return result
 
-        recipes = search_res.get("recipes", [])
+        recipes = search_res.get("recipes") or []
 
         print(f"📋 [Researcher] 搜索结果数量: {len(recipes)}, 分数最高的结果: {recipes[0] if recipes else 'None'}")  # 调试信息
 
@@ -257,6 +291,7 @@ async def researcher_node(state: AgentState) -> AgentState:
             print(f"❌ [Researcher] 未找到菜谱，返回: {result}")  # 调试信息
             result.update(runtime_bundle_to_slice_patches(logistics_buffer))
             result.update(_recipe_error_slice_patch(logistics_buffer, result["expert_payloads"]))
+            _merge_effective_constraint_into_memory_patch(result, effective_c)
             return result
 
         top_recipe = recipes[0]  # 取分数最高
@@ -306,6 +341,7 @@ async def researcher_node(state: AgentState) -> AgentState:
             print(f"✅ 成功返回结果，包含 {len(logistics_buffer['recipe_requirements'])} 项食材")  # 调试信息
             result.update(runtime_bundle_to_slice_patches(logistics_buffer))
             result.update(_recipe_error_slice_patch(logistics_buffer, result["expert_payloads"]))
+            _merge_effective_constraint_into_memory_patch(result, effective_c)
             return result
 
         else:
@@ -343,4 +379,5 @@ async def researcher_node(state: AgentState) -> AgentState:
             print(f"⚠️ 低置信度返回，候选菜谱数量: {len(recipes)}, 状态: ambiguous")  # 调试信息
             result.update(runtime_bundle_to_slice_patches(logistics_buffer))
             result.update(_recipe_error_slice_patch(logistics_buffer, result["expert_payloads"]))
+            _merge_effective_constraint_into_memory_patch(result, effective_c)
             return result

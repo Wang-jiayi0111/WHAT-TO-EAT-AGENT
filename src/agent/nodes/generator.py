@@ -12,10 +12,12 @@ from langchain_core.messages import AIMessage
 
 from ...libs.adapters.llm.llm_factory import LLMFactory
 from ...libs.base.settings import Settings
+from ..effective_constraint import resolve_scope_id
 from ..state import AgentState
 from ..state_accessors import get_runtime_bundle
 from ..state_sync import runtime_bundle_to_slice_patches
 from ..task_stack import consume_tasks
+from .memory_keeper import schedule_memory_keeper_after_reply
 
 
 def _generator_slice_patch(content: str, task_stack: List[str], loop_guard: int) -> Dict[str, Any]:
@@ -275,8 +277,7 @@ class GeneratorNode:
             return "库存更新时遇到问题，请稍后再试。"
         
     def handle_profile_sync(self, state: AgentState) -> str:
-        """偏好同步完成后给用户确认。"""
-        # memory_keeper 已经写库，这里只需要生成确认文本
+        """偏好同步意图的确认话术（L4 在回复后异步写库，见 schedule_memory_keeper_after_reply）。"""
         messages = state.get("messages", [])
         last_user_msg = ""
         for msg in reversed(messages):
@@ -414,8 +415,10 @@ async def generator_node(state: AgentState) -> Dict[str, Any]:
             task_stack = consume_tasks(task_stack, ["TASK_CLARIFY", "TASK_SEARCH"])
 
         print(f"🔍 [Generator] 最终返回: task_stack={task_stack}")
+        updated_messages = list(state.get("messages", [])) + [new_message]
+        schedule_memory_keeper_after_reply(resolve_scope_id(state), updated_messages)
         return {
-            "messages": list(state.get("messages", [])) + [new_message],
+            "messages": updated_messages,
             "task_stack": task_stack,
             **_generator_slice_patch(clarify_reply, task_stack, loop_guard_count),
         }
@@ -445,6 +448,7 @@ async def generator_node(state: AgentState) -> Dict[str, Any]:
     logger.info(f"[Generator] task_stack 处理完成，还存在任务: {task_stack}")
     new_message = AIMessage(content=reply)
     updated_messages = list(state.get("messages", [])) + [new_message]
+    schedule_memory_keeper_after_reply(resolve_scope_id(state), updated_messages)
 
     print(f"🔍 [Generator] 最终返回: task_stack={task_stack}")
     return {

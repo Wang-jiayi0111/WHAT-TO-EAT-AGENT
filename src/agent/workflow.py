@@ -10,8 +10,9 @@ WHAT-TO-EAT-AGENT 主工作流
 节点执行顺序：
   用户输入
     → conversation_summary  L2：仅压缩/裁剪 messages 与 conversation_summary（规格 §4.2，不误清 task_stack / 切片）
-    → memory_keeper         L4 侧写：后台提取偏好（不阻塞主流）
+    → short_term            L3：T-013 DB 短期 TTL 清理 → 当轮约束 → memory_state.short_term_constraints（§4.3）
     → router                意图识别，生成 task_stack
+    → … → generator → （回复就绪）asyncio.create_task(L4 MemoryKeeper)（规格 §4.5～4.6，T-012）
     → 条件路由（route_by_task）
         TASK_DIRECT_REPLY   → generator（闲聊）→ END
         TASK_SEARCH         → researcher → 条件路由（route_after_research）
@@ -35,9 +36,9 @@ from .nodes.router import router_node
 from .nodes.generator import generator_node
 from .nodes.researcher import researcher_node
 from .nodes.logistics import logistics_manager_node
-from .nodes.memory_keeper import memory_keeper_node
 from .nodes.clarify_resolver import clarify_resolver_node
 from .nodes.conversation_summary import conversation_summary_node
+from .nodes.short_term import short_term_constraints_node
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -160,7 +161,7 @@ def build_graph(checkpointer=None) -> StateGraph:
  
     # ── 注册节点 ──────────────────────────────────────────
     graph.add_node("conversation_summary", conversation_summary_node)
-    graph.add_node("memory_keeper",       memory_keeper_node)
+    graph.add_node("short_term", short_term_constraints_node)
     graph.add_node("router",              router_node)
     graph.add_node("researcher",          researcher_node)
     graph.add_node("logistics",           logistics_manager_node)
@@ -171,10 +172,9 @@ def build_graph(checkpointer=None) -> StateGraph:
     graph.set_entry_point("conversation_summary")
  
     # ── 固定边 ────────────────────────────────────────────
-    # conversation_summary → memory_keeper（并行提取，不影响主流）
-    graph.add_edge("conversation_summary", "memory_keeper")
-    # memory_keeper → router（提取完成后继续）
-    graph.add_edge("memory_keeper", "router")
+    # conversation_summary → short_term（L3）→ router（规格 §4.6；L4 在 generator 后异步）
+    graph.add_edge("conversation_summary", "short_term")
+    graph.add_edge("short_term", "router")
  
     # ── 主路由（意图识别及后续） ────────────────────────────────────────────
     graph.add_conditional_edges(

@@ -55,10 +55,40 @@ llm:
   timeout: 60                     # 旗舰模型推理较重，建议增加超时阈值
   retry_limit: 3                  # 遇到网络抖动自动重试
 
+# 家庭 / 用户作用域（规格 §3.2、§8：画像与库存 SCOPE_ID）
+household:
+  default_id: "default_user"
+
 # 意图与置信度（规格 §8；FR-03 / §11.6）
 intent:
   confidence:
     clarify_threshold: 0.55       # 低于则 needs_clarification；禁触发写库类任务展开
+
+# L3 当轮约束（规格 §4.3；T-010）：关键词 → 约束行，供 memory_state 与检索 query 增强
+memory:
+  l3:
+    keyword_rules:
+      - keywords: ["肠胃", "胃不舒服", "胃疼", "胃炎", "拉肚子", "腹泻"]
+        constraint: "短期：肠胃不适，宜清淡易消化"
+      - keywords: ["感冒", "发烧", "咳嗽", "嗓子疼", "喉咙痛"]
+        constraint: "短期：感冒/呼吸道不适"
+      - keywords: ["清淡", "少油", "少盐", "低油", "低盐"]
+        constraint: "口味：清淡饮食"
+      - keywords: ["忌口", "不能吃", "不吃", "禁食"]
+        constraint: "医嘱/自我约束：忌口需遵守"
+      - keywords: ["牙疼", "拔牙", "口腔"]
+        constraint: "短期：口腔不适期"
+      - keywords: ["孕妇", "怀孕", "孕期", "月子", "产后"]
+        constraint: "特殊阶段：孕产期饮食需谨慎"
+      - keywords: ["术后", "刚做完手术", "手术恢复"]
+        constraint: "短期：术后恢复期"
+      - keywords: ["过敏", "过敏原", "不耐受"]
+        constraint: "安全：过敏相关表述需结合画像核对"
+
+  # 短期状态 TTL（规格 §3.4；FR-13；T-013）
+  short_term_ttl:
+    default_days: 7              # 写入 user_short_term_states 的默认过期天数（与代码默认一致可调）
+    purge_expired_on_turn: true  # 每轮 L3 前物理删除本 scope 过期/失活行
 
 # Embedding 配置
 embedding:

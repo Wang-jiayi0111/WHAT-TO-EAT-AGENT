@@ -71,7 +71,10 @@ try:
     )
 
     docu_manager = DocumentManager(vector_store=vector_store, bm25_indexer=bm25_indexer)
-    user_manager = UserProfileManager()
+    user_manager = UserProfileManager(
+        db_path=settings.get_user_profiles_db_path(),
+        scope_id_for_migration=settings.get_scope_id(),
+    )
 
     semantic_engine = SemanticSearchEngine(
         vector_store=vector_store,
@@ -103,9 +106,13 @@ async def handle_list_tools() -> list[types.Tool]:
                 "properties": {
                     "query": {"type": "string"},
                     "user_id": {"type": "string"},
-                    "top_k": {"type": "integer", "default": 5}
+                    "top_k": {"type": "integer", "default": 10},
+                    "effective_constraint": {
+                        "type": "object",
+                        "description": "与 Agent **C** 一致的有效约束（规格 §3.5）；含 hard_exclusions 等",
+                    },
                 },
-                "required": ["query"]
+                "required": ["query"],
             }
         ),
         types.Tool(

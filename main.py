@@ -39,7 +39,6 @@ console = Console()
 STATUS_MAP = {
     "logistics": "🥦 正在为您打理厨房库存...",
     "researcher": "🍳 正在翻阅海量菜谱...",
-    "memory_keeper": "🧠 正在匹配您的饮食偏好...",
     "clarify_resolver": "🤔 正在理解您的选择...",
     "generator": "✨ 正在生成最终回复..."
 }

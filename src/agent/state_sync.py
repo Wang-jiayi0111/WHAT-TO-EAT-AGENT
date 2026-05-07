@@ -218,6 +218,8 @@ def materialize_runtime_bundle_from_slices(state: Mapping[str, Any]) -> Dict[str
     stc = mem.get("short_term_constraints")
     if stc:
         flat["short_term_constraints"] = list(stc)
+    if mem.get("effective_constraint") is not None:
+        flat["effective_constraint"] = mem["effective_constraint"]
 
     return flat
 

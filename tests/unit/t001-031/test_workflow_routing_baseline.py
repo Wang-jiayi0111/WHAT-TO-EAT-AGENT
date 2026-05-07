@@ -22,7 +22,10 @@ from src.agent.state_accessors import get_runtime_bundle
 
 from tests.conftest import make_logistics_buffer, make_minimal_agent_state
 
-_SNAPSHOT = Path(__file__).resolve().parent.parent / "snapshots" / "workflow_routing_baseline.json"
+# 本文件在 tests/unit/t001-031/，快照在 tests/snapshots/
+_SNAPSHOT = (
+    Path(__file__).resolve().parent.parent.parent / "snapshots" / "workflow_routing_baseline.json"
+)
 
 
 def _ser_route_target(x):
