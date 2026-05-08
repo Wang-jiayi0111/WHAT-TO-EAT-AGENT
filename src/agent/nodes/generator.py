@@ -15,6 +15,19 @@ from ...libs.base.settings import Settings
 from ..effective_constraint import resolve_scope_id
 from ..state import AgentState
 from ..state_accessors import get_runtime_bundle
+from ..degradation_messages import (
+    message_generator_empty_turn,
+    message_llm_call_failed,
+    message_llm_empty_output,
+    message_merged_segments_empty,
+)
+from ..error_code_user_messages import (
+    message_commit_recipe_mismatch,
+    message_gap_cache_miss,
+    message_inventory_write_failed,
+    try_error_code_direct_reply,
+    user_message_for_inventory_failure,
+)
 from ..state_sync import runtime_bundle_to_slice_patches
 from ..task_stack import consume_tasks
 from .memory_keeper import schedule_memory_keeper_after_reply
@@ -204,15 +217,24 @@ class GeneratorNode:
             or state.get("current_intent")
             or "general_chat"
         )
-        if primary == "help":
-            return self.handle_help()
-        if primary == "out_of_scope":
-            return self.handle_out_of_scope()
-        if primary == "dietary_advice":
-            return await self.handle_dietary_advice(state)
-        if primary == "recipe_adopt":
-            return self.handle_recipe_adopt_reply(state)
-        return await self.handle_chitchat(state)
+        try:
+            if primary == "help":
+                return self.handle_help()
+            if primary == "out_of_scope":
+                return self.handle_out_of_scope()
+            if primary == "recipe_adopt":
+                return self.handle_recipe_adopt_reply(state)
+            if primary == "dietary_advice":
+                text = await self.handle_dietary_advice(state)
+            else:
+                text = await self.handle_chitchat(state)
+            out = (text or "").strip()
+            if not out:
+                return message_llm_empty_output()
+            return out
+        except Exception:
+            logger.exception("[Generator] handle_direct_reply 异常（FR-61 降级）")
+            return message_llm_call_failed()
 
     def handle_clarify(self, state: AgentState) -> str:
         """生成歧义询问文本（FR-22：有限候选 + 序号/菜名选择提示）。不需要调用 LLM。"""
@@ -250,10 +272,7 @@ class GeneratorNode:
         mode = str(lb.get("gap_delivery_mode") or "")
 
         if mode == "empty" or code == "GAP_CACHE_MISS":
-            return (
-                "当前还没有可用的菜谱用料清单（**R**），无法按菜谱算购物缺口。"
-                "请先检索并锁定一道菜，或告诉我您要做的菜名。"
-            )
+            return message_gap_cache_miss()
 
         shopping_list = lb.get("shopping_list", [])
         sufficient = lb.get("sufficient_items", [])
@@ -261,10 +280,14 @@ class GeneratorNode:
         if not shopping_list:
             return "好消息！按当前菜谱与库存，您家的食材已经够用，不需要额外购买。"
 
-        intro = "根据菜谱需求，您还需要购买以下食材：\n"
+        intro = "根据当前锁定菜谱与库存换算，您还需要购买以下食材：\n"
         if mode == "cache":
             intro = (
                 "按当前菜谱与库存校验，**与缓存一致**，直接使用已算好的缺口清单：\n"
+            )
+        elif mode == "fresh":
+            intro = (
+                "已按**最新库存**与菜谱用料重新计算缺口，待购清单如下：\n"
             )
         lines = [intro]
         ov = lb.get("shopping_list_overlay") or []
@@ -293,10 +316,7 @@ class GeneratorNode:
                 "确认后再告诉我「做好了」或让我扣库存即可。"
             )
         if status == "blocked_recipe_mismatch":
-            return (
-                "您提到的菜名与当前锁定的菜谱不一致。请先选定要做的那一道，"
-                "再说明与当前菜谱一致后扣减。"
-            )
+            return message_commit_recipe_mismatch()
         if status == "partial_success":
             lb = get_runtime_bundle(state)
             succ = lb.get("commit_succeeded_items") or []
@@ -314,14 +334,12 @@ class GeneratorNode:
             lb = get_runtime_bundle(state)
             fail = lb.get("commit_failed_items") or []
             es = state.get("error_state") or {}
-            base = (
-                "**扣减未能写入库存**，本轮库存未按预期更新（错误码 "
-                + str(es.get("error_code") or "INVENTORY_WRITE_FAILED")
-                + "）。"
+            detail = str(es.get("error_detail") or "").strip()
+            base = message_inventory_write_failed(
+                detail or None, operation_hint="按菜谱扣减库存"
             )
             if fail:
-                base += "受影响的食材：" + "、".join(fail) + "。"
-            base += "请稍后再试；若持续失败请检查 `inventory.db` 是否可写。"
+                base += "\n\n未能完成扣减的食材：" + "、".join(fail) + "。"
             return base
         return "库存更新时遇到一些问题，请稍后再试。"
         
@@ -383,18 +401,13 @@ class GeneratorNode:
             es = state.get("error_state") or {}
             code = str(es.get("error_code") or "")
             detail = str(es.get("error_detail") or "")
-            if code == "INVENTORY_ADD_UNPARSED":
-                return (
-                    "没能从您的话里确定买了哪些食材、各多少量（需带单位）。"
-                    "请再说具体一点，例如「买了鸡蛋 12 个」。"
-                )
-            if code == "INVENTORY_WRITE_FAILED":
-                msg = "**补货未能写入库存**，本轮未成功更新。"
-                if detail:
-                    msg += detail
-                else:
-                    msg += "请稍后再试或检查本地数据库。"
-                return msg
+            mapped = user_message_for_inventory_failure(
+                code or None,
+                detail or None,
+                operation_hint="补货入库",
+            )
+            if mapped:
+                return mapped
             return "库存更新失败，请稍后再试。"
 
         if status == "skipped":
@@ -421,9 +434,12 @@ class GeneratorNode:
         step = lb.get("recipe_cook_step", [])
 
         if not step:
-            return f"菜谱{recipe_title}详情获取成功，但没有找到具体的烹饪步骤信息。"
+            return (
+                f"已从菜谱库解析「{recipe_title}」，但未找到可用的烹饪步骤段落；"
+                "您可以换一道菜或稍后再试。"
+            )
         else:
-            lines = [f"菜谱{recipe_title}烹饪步骤如下：\n"]
+            lines = [f"以下为「{recipe_title}」的烹饪步骤（来自本地菜谱解析）：\n"]
             for s in step:
                 lines.append(f"  · {s}")
             return "\n".join(lines)
@@ -456,8 +472,11 @@ async def _collect_merged_generator_reply(
         elif token == "TASK_GAP_CALC":
             segments.append(generator.handle_gap_calc(state))
         elif token == "TASK_DIRECT_REPLY":
+            sec9 = try_error_code_direct_reply(state)
             degraded_reply = get_runtime_bundle(state).get("degraded_reply")
-            if degraded_reply:
+            if sec9:
+                segments.append(sec9)
+            elif degraded_reply:
                 segments.append(degraded_reply)
             else:
                 segments.append(await generator.handle_direct_reply(state))
@@ -481,10 +500,10 @@ async def _collect_merged_generator_reply(
 
     if consumed and not merged:
         logger.warning(
-            "[Generator] 成果类任务未产出可见合并话术，本轮不消费 task_stack: consumed=%s",
+            "[Generator] 成果类任务合并话术为空，使用 FR-61 兜底: consumed=%s",
             consumed,
         )
-        return "", list(task_stack)
+        merged = message_merged_segments_empty(consumed)
 
     removal_left = Counter(consumed)
     new_stack: List[str] = []
@@ -516,6 +535,7 @@ async def generator_node(state: AgentState) -> Dict[str, Any]:
       TASK_CLARIFY      → 歧义，展示候选菜谱列表
     """
     task_stack: List[str] = state.get("task_stack", []).copy()
+    incoming_task_stack: List[str] = list(task_stack)
     lb: Dict[str, Any] = copy.deepcopy(get_runtime_bundle(state))
 
     print(f"🔍 [Generator] task_stack: {task_stack}")          
@@ -566,17 +586,12 @@ async def generator_node(state: AgentState) -> Dict[str, Any]:
     )
 
     if not reply:
-        if any(t in MERGEABLE_GENERATOR_TASKS for t in task_stack):
-            logger.warning(
-                "[Generator] 合并话术为空但栈内仍有成果类任务: %s",
-                task_stack,
-            )
-        else:
-            logger.warning(
-                "[Generator] 无可合并的成果任务或 task_stack 非预期: %s",
-                task_stack,
-            )
-        return {}
+        logger.warning(
+            "[Generator] FR-61：合并回复仍为空，使用全链路兜底；incoming_stack=%s remaining=%s",
+            incoming_task_stack,
+            task_stack,
+        )
+        reply = message_generator_empty_turn(incoming_task_stack)
 
     logger.info(f"[Generator] task_stack 处理完成，还存在任务: {task_stack}")
     new_message = AIMessage(content=reply)

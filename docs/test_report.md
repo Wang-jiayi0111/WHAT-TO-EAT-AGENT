@@ -38,6 +38,7 @@
 | T-019 | MCP 契约：`protocol` 归一、`SearchRecipesService` / `RecipeSourceService` | ✅ 通过 | — | — | 2026-05-07（[TR-025]） |
 | INT-M3 | 菜谱子系统 M3 模块间集成（**C**→query→§2.2；FR-24；歧义+澄清；高置信 **R**） | ✅ 通过 | — | — | 2026-05-07（[TR-026]） |
 | INT-M4 | M4 库存与清单模块集成（§6～§7；**I**、扣减、补货、缺口缓存、overlay）；`tests/integration/test_m4_inventory_list_module.py` | ✅ 通过 | — | — | 2026-05-07（[TR-037]） |
+| INT-M5 | M5 回复与降级集成（FR-60/61、§9；合并澄清）；`tests/integration/test_m5_reply_generate_and_degrade_module.py` | ✅ 通过 | — | — | 2026-05-07（[TR-040]） |
 | T-032 | `inventory` 表 `household_id` 迁移与 SCOPE 对齐（§6.2、§8）；单测 `tests/unit/test_t032_inventory_migration.py` | ✅ 通过 | — | — | 2026-05-07（[TR-027]） |
 | T-020 | 库存快照 **I** → `inventory_state.inventory_snapshot`（FR-30 / §6.1 / §1.2.1）；单测 `tests/unit/test_t020_inventory_snapshot.py` | ✅ 通过 | — | — | 2026-05-07（[TR-028]） |
 | T-033 | 补货预览/确认 §6.5、`add_preview`、`restock_confirm`；单测 `tests/unit/test_t033_restock_preview.py` | ✅ 通过 | BUG-002 | 已关闭（见 [TR-031]） | 2026-05-07（[TR-029] 初审；[TR-031] 复审） |
@@ -45,6 +46,8 @@
 | T-022 | 扣减/补货写失败显式反馈（FR-32 / §6.4、§6.5.5）；单测 `tests/unit/test_t022_inventory_write_feedback.py` | ✅ 通过 | — | — | 2026-05-07（[TR-034]） |
 | T-023 | 购物缺口缓存 §7.3、`gap_delivery_mode`、`GAP_CACHE_MISS`；单测 `tests/unit/test_t023_gap_cache.py` | ✅ 通过 | — | — | 2026-05-07（[TR-035]） |
 | T-024 | 清单 overlay、`list_action`、`mark_bought_items`（§7.4、FR-41/43）；单测 `tests/unit/test_t024_shopping_list_overlay.py` | ✅ 通过 | — | — | 2026-05-07（[TR-036]） |
+| T-025 | §9 话术与 FR-60 可解释回复；`error_code_user_messages`、`generator`；单测 `tests/unit/test_t025_section9_generator_messages.py` | ✅ 通过 | — | — | 2026-05-07（[TR-038]） |
+| T-026 | 全链路降级 FR-61；`degradation_messages.py`、`generator`、`researcher`；单测 `tests/unit/test_t026_degradation_fr61.py` | ✅ 通过 | — | — | 2026-05-07（[TR-039]） |
 
 ---
 
@@ -1742,6 +1745,134 @@ python -m pytest tests -q --tb=no
 | T-032 | `tests/unit/test_t032_inventory_migration.py` |
 | T-033 | `tests/unit/test_t033_restock_preview.py` |
 | T-002 静默缺口 | `tests/unit/t001-031Intent/test_logistics_silent_gap.py` |
+
+### 缺陷列表
+
+- 本轮未登记新 BUG。
+
+---
+
+## [TR-038] T-025 功能验证（§9 错误码话术与可解释回复 / FR-60）
+
+**验证任务**：T-025 / [DEV-030]——**`try_error_code_direct_reply`**（`RECIPE_SEARCH_EMPTY` 软重试分支、`RECIPE_SOURCE_NOT_FOUND`、`RECIPE_PARSE_FAILED`、`MEMORY_KEEPER_FAILED`、`CLARIFICATION_REQUIRED`、`GAP_CACHE_MISS`、`GAP_BASIS_MISMATCH`）；**`user_message_for_inventory_failure`**；**`GeneratorNode.handle_gap_calc`**（**`fresh`** 引言、`GAP_CACHE_MISS` 与 **`message_gap_cache_miss`** 对齐）；**`handle_inv_commit`**（**`COMMIT_RECIPE_MISMATCH`**、失败写库话术）；**`handle_summarize`**（本地步骤来源说明）；**`_collect_merged_generator_reply`** 下 **TASK_DIRECT_REPLY** 优先 §9 而非 **`degraded_reply`**。
+
+**验证时间**：2026-05-07
+
+**最终结论**：✅ 通过
+
+**测试文档与用例**：`tests/unit/test_t025_section9_generator_messages.py`
+
+### 测试过程信息
+
+```text
+python -m pytest tests/unit/test_t025_section9_generator_messages.py -v --tb=short
+python -m pytest tests -q --tb=no
+```
+
+**结果（本轮）**：T-025 专项 **10 passed**（约 **6s**）；全量 **185 passed**，**12 skipped**，约 **36s**。
+
+### 测试用例执行情况
+
+| 用例 | 描述 | 结果 |
+|------|------|------|
+| `test_t025_try_direct_reply_recipe_search_empty_branches` | RECIPE_SEARCH_EMPTY 分支 | ✅ |
+| `test_t025_try_direct_reply_static_codes_non_empty` | 若干 §9 固定码 | ✅ |
+| `test_t025_try_direct_reply_gap_codes_match_helpers` | GAP_* 与 helper 一致 | ✅ |
+| `test_t025_try_direct_reply_unknown_or_benign_returns_none` | 未知码 → None | ✅ |
+| `test_t025_user_message_inventory_failure_hints` | 库存失败语境 | ✅ |
+| `test_t025_handle_gap_calc_fresh_intro_and_miss` | 缺口 fresh / miss | ✅ |
+| `test_t025_handle_inv_commit_section9_branches` | 扣减 mismatch / failed | ✅ |
+| `test_t025_handle_summarize_explains_local_source` | 步骤摘要来源 | ✅ |
+| `test_t025_direct_reply_prefers_section9_over_degraded` | DIRECT_REPLY 优先级 | ✅ |
+| `test_t025_direct_reply_degraded_when_no_section9` | 无 §9 时降级 | ✅ |
+
+### 同步修正
+
+- `tests/unit/t020-024Inventory/test_t022_inventory_write_feedback.py` 中 **TC-004** 对 **`handle_inv_add` failed** 的断言已与 **`message_inventory_write_failed`**（补货语境）新口径对齐。
+
+### 开发计划同步
+
+已将 `docs/开发计划.md` §3：**T-025**「测试状态」**待测试** → **已完成**。
+
+---
+
+## [TR-039] T-026 功能验证（全链路降级话术 / FR-61）
+
+**验证任务**：T-026 / [DEV-031]——**`degradation_messages`**（**`message_llm_call_failed`** / **`message_llm_empty_output`** / **`message_merged_segments_empty`** / **`message_recipe_search_service_unavailable`** / **`message_generator_empty_turn`**）；**`GeneratorNode.handle_direct_reply`** 空输出与异常兜底；**`_collect_merged_generator_reply`** 段全空时的 FR-61 合并兜底；**`generator_node`** 仅非合并类任务时仍产出 **`message_generator_empty_turn`**（禁止静默无回复）；**`researcher`** 与集中 **`message_recipe_search_service_unavailable`** 一致。
+
+**验证时间**：2026-05-07
+
+**最终结论**：✅ 通过
+
+**测试文档与用例**：`tests/unit/test_t026_degradation_fr61.py`
+
+### 测试过程信息
+
+```text
+python -m pytest tests/unit/test_t026_degradation_fr61.py -v --tb=short
+python -m pytest tests -q --tb=no
+```
+
+**结果（本轮）**：T-026 专项 **6 passed**（约 **6s**）；全量 **191 passed**，**12 skipped**，约 **34s**。
+
+### 测试用例执行情况
+
+| 用例 | 描述 | 结果 |
+|------|------|------|
+| `test_t026_degradation_messages_are_nonempty_and_distinct` | 降级文案口径 | ✅ |
+| `test_t026_handle_direct_reply_empty_llm_yields_empty_output_message` | 空 LLM 输出 | ✅ |
+| `test_t026_handle_direct_reply_exception_yields_call_failed_message` | LLM 异常 | ✅ |
+| `test_t026_collect_merge_empty_segments_fr61_fallback` | 合并段全空 | ✅ |
+| `test_t026_generator_node_non_mergeable_only_yields_empty_turn` | 入口整轮兜底 | ✅ |
+| `test_t026_recipe_search_unavailable_matches_helper` | researcher 话术一致 | ✅ |
+
+### 缺陷列表
+
+- 本轮未登记新 BUG。
+
+### 开发计划同步
+
+已将 `docs/开发计划.md` §3：**T-026**「测试状态」**待测试** → **已完成**。
+
+---
+
+## [TR-040] INT-M5 回复与降级模块集成验收（M5 / 板块十）
+
+**验证任务**：在 **T-025（§9 / FR-60）**、**T-026（FR-61）** 单测基础上，对 **M5 回复与降级**做串联：**`_collect_merged_generator_reply`** 真实 **`handle_inv_check` / `handle_gap_calc`**；**`TASK_CLARIFY`** 分支产出可读澄清；**`TASK_GAP_CALC` + `TASK_DIRECT_REPLY`（help）** 顺序与分段；**HELP / OUT_OF_SCOPE** 常量稳定；并列出推荐回归子集（含 **T-006 / T-008** 相关单测）。
+
+**验证时间**：2026-05-07
+
+**最终结论**：✅ 通过
+
+**集成用例文件**：`tests/integration/test_m5_reply_generate_and_degrade_module.py`
+
+### 测试过程信息
+
+```text
+python -m pytest tests/integration/test_m5_reply_generate_and_degrade_module.py -v --tb=short
+python -m pytest tests/unit/test_t025_section9_generator_messages.py tests/unit/test_t026_degradation_fr61.py tests/unit/t001-031Intent/test_generator_merged_replies.py tests/unit/t001-031Intent/test_meta_intent_replies.py tests/integration/test_m5_reply_generate_and_degrade_module.py -q --tb=no
+python -m pytest tests -q --tb=no
+```
+
+**结果（本轮）**：INT-M5 专项 **4 passed**（约 **6s**）；M5 推荐子集（上列 5 个文件）**29 passed**（约 **6s**）；全量 **195 passed**，**12 skipped**，约 **35s**。
+
+### 集成用例执行情况
+
+| 用例 | 描述 | 结果 |
+|------|------|------|
+| `test_m5_merge_inv_check_and_gap_calc_real_handlers` | 库存 + 缺口合并 | ✅ |
+| `test_m5_clarify_branch_returns_readable_message` | TASK_CLARIFY | ✅ |
+| `test_m5_meta_intent_constants_stable` | help / 超范围常量 | ✅ |
+| `test_m5_merge_three_segments_including_direct_reply` | 缺口 + help 顺序 | ✅ |
+
+### 关联单测清单（回复板块完整回归推荐）
+
+| 任务 | 文件 |
+|------|------|
+| T-025 | `tests/unit/test_t025_section9_generator_messages.py` |
+| T-026 | `tests/unit/test_t026_degradation_fr61.py` |
+| T-006 | `tests/unit/t001-031Intent/test_meta_intent_replies.py` |
+| T-008 | `tests/unit/t001-031Intent/test_generator_merged_replies.py` |
 
 ### 缺陷列表
 

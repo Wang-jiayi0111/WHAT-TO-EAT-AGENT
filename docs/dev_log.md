@@ -1161,3 +1161,81 @@
 
 ---
 
+## [DEV-030] §9 错误码话术集中与可解释回复（T-025 / FR-60、§9）
+
+**类型**：`功能开发`  
+**编号**：T-025  
+**对应规格**：**FR-60**；**规格 §9**  
+**里程碑**：M5  
+**状态**：`待测试`  
+**日期**：2026-05-07  
+
+### 做了什么
+
+- 新增 **`src/agent/section9_messages.py`**：`RECIPE_SEARCH_EMPTY`（含软重试分支）、`RECIPE_SOURCE_NOT_FOUND`、`RECIPE_PARSE_FAILED`、`INVENTORY_*`、`GAP_*`、`MEMORY_KEEPER_FAILED`、`CLARIFICATION_REQUIRED` 等与 §9 对齐的用户可见文案；扩展 **`COMMIT_RECIPE_MISMATCH`**（扣减菜名不一致）。  
+- **`try_section9_direct_reply`**：`TASK_DIRECT_REPLY` 在存在已知码时**优先于** `degraded_reply`，保证与 researcher 写入的 `error_code` 口径一致。  
+- **`generator`**：`handle_gap_calc` / `handle_inv_commit` / `handle_inv_add` 使用统一库存失败话术（扣减/补货语境）；缺口清单补充 **`fresh`** 模式说明；**`handle_summarize`** 标明步骤来源语境（FR-60 可解释性）。  
+
+### 变更文件
+
+| 文件 | 类型 | 说明 |
+|------|------|------|
+| `src/agent/section9_messages.py` | 新增 | §9 话术与 DIRECT_REPLY 解析 |
+| `src/agent/nodes/generator.py` | 修改 | 接入 §9；缺口/摘要可解释句 |
+| `docs/开发计划.md` | 修改 | T-025 状态 |
+
+### 规格对齐要点
+
+- [FR-60] 回复说明「依据是什么、用户下一步可操作什么」；错误分支避免裸露内部枚举串作为主话术（必要时保留可操作排查提示）。  
+- [规格 §9] 错误码与用户文案单一来源，便于后续 T-026 降级与验收对齐。  
+
+### 规格偏差（若有）
+
+无  
+
+### 关联
+
+前置：T-024 ✓  
+后续：**T-026**  
+
+---
+
+## [DEV-031] 全链路降级话术（T-026 / FR-61）
+
+**类型**：`功能开发`  
+**编号**：T-026  
+**对应规格**：**FR-61**（降级路径须可解释、禁止静默失败）  
+**里程碑**：M5  
+**状态**：`待测试`  
+**日期**：2026-05-07  
+
+### 做了什么
+
+- 新增 **`src/agent/degradation_messages.py`**：LLM 调用失败、空输出、FR-52 合并段落全空、generator 整轮仍无可见文本、菜谱检索服务不可用等场景的**固定兜底话术**。  
+- **`generator`**：`handle_direct_reply` 对闲聊/营养问答 **try/except**，空字符串走 **`message_llm_empty_output`**；**`_collect_merged_generator_reply`** 在已消费成果任务但合并为空时使用 **`message_merged_segments_empty`**（不再提前 `return ""` 且不消费栈）；**`generator_node`** 在合并仍为空时使用 **`message_generator_empty_turn`**，**禁止**无 AI 消息的 **`return {}`**。  
+- **`researcher`**：MCP 检索错误分支的 **`degraded_reply`** 改为调用 **`message_recipe_search_service_unavailable()`**，与 FR-61 口径一致。  
+
+### 变更文件
+
+| 文件 | 类型 | 说明 |
+|------|------|------|
+| `src/agent/degradation_messages.py` | 新增 | FR-61 降级文案 |
+| `src/agent/nodes/generator.py` | 修改 | 兜底与异常处理 |
+| `src/agent/nodes/researcher.py` | 修改 | 检索不可用话术 |
+| `docs/开发计划.md` | 修改 | T-026 状态 |
+
+### 规格对齐要点
+
+- [FR-61] 服务不可用、生成失败、中间步骤无可见产出时，用户仍收到**可操作说明**，而非静默结束。  
+
+### 规格偏差（若有）
+
+无  
+
+### 关联
+
+前置：T-025 ✓  
+后续：**T-029**（横切验收，可选）  
+
+---
+

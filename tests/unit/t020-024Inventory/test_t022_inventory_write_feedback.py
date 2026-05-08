@@ -178,7 +178,11 @@ def test_t022_tc004_generator_commit_and_add_no_false_success_wording() -> None:
         },
     }
     text_f = gen.handle_inv_add(state_f)
-    assert "未能写入库存" in text_f or "未成功更新" in text_f
+    assert (
+        "补货入库" in text_f
+        or "数据库" in text_f
+        or "未能成功" in text_f
+    )
 
 
 def test_t022_tc005_logistics_add_confirm_partial_success_lists() -> None:

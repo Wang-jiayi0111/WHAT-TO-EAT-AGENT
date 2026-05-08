@@ -23,6 +23,7 @@ from mcp import ClientSession, StdioServerParameters
 
 
 from ..state import AgentState
+from ..degradation_messages import message_recipe_search_service_unavailable
 from ..state_accessors import get_runtime_bundle
 from ..effective_constraint import (
     augment_search_query,
@@ -393,7 +394,7 @@ async def researcher_node(state: AgentState) -> AgentState:
             current_stack = consume_tasks(current_stack, ["TASK_SEARCH"])
             if "TASK_DIRECT_REPLY" not in current_stack:
                 current_stack.append("TASK_DIRECT_REPLY")
-            logistics_buffer["degraded_reply"] = "检索服务暂时不可用，我先根据常见做法给您一些通用建议，或您可以稍后再试。"
+            logistics_buffer["degraded_reply"] = message_recipe_search_service_unavailable()
             result = {
                 "task_stack": current_stack,
                 "expert_payloads": {
