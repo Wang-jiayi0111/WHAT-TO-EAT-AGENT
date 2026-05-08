@@ -1,7 +1,7 @@
 import os
 import yaml
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 class Settings:
     def __init__(self, config_path: str = None):
@@ -152,3 +152,112 @@ class Settings:
             return max(0, min(5, int(v)))
         except (TypeError, ValueError):
             return default
+
+    def get_memory_summary_window_size(self, default: int = 4) -> int:
+        """`memory.summary.window_size`（规格 §8；L2 热窗口）。"""
+        mem = self._config.get("memory")
+        if not isinstance(mem, dict):
+            return default
+        sm = mem.get("summary")
+        if not isinstance(sm, dict):
+            return default
+        v = sm.get("window_size")
+        if v is None:
+            return default
+        try:
+            return max(1, min(64, int(v)))
+        except (TypeError, ValueError):
+            return default
+
+    def get_memory_summary_compress_trigger(self, default: int = 8) -> int:
+        """`memory.summary.compress_trigger`（规格 §8；消息条数超过则触发压缩）。"""
+        mem = self._config.get("memory")
+        if not isinstance(mem, dict):
+            return default
+        sm = mem.get("summary")
+        if not isinstance(sm, dict):
+            return default
+        v = sm.get("compress_trigger")
+        if v is None:
+            return default
+        try:
+            return max(2, min(256, int(v)))
+        except (TypeError, ValueError):
+            return default
+
+    def get_recipe_parser_version(self, default: str = "llm_structured_v1") -> str:
+        """`recipe.parser_version`（规格 §8）。"""
+        rp = self._config.get("recipe")
+        if not isinstance(rp, dict):
+            return default
+        v = rp.get("parser_version")
+        if v is None or not str(v).strip():
+            return default
+        return str(v).strip()
+
+    def get_recipe_confidence_gap_ratio(self, default: Optional[float] = None) -> Optional[float]:
+        """
+        `recipe.confidence.gap_ratio`（规格 §8 文档键名）。
+        实现上与 `retrieval.confidence.top2_relative_gap` 应对齐；默认 None 表示未单独配置。
+        """
+        rp = self._config.get("recipe")
+        if not isinstance(rp, dict):
+            return default
+        conf = rp.get("confidence")
+        if not isinstance(conf, dict):
+            return default
+        v = conf.get("gap_ratio")
+        if v is None:
+            return default
+        try:
+            return float(v)
+        except (TypeError, ValueError):
+            return default
+
+    def project_root(self) -> Path:
+        """仓库根目录（解析 paths.* 相对路径）。"""
+        return Path(__file__).resolve().parents[3]
+
+    def resolve_project_path(self, relative: str) -> Path:
+        """将配置中的相对路径解析为绝对路径。"""
+        rel = (relative or "").strip()
+        if not rel:
+            return self.project_root()
+        p = Path(rel.replace("\\", "/"))
+        if p.is_absolute():
+            return p
+        return (self.project_root() / p).resolve()
+
+    def observability_enabled(self, default: bool = True) -> bool:
+        """`observability.enabled` 总开关。"""
+        obs = self._config.get("observability")
+        if not isinstance(obs, dict):
+            return default
+        v = obs.get("enabled")
+        if v is None:
+            return default
+        return bool(v)
+
+    def observability_structured_agent_log(self, default: bool = True) -> bool:
+        """NFR-06：节点结构化日志。"""
+        if not self.observability_enabled():
+            return False
+        obs = self._config.get("observability")
+        if not isinstance(obs, dict):
+            return default
+        v = obs.get("structured_agent_log")
+        if v is None:
+            return default
+        return bool(v)
+
+    def observability_memory_metrics_log(self, default: bool = True) -> bool:
+        """NFR-07：记忆指标日志。"""
+        if not self.observability_enabled():
+            return False
+        obs = self._config.get("observability")
+        if not isinstance(obs, dict):
+            return default
+        v = obs.get("memory_metrics_log")
+        if v is None:
+            return default
+        return bool(v)

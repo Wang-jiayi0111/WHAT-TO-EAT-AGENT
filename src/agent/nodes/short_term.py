@@ -9,9 +9,14 @@ L3 当轮约束节点（规格 §4.3；T-010）。
 import logging
 
 from ..effective_constraint import resolve_scope_id
-from ..l3_short_term import build_l3_memory_patch
+from ..l3_short_term import (
+    build_l3_memory_patch,
+    extract_short_term_lines,
+    latest_user_text,
+)
 from ..short_term_ttl import run_short_term_ttl_cleanup
 from ..state import AgentState
+from src.observability.memory_metrics import record_l3_turn
 
 logger = logging.getLogger(__name__)
 
@@ -19,6 +24,8 @@ logger = logging.getLogger(__name__)
 async def short_term_constraints_node(state: AgentState) -> AgentState:
     """提取最新用户句中的短期约束，合并入 memory_state。"""
     run_short_term_ttl_cleanup(resolve_scope_id(state))
+    user_txt = latest_user_text(state.get("messages") or [])
+    record_l3_turn(constraint_hit=bool(extract_short_term_lines(user_txt)))
     patch = build_l3_memory_patch(state)
     if patch:
         n = len((patch.get("memory_state") or {}).get("short_term_constraints") or [])

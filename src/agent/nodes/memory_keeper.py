@@ -1,9 +1,12 @@
 import asyncio
 import logging
 import json
+import time
 from typing import Any, Dict, List, Optional, Sequence
 
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
+
+from src.observability.memory_metrics import record_keeper_run
 
 from ...libs.base.user_profiles import UserProfileManager
 from ...libs.adapters.llm.llm_factory import LLMFactory
@@ -193,17 +196,25 @@ async def run_memory_keeper_safe(snapshot: Dict[str, Any]) -> None:
     """
     L4 异步安全壳：规格 §4.5 — error_code=MEMORY_KEEPER_FAILED，禁止影响主回复。
     """
+    t0 = time.perf_counter()
+    ok = False
     try:
         scope_id = str(snapshot.get("scope_id") or "default_user").strip() or "default_user"
         raw = snapshot.get("messages") or []
         messages = messages_from_keeper_snapshot(raw)
         await run_memory_keeper_persist(scope_id, messages)
+        ok = True
     except Exception as e:
         # 规格 §9：MEMORY_KEEPER_FAILED
         logger.error(
             "MEMORY_KEEPER_FAILED error_code=MEMORY_KEEPER_FAILED detail=%s",
             e,
             exc_info=True,
+        )
+    finally:
+        record_keeper_run(
+            success=ok,
+            duration_ms=(time.perf_counter() - t0) * 1000.0,
         )
 
 

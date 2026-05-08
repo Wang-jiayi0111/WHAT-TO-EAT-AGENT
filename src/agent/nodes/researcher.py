@@ -47,7 +47,6 @@ from ...mcp.protocol import is_mcp_error_response
 logger = logging.getLogger(__name__)
 
 # 规格 §5.3
-RECIPE_PARSER_VERSION = "llm_structured_v1"
 
 
 def coerce_mcp_recipe_path(raw: Any) -> str:
@@ -354,7 +353,7 @@ async def researcher_node(state: AgentState) -> AgentState:
         logistics_buffer["recipe_cook_step"] = structured_recipe.steps
         logistics_buffer["recipe_candidates"] = []
         logistics_buffer["selected_recipe_id"] = file_path
-        logistics_buffer["recipe_parser_version"] = RECIPE_PARSER_VERSION
+        logistics_buffer["recipe_parser_version"] = _settings.get_recipe_parser_version()
         # §6.3：新锁定 **R** → 需重新「采纳」后才能扣减
         logistics_buffer["recipe_use_confirmed"] = False
 
@@ -507,7 +506,7 @@ async def researcher_node(state: AgentState) -> AgentState:
             logistics_buffer["recipe_cook_step"] = structured_recipe.steps
             logistics_buffer["selected_recipe_id"] = file_path
             logistics_buffer["recipe_candidates"] = []
-            logistics_buffer["recipe_parser_version"] = RECIPE_PARSER_VERSION
+            logistics_buffer["recipe_parser_version"] = _settings.get_recipe_parser_version()
             logistics_buffer["recipe_use_confirmed"] = False
 
             current_stack = consume_tasks(current_stack, ["TASK_SEARCH"])

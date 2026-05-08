@@ -104,6 +104,18 @@ memory:
     default_days: 7              # 写入 user_short_term_states 的默认过期天数（与代码默认一致可调）
     purge_expired_on_turn: true  # 每轮 L3 前物理删除本 scope 过期/失活行
 
+  # L2 摘要窗口（规格 §8 memory.summary.*；与 conversation_summary 节点对齐）
+  summary:
+    window_size: 4
+    compress_trigger: 8
+
+# 菜谱解析元数据（规格 §8 recipe.parser_version；运行时常量可由 researcher 覆盖写入 state）
+recipe:
+  parser_version: "llm_structured_v1"
+  # 与 retrieval.confidence.top2_relative_gap 同一语义（§8「recipe.confidence.gap_ratio」）；单一真相源见 retrieval
+  confidence:
+    gap_ratio: 0.15
+
 # Embedding 配置
 embedding:
   provider: dashscope             # 百炼
@@ -115,15 +127,7 @@ vector_store:
   backend: chroma           # chroma | qdrant | pinecone
   persist_path: ./data/db/chroma
 
-# 检索配置
-retrieval:
-  sparse_backend: bm25      # bm25 | elasticsearch
-  fusion_algorithm: rrf     # rrf | weighted_sum
-  top_k_dense: 20
-  top_k_sparse: 20
-  top_k_final: 10
-
-# 重排配置
+# 重排配置（全局别名；RAG 管线若读取请与 retrieval.rerank 区分）
 rerank:
   backend: cross_encoder    # none | cross_encoder | llm
   model: cross-encoder/ms-marco-MiniLM-L-6-v2
@@ -134,9 +138,11 @@ evaluation:
   backends: [ragas, custom]
   golden_test_set: ./tests/fixtures/golden_test_set.json
 
-# 可观测性配置
+# 可观测性配置（NFR-06 / NFR-07）
 observability:
   enabled: true
+  structured_agent_log: true   # 节点级 JSON 行日志：会话、耗时、错误码
+  memory_metrics_log: true     # 每轮 generator 结束输出 L2/L3/L4 汇总指标
   log_file: ./logs/traces.jsonl
 
 # Dashboard 管理平台配置

@@ -12,6 +12,26 @@ from typing import Any, Dict, List, Set, Tuple
 from .state import AgentState
 from .state_accessors import get_runtime_bundle
 
+# §11.2：LLM `entities` 归一到 `slots` 时复制的全局键（与 `intent_prompt.md` 对齐；T-029 验收引用）
+ENTITY_SLOT_COPY_KEYS: Tuple[str, ...] = (
+    "recipe_query",
+    "recipe_name",
+    "ingredients",
+    "diet_topic",
+    "profile_explicit",
+    "recipe_adoption",
+    "deduct_confirm",
+    "list_action",
+    "list_edit_ops",
+    "mark_bought_items",
+    "inventory_query_targets",
+    "restock_items",
+    "restock_confirm",
+    "recipe_name_for_commit",
+    "profile_fragments",
+)
+GLOBAL_SLOT_ENTITY_KEYS = frozenset(ENTITY_SLOT_COPY_KEYS)
+
 # §11.5 OR 组未满足时的代表缺失码（用于 missing_slots 与裁剪映射）
 MISSING_RECIPE_SEARCH_ANCHOR = "recipe_search_anchor"
 MISSING_SHOPPING_LIST_CONTEXT = "shopping_list_context"
@@ -61,24 +81,7 @@ def normalize_legacy_entities_to_slots(
     if not entities:
         return slots
 
-    _copy_keys = (
-        "recipe_query",
-        "recipe_name",
-        "ingredients",
-        "diet_topic",
-        "profile_explicit",
-        "recipe_adoption",
-        "deduct_confirm",
-        "list_action",
-        "list_edit_ops",
-        "mark_bought_items",
-        "inventory_query_targets",
-        "restock_items",
-        "restock_confirm",
-        "recipe_name_for_commit",
-        "profile_fragments",
-    )
-    for key in _copy_keys:
+    for key in ENTITY_SLOT_COPY_KEYS:
         if key in entities and entities[key] is not None:
             slots[key] = entities[key]
 

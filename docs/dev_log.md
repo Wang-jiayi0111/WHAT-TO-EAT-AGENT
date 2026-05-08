@@ -1239,3 +1239,137 @@
 
 ---
 
+## [DEV-033] 配置单源与启动自检（T-027 / IR-04、§8）
+
+**类型**：`功能开发`  
+**编号**：T-027  
+**对应规格**：**IR-04**（配置单一来源）；**规格 §8**（配置键）  
+**里程碑**：M6  
+**状态**：`待测试`  
+**日期**：2026-05-07  
+
+### 做了什么
+
+- **`config/setting.yaml`**：删除文件后部重复的 **`retrieval:`** 段（PyYAML 后者会静默覆盖前者，导致 `confidence` / `empty_search` 等丢失）；增补 **`memory.summary`**（`window_size`、`compress_trigger`）与 **`recipe.parser_version` / `recipe.confidence.gap_ratio`**（与检索阈对齐说明）。  
+- **`Settings`**：`get_memory_summary_window_size`、`get_memory_summary_compress_trigger`、`get_recipe_parser_version`、`get_recipe_confidence_gap_ratio`、`resolve_project_path` / `project_root`。  
+- **`config_startup_check.py`**：`ensure_runtime_directories`、`validate_startup_configuration`、`run_startup_configuration_check`（日志输出 errors/warnings；API Key 未注入时 warning）。  
+- **`main.py`**：进程入口调用自检，失败 **`sys.exit(1)`**。  
+- **`conversation_summary`**：L2 窗口与压缩阈值改读 **`Settings`**（告别硬编码常量）。  
+- **`researcher`**：`recipe_parser_version` 写入改读 **`get_recipe_parser_version()`**。  
+
+### 变更文件
+
+| 文件 | 类型 | 说明 |
+|------|------|------|
+| `config/setting.yaml` | 修改 | 去重 + §8 增补 |
+| `src/libs/base/settings.py` | 修改 | §8 getter / 路径 |
+| `src/libs/base/config_startup_check.py` | 新增 | 启动自检 |
+| `main.py` | 修改 | 入口自检 |
+| `src/agent/nodes/conversation_summary.py` | 修改 | L2 读配置 |
+| `src/agent/nodes/researcher.py` | 修改 | 解析版本读配置 |
+| `docs/开发计划.md` | 修改 | T-027 状态 |
+
+### 规格对齐要点
+
+- [IR-04] 禁止 YAML 重复键静默覆盖关键段落；运行时 **`Settings`** 为业务侧优先入口。  
+- [规格 §8] 画像/库存路径、`intent`、`inventory.restock`、`memory.summary`、`recipe.parser_version` 等在配置中有落点并可自检。  
+
+### 规格偏差（若有）
+
+- 规格文档写作 **`memory.short_term.ttl_days_db`**，实现与 YAML 使用 **`memory.short_term_ttl.default_days`**（既有命名）；自检读取 **`short_term_ttl`** 段。  
+
+### 关联
+
+前置：无  
+后续：**T-029**  
+
+---
+
+## [DEV-034] 结构化节点日志与记忆指标（T-028 / NFR-06、NFR-07）
+
+**类型**：`功能开发`  
+**编号**：T-028  
+**对应规格**：**NFR-06**（结构化日志）；**NFR-07**（记忆子系统可观测）  
+**里程碑**：M6  
+**状态**：`待测试`  
+**日期**：2026-05-07  
+
+### 做了什么
+
+- **`src/observability/`**：`runtime_context`（`thread_id` 与 `ainvoke`/`astream` 对齐）、`structured_agent_log`（`agent.node_span` / `agent.memory_metrics` 单行 JSON）、`memory_metrics`（L2 压缩触发、L3 关键词命中、L4 成败与 P95 延迟）、`agent_node_trace.wrap_agent_node`。  
+- **`workflow.build_graph`**：全部业务节点经 `wrap_agent_node` 注册。  
+- **`conversation_summary` / `short_term` / `memory_keeper`**：写入进程内指标。  
+- **`generator_node`**：每轮出口 `emit_memory_metrics`（含累计率与 P95）。  
+- **`run_turn` / `main.terminal_chat`**：`bind_invocation_session(thread_id)`。  
+- **`config/setting.yaml`**：`observability.structured_agent_log`、`memory_metrics_log`；**`Settings`** 已具备对应读取方法。  
+
+### 变更文件
+
+| 文件 | 类型 | 说明 |
+|------|------|------|
+| `src/observability/*.py` | 新增/修改 | 可观测模块 |
+| `src/agent/workflow.py` | 修改 | 节点包装与 run_turn |
+| `src/agent/nodes/conversation_summary.py` | 修改 | L2 指标 |
+| `src/agent/nodes/short_term.py` | 修改 | L3 指标 |
+| `src/agent/nodes/memory_keeper.py` | 修改 | L4 指标 |
+| `src/agent/nodes/generator.py` | 修改 | NFR-07 汇总日志 |
+| `main.py` | 修改 | session 绑定 |
+| `config/setting.yaml` | 修改 | observability 子键 |
+| `docs/开发计划.md` | 修改 | T-028 状态 |
+
+### 规格对齐要点
+
+- [NFR-06] 节点级日志含 **session_id**、**node**、**duration_ms**、**status**、可选 **error_code** / **end_reason**。  
+- [NFR-07] **摘要触发率**、**L3 命中率**、**L4 成功率与 P95** 以 JSON 事件输出，便于采集侧聚合。  
+
+### 规格偏差（若有）
+
+无  
+
+### 关联
+
+前置：T-012 ✓  
+后续：**T-029**  
+
+---
+
+## [DEV-035] T-029 横切验收 smoke（S-01～S-08 追溯 + §2 / §11 契约）
+
+**类型**：`功能开发`  
+**编号**：T-029  
+**对应规格**：**SRS §3.2**；**NFR-05**；**规格 §2、§11**  
+**里程碑**：M6  
+**状态**：`待测试`  
+**日期**：2026-05-07  
+
+### 做了什么
+
+- 新增 **`tests/smoke/test_t029_acceptance_smoke.py`**：`pytest.mark.acceptance_smoke`；**§2** 侧校验 MCP 包络与 **`SearchRecipesService`** 空 query；**§11.2** 侧校验 **`GLOBAL_SLOT_ENTITY_KEYS`**、`merge_slots`、`compute_missing_slots`、`mark_bought` 实体归一。  
+- **`slot_filling`**：抽出 **`ENTITY_SLOT_COPY_KEYS` / `GLOBAL_SLOT_ENTITY_KEYS`** 单源。  
+- **`pytest.ini`**：注册 **`acceptance_smoke`** 标记。  
+- **S-01～S-08**：`parametrize` 证据文件存在性（与开发计划 §4 任务追溯一致）。  
+
+### 变更文件
+
+| 文件 | 类型 | 说明 |
+|------|------|------|
+| `tests/smoke/test_t029_acceptance_smoke.py` | 新增 | T-029 smoke |
+| `src/agent/slot_filling.py` | 修改 | §11.2 键导出 |
+| `pytest.ini` | 修改 | marker |
+| `docs/开发计划.md` | 修改 | T-029 状态 |
+
+### 规格对齐要点
+
+- [NFR-05] 验收项具备可 CI 执行的 smoke 入口。  
+- [规格 §2 / §11] 契约关键分支有不依赖真实 MCP 进程的最小断言。  
+
+### 规格偏差（若有）
+
+无  
+
+### 关联
+
+前置：T-025 ✓、T-031 ✓  
+
+---
+

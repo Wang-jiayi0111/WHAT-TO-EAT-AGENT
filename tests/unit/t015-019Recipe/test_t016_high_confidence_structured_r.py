@@ -13,8 +13,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from langchain_core.messages import HumanMessage
 
+from src.libs.base.settings import Settings
 from src.agent.nodes.researcher import (
-    RECIPE_PARSER_VERSION,
     coerce_mcp_recipe_path,
     resolve_authoritative_structured_recipe,
     researcher_node,
@@ -138,6 +138,8 @@ async def test_researcher_node_high_confidence_sets_parser_version_and_requireme
 
     mock_settings = MagicMock()
     mock_settings.get_retrieval_top2_relative_gap.return_value = 0.15
+    expected_pv = Settings().get_recipe_parser_version()
+    mock_settings.get_recipe_parser_version.return_value = expected_pv
 
     with (
         patch("src.agent.nodes.researcher.build_effective_constraint", return_value=_fake_effective_c()),
@@ -151,7 +153,7 @@ async def test_researcher_node_high_confidence_sets_parser_version_and_requireme
         out = await researcher_node(state)
 
     rb = get_runtime_bundle(out)
-    assert rb.get("recipe_parser_version") == RECIPE_PARSER_VERSION
+    assert rb.get("recipe_parser_version") == expected_pv
     assert rb.get("recipe_title_locked") == "locked"
     assert len(rb.get("recipe_requirements") or []) == 1
 

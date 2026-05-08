@@ -48,6 +48,9 @@
 | T-024 | 清单 overlay、`list_action`、`mark_bought_items`（§7.4、FR-41/43）；单测 `tests/unit/test_t024_shopping_list_overlay.py` | ✅ 通过 | — | — | 2026-05-07（[TR-036]） |
 | T-025 | §9 话术与 FR-60 可解释回复；`error_code_user_messages`、`generator`；单测 `tests/unit/test_t025_section9_generator_messages.py` | ✅ 通过 | — | — | 2026-05-07（[TR-038]） |
 | T-026 | 全链路降级 FR-61；`degradation_messages.py`、`generator`、`researcher`；单测 `tests/unit/test_t026_degradation_fr61.py` | ✅ 通过 | — | — | 2026-05-07（[TR-039]） |
+| T-027 | 配置单源与启动自检（IR-04 / §8）；`Settings`、`config_startup_check`、`main.py`；单测 `tests/unit/test_t027_config_startup.py` | ✅ 通过 | — | — | 2026-05-07（[TR-041]） |
+| T-028 | 可观测 NFR-06/07；`observability/`、`wrap_agent_node`、记忆指标；单测 `tests/unit/test_t028_observability.py` | ✅ 通过 | — | — | 2026-05-07（[TR-042]） |
+| T-029 | 横切验收 smoke（S-01～S-08、§2 MCP、§11.2 槽位）；`tests/smoke/test_t029_acceptance_smoke.py`，标记 `acceptance_smoke` | ✅ 通过 | — | — | 2026-05-07（[TR-043]） |
 
 ---
 
@@ -1877,6 +1880,121 @@ python -m pytest tests -q --tb=no
 ### 缺陷列表
 
 - 本轮未登记新 BUG。
+
+---
+
+## [TR-041] T-027 功能验证（配置单源与启动自检 / IR-04、§8）
+
+**验证任务**：T-027 / [DEV-033]——**`Settings`**（**`get_memory_summary_window_size`** / **`get_memory_summary_compress_trigger`**、**`get_recipe_parser_version`**、**`get_recipe_confidence_gap_ratio`**、**`resolve_project_path`**）；**`config/setting.yaml`** 合并后 **`retrieval`** 同时含 **`confidence`** 与 **`empty_search`**（防重复键覆盖）；**`validate_startup_configuration`**（缺 **`databases`**、`clarify_threshold` 越界、**gap_ratio** 与 **top2_relative_gap** 不一致告警）；**`ensure_runtime_directories`**；**`run_startup_configuration_check`** 默认通过。
+
+**验证时间**：2026-05-07
+
+**最终结论**：✅ 通过
+
+**测试文档与用例**：`tests/unit/test_t027_config_startup.py`
+
+### 测试过程信息
+
+```text
+python -m pytest tests/unit/test_t027_config_startup.py -v --tb=short
+python -m pytest tests -q --tb=no
+```
+
+**结果（本轮）**：T-027 专项 **9 passed**（约 **2s**）；全量 **204 passed**，**12 skipped**，约 **51s**。
+
+### 测试用例执行情况
+
+| 用例 | 描述 | 结果 |
+|------|------|------|
+| `test_t027_settings_memory_summary_and_recipe_getters` | §8 getter 与 gap 对齐 | ✅ |
+| `test_t027_resolve_project_path_relative` | 相对路径解析 | ✅ |
+| `test_t027_setting_yaml_retrieval_has_confidence_and_empty_search` | IR-04 retrieval 结构 | ✅ |
+| `test_t027_validate_default_config_no_errors` | 默认 YAML 无 error | ✅ |
+| `test_t027_run_startup_check_succeeds` | 启动自检 True | ✅ |
+| `test_t027_validate_errors_missing_databases` | 缺 databases | ✅ |
+| `test_t027_validate_error_clarify_threshold_range` | 阈值越界 | ✅ |
+| `test_t027_validate_warning_gap_ratio_mismatch` | gap 不一致 warning | ✅ |
+| `test_t027_ensure_runtime_directories_creates_paths` | 目录创建 | ✅ |
+
+### 同步修正
+
+- **`tests/unit/t015-019Recipe/test_t016_high_confidence_structured_r.py`**：`researcher` 已改为 **`Settings.get_recipe_parser_version()`**，移除对已删除常量 **`RECIPE_PARSER_VERSION`** 的导入；mock **`Settings`** 增补 **`get_recipe_parser_version`**，断言与仓库配置一致。
+
+### 开发计划同步
+
+已将 `docs/开发计划.md` §3：**T-027**「测试状态」**待测试** → **已完成**。
+
+---
+
+## [TR-042] T-028 功能验证（结构化日志与记忆指标 / NFR-06、NFR-07）
+
+**验证任务**：T-028 / [DEV-034]——**`Settings.observability_*`**；**`runtime_context.bind_invocation_session`** / **`get_invocation_session_id`**；**`memory_metrics`**（L2/L3/L4 计数、成功率、P95）；**`wrap_agent_node`**（同步/异步、`agent.node_span`、**`error_state.error_code`**、异常 **status=error**）；**`emit_memory_metrics`** JSON **`agent.memory_metrics`**；**`emit_agent_node_span`** 在 **`observability_structured_agent_log=false`** 时不写日志。
+
+**验证时间**：2026-05-07
+
+**最终结论**：✅ 通过
+
+**测试文档与用例**：`tests/unit/test_t028_observability.py`
+
+### 测试过程信息
+
+```text
+python -m pytest tests/unit/test_t028_observability.py -v --tb=short
+python -m pytest tests -q --tb=no
+```
+
+**结果（本轮）**：T-028 专项 **9 passed**（约 **0.2s**）；全量 **213 passed**，**12 skipped**，约 **35s**。
+
+### 测试用例执行情况
+
+| 用例 | 描述 | 结果 |
+|------|------|------|
+| `test_t028_settings_observability_flags_default_on` | YAML 开关 | ✅ |
+| `test_t028_runtime_bind_invocation_session` | 会话绑定 | ✅ |
+| `test_t028_memory_metrics_snapshot_rates` | L2/L3/L4 指标 | ✅ |
+| `test_t028_wrap_sync_node_emits_span` | 同步节点 span | ✅ |
+| `test_t028_wrap_sync_node_propagates_error_code` | error_code | ✅ |
+| `test_t028_wrap_sync_node_exception_marks_error` | 异常 status | ✅ |
+| `test_t028_wrap_async_node_emits_span` | 异步节点 span | ✅ |
+| `test_t028_emit_memory_metrics_json_line` | memory_metrics JSON | ✅ |
+| `test_t028_emit_node_span_respects_settings_off` | 关闭时不打 span | ✅ |
+
+### 开发计划同步
+
+已将 `docs/开发计划.md` §3：**T-028**「测试状态」**待测试** → **已完成**。
+
+---
+
+## [TR-043] T-029 功能验证（横切验收 smoke / NFR-05、§2、§11）
+
+**验证任务**：T-029 / [DEV-035]——**规格 §2**：`mcp_validation_error`、`is_mcp_error_response`、`normalize_search_recipe_item`、`normalize_search_recipes_success_body`、**`SearchRecipesService`** 空 query；**§11.2**：**`GLOBAL_SLOT_ENTITY_KEYS`**（15 键）、**`normalize_legacy_entities_to_slots`**（**`mark_bought`**）、**`merge_slots`**、**`compute_missing_slots`**（**`recipe_search`** 锚点）；**S-01～S-08**：与 **`docs/开发计划.md` §4** 对齐的**证据文件**存在性 **`parametrize`**。
+
+**验证时间**：2026-05-07
+
+**最终结论**：✅ 通过
+
+**测试文档与用例**：`tests/smoke/test_t029_acceptance_smoke.py`（`pytest.mark.acceptance_smoke`）
+
+### 测试过程信息
+
+```text
+python -m pytest tests/smoke/test_t029_acceptance_smoke.py -v --tb=short
+python -m pytest tests -q --tb=no
+```
+
+**结果（本轮）**：T-029 smoke **17 passed**（约 **0.2s**）；全量 **230 passed**，**12 skipped**，约 **36s**（smoke 已纳入默认 `tests` 收集）。
+
+### 测试用例摘要
+
+| 分组 | 用例数 | 说明 |
+|------|--------|------|
+| §2 MCP | 5 | 包络、归一、空 query |
+| §11.2 槽位 | 4 | 全局键、归一、合并、缺失锚点 |
+| S-01～S-08 | 8 | 证据文件追溯 |
+
+### 开发计划同步
+
+已将 `docs/开发计划.md` §3：**T-029**「测试状态」**待测试** → **已完成**。
 
 ---
 

@@ -18,14 +18,9 @@ from langchain_core.messages import BaseMessage, HumanMessage, AIMessage, System
 from ...libs.adapters.llm.llm_factory import LLMFactory
 from ...libs.base.settings import Settings
 from ..state import AgentState
+from src.observability.memory_metrics import record_l2_turn
 
 logger = logging.getLogger(__name__)
-
-# ── 配置常量 ──────────────────────────────────────────────
-WINDOW_SIZE = 4        # 保留最近几条原始消息
-COMPRESS_TRIGGER = 8  # messages 超过此数量时触发压缩
-# ─────────────────────────────────────────────────────────
-
 
 COMPRESS_PROMPT = """\
 你是一个对话摘要助手。以下是一段用户与膳食助手的对话历史。
@@ -54,10 +49,12 @@ class ConversationSummaryManager:
     def __init__(self):
         settings = Settings()
         self.llm = LLMFactory.get_llm(settings)
+        self.window_size = settings.get_memory_summary_window_size()
+        self.compress_trigger = settings.get_memory_summary_compress_trigger()
 
     def needs_compression(self, messages: List[BaseMessage]) -> bool:
         """判断是否需要触发压缩。"""
-        return len(messages) > COMPRESS_TRIGGER
+        return len(messages) > self.compress_trigger
 
     def _format_messages_for_compression(self, messages: List[BaseMessage]) -> str:
         """将消息列表格式化为纯文本，用于压缩。"""
@@ -111,16 +108,16 @@ class ConversationSummaryManager:
 
         Returns:
             (trimmed_messages, updated_summary)
-            - trimmed_messages: 保留最近 WINDOW_SIZE 条
+            - trimmed_messages: 保留最近 window_size 条
             - updated_summary: 更新后的摘要
         """
         if not self.needs_compression(messages):
             return messages, existing_summary
 
         # 超出窗口的旧消息 → 压缩
-        messages_to_compress = messages[:-WINDOW_SIZE]
+        messages_to_compress = messages[: -self.window_size]
         # 保留最近的窗口
-        trimmed_messages = messages[-WINDOW_SIZE:]
+        trimmed_messages = messages[-self.window_size :]
 
         logger.info(
             f"触发语义压缩: 总消息 {len(messages)} 条，"
@@ -179,7 +176,9 @@ async def conversation_summary_node(state: AgentState) -> AgentState:
 
     try:
         manager = ConversationSummaryManager()
+        will_compress = manager.needs_compression(messages)
         trimmed, summary = await manager.maybe_compress(messages, existing_summary)
+        record_l2_turn(compression_triggered=will_compress)
         return {
             "messages": trimmed,
             "conversation_summary": summary,

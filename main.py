@@ -20,12 +20,19 @@
 #     asyncio.run(main())
 
 import asyncio
+import logging
+import sys
+import uuid
+
+from langchain_core.messages import HumanMessage
 from rich.console import Console
 from rich.status import Status
-import uuid
-import logging
-from src.agent.workflow import create_agent, run_turn
+
 from src.agent.state import empty_agent_slices
+from src.agent.workflow import create_agent, run_turn
+from src.libs.base.config_startup_check import run_startup_configuration_check
+from src.libs.base.settings import Settings
+from src.observability.runtime_context import bind_invocation_session
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -45,7 +52,7 @@ STATUS_MAP = {
 
 async def terminal_chat(agent):
     """终端对话主循环"""
-    console.print("[bold cyan]欢迎使用“今天才吃什么”膳食助手！(输入 'quit' 退出)[/bold cyan]")
+    console.print("[bold cyan]欢迎使用“今天吃什么”膳食助手！(输入 'quit' 退出)[/bold cyan]")
     console.print("-" * 50)
     
     # 为当前对话生成一个唯一的 thread_id（用于记忆持久化）
@@ -65,7 +72,8 @@ async def terminal_chat(agent):
 
         input_state = {
             **empty_agent_slices(),
-            "messages": [("user", user_input)],
+            "messages": [HumanMessage(content=user_input)],
+            "active_user_id": "default_user",
         }
 
         final_reply = ""
@@ -78,19 +86,19 @@ async def terminal_chat(agent):
         # 2. 开启带有呼吸灯动画的加载框
         with console.status("[bold blue]🤖 助手正在思考...") as status:
             try:
-                # 3. 流式监听 LangGraph 的节点运转
-                async for event in agent.astream(input_state, config, stream_mode="updates"):
-                    for node_name, state_updates in event.items():
-                        
-                        # 如果跑到了已知节点，更新控制台的动画文字
-                        if node_name in STATUS_MAP:
-                            status.update(f"[bold yellow]{STATUS_MAP[node_name]}")
-                        
-                        # 如果跑到了 generator 节点，提取准备发给用户的文字
-                        if node_name == "generator":
-                            messages = state_updates.get("messages", [])
-                            if messages:
-                                final_reply = messages[-1].content
+                with bind_invocation_session(thread_id):
+                    async for event in agent.astream(
+                        input_state, config, stream_mode="updates"
+                    ):
+                        for node_name, state_updates in event.items():
+                            if node_name in STATUS_MAP:
+                                status.update(
+                                    f"[bold yellow]{STATUS_MAP[node_name]}"
+                                )
+                            if node_name == "generator":
+                                messages = state_updates.get("messages", [])
+                                if messages:
+                                    final_reply = messages[-1].content
             except Exception as e:
                 final_reply = f"抱歉，系统开小差了：{e}"
 
@@ -99,10 +107,16 @@ async def terminal_chat(agent):
 
 
 async def main():
-    # 初始化你的图模型
+    if not logging.root.handlers:
+        logging.basicConfig(
+            level=logging.INFO,
+            format="%(levelname)s %(name)s: %(message)s",
+        )
+    if not run_startup_configuration_check(Settings()):
+        console.print("[bold red]配置自检未通过，进程退出。请查看上方日志。[/bold red]")
+        sys.exit(1)
+
     agent = create_agent()
-    
-    # 启动终端对话
     await terminal_chat(agent)
 
 if __name__ == "__main__":

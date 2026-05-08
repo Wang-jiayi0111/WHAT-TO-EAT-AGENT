@@ -882,3 +882,60 @@ sqlite3.OperationalError: fts5: syntax error near "."
 2026-04-13 01:19:39,814 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
 2026-04-13 01:19:39,814 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
 2026-04-13 01:19:39,814 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-05-08 13:14:24,769 - mcp_server - INFO - --- MCP Server Starting ---
+2026-05-08 13:14:24,781 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-05-08 13:14:27,390 - mcp_server - INFO - --- MCP Server Starting ---
+2026-05-08 13:14:27,404 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-05-08 13:14:27,488 - chromadb.config - DEBUG - Starting component System
+2026-05-08 13:14:27,489 - chromadb.config - DEBUG - Starting component Posthog
+2026-05-08 13:14:27,816 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-05-08 13:14:27,816 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-05-08 13:14:27,816 - asyncio - DEBUG - Using selector: SelectSelector
+2026-05-08 13:14:27,821 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-05-08 13:14:27,831 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-05-08 13:14:27,831 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000018C68CBA950>
+2026-05-08 13:14:27,832 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-05-08 13:14:27,832 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-05-08 13:14:27,833 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for search_recipes, refreshing cache
+2026-05-08 13:14:27,834 - root - ERROR - DEBUG: 收到工具 search_recipes 调用, 参数: {'query': '这些食材晚餐能做什么 [饮食约束] 不喜：芦笋 禁忌食材（须避开）：菌类', 'user_id': 'default_user', 'top_k': 15, 'effective_constraint': {'scope_id': 'default_user', 'hard_exclusions': ['菌类'], 'soft_negative_hints': ['芦笋'], 'soft_positive_hints': [], 'dietary_target': None, 'temporal_conditions': [], 'summary_snippet': None}}
+2026-05-08 13:14:27,842 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): dashscope.aliyuncs.com:443
+2026-05-08 13:14:29,444 - urllib3.connectionpool - DEBUG - https://dashscope.aliyuncs.com:443 "POST /api/v1/services/embeddings/text-embedding/text-embedding HTTP/1.1" 200 None
+2026-05-08 13:14:29,801 - chromadb - DEBUG - semantic scores: [0.827, 0.875, 0.877]
+2026-05-08 13:14:29,801 - chromadb - DEBUG - keyword scores: []
+2026-05-08 13:14:29,802 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-05-08 13:14:29,804 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000018C68CBBB90>
+2026-05-08 13:14:29,805 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-05-08 13:14:29,805 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-05-08 13:14:29,805 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-05-08 13:14:44,182 - mcp_server - INFO - --- MCP Server Starting ---
+2026-05-08 13:14:44,192 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-05-08 13:14:44,282 - chromadb.config - DEBUG - Starting component System
+2026-05-08 13:14:44,282 - chromadb.config - DEBUG - Starting component Posthog
+2026-05-08 13:14:44,432 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-05-08 13:14:44,432 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-05-08 13:14:44,433 - asyncio - DEBUG - Using selector: SelectSelector
+2026-05-08 13:14:44,442 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-05-08 13:14:47,308 - mcp_server - INFO - --- MCP Server Starting ---
+2026-05-08 13:14:47,320 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-05-08 13:14:47,406 - chromadb.config - DEBUG - Starting component System
+2026-05-08 13:14:47,406 - chromadb.config - DEBUG - Starting component Posthog
+2026-05-08 13:14:47,500 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-05-08 13:14:47,500 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-05-08 13:14:47,500 - asyncio - DEBUG - Using selector: SelectSelector
+2026-05-08 13:14:47,506 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-05-08 13:14:47,515 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-05-08 13:14:47,516 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000016FEF39AF50>
+2026-05-08 13:14:47,517 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-05-08 13:14:47,517 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-05-08 13:14:47,517 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for get_recipe_source, refreshing cache
+2026-05-08 13:14:47,518 - root - ERROR - DEBUG: 收到工具 get_recipe_source 调用, 参数: {'recipe_name': '蒜苔炒肉末'}
+2026-05-08 13:14:47,518 - src.mcp.tool - INFO - 正在获取菜谱 '蒜苔炒肉末' 的源文件路径...
+2026-05-08 13:14:47,519 - src.ingestion.document_manager - INFO - 正在使用 BM25 搜索，查询: '蒜苔炒肉末'
+2026-05-08 13:14:47,524 - src.ingestion.document_manager - INFO - BM25 搜索完成，找到 1 条结果, results: [{'id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\蒜苔炒肉末.md_chunk_761', 'content': '# 蒜苔炒肉末 ## **菜品描述** 这道蒜苔炒肉末是一道经典的北方家常菜，做法简单快手，非常适合作为忙碌工作日的下饭菜。蒜苔的清脆与五花肉的鲜香完美结合，口感咸鲜下饭。菜肴富含优质蛋白，营养均衡，易于消化，适合全家人，尤其是需要补充能量的上班族和学生作为快手晚餐享用。 ---', 'metadata': {'chunk_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\蒜苔炒肉末.md_chunk_761', 'chunk_index': 761, 'source_document_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\蒜苔炒肉末.md', 'file_path': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\蒜苔炒肉末.md', 'recipe_name': '蒜苔炒肉末', 'source_file': '蒜苔炒肉末.md'}, 'score': 8.88214303208172}]
+2026-05-08 13:14:47,525 - src.ingestion.document_manager - INFO - Searching for recipe '蒜苔炒肉末'. Found 1 results. results: [{'content': '# 蒜苔炒肉末 ## **菜品描述** 这道蒜苔炒肉末是一道经典的北方家常菜，做法简单快手，非常适合作为忙碌工作日的下饭菜。蒜苔的清脆与五花肉的鲜香完美结合，口感咸鲜下饭。菜肴富含优质蛋白，营养均衡，易于消化，适合全家人，尤其是需要补充能量的上班族和学生作为快手晚餐享用。 ---', 'source': 'bm25', 'score': 8.88214303208172, 'metadata': {'chunk_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\蒜苔炒肉末.md_chunk_761', 'chunk_index': 761, 'source_document_id': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\蒜苔炒肉末.md', 'file_path': 'F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\蒜苔炒肉末.md', 'recipe_name': '蒜苔炒肉末', 'source_file': '蒜苔炒肉末.md'}, 'query_type': 'keyword'}]
+2026-05-08 13:14:47,525 - root - INFO - 获取到的文件路径: F:\WHAT-TO-EAT-AGENT\data\recipes\meat_dish\蒜苔炒肉末.md
+2026-05-08 13:14:47,525 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-05-08 13:14:47,527 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x0000016FEF39B290>
+2026-05-08 13:14:47,527 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-05-08 13:14:47,527 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-05-08 13:14:47,528 - mcp.server.lowlevel.server - DEBUG - Response sent

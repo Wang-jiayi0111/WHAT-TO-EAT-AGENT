@@ -39,6 +39,7 @@ from .nodes.logistics import logistics_manager_node
 from .nodes.clarify_resolver import clarify_resolver_node
 from .nodes.conversation_summary import conversation_summary_node
 from .nodes.short_term import short_term_constraints_node
+from src.observability.agent_node_trace import wrap_agent_node
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -160,13 +161,22 @@ def build_graph(checkpointer=None) -> StateGraph:
     graph = StateGraph(AgentState)
  
     # ── 注册节点 ──────────────────────────────────────────
-    graph.add_node("conversation_summary", conversation_summary_node)
-    graph.add_node("short_term", short_term_constraints_node)
-    graph.add_node("router",              router_node)
-    graph.add_node("researcher",          researcher_node)
-    graph.add_node("logistics",           logistics_manager_node)
-    graph.add_node("generator",           generator_node)
-    graph.add_node("clarify_resolver",    clarify_resolver_node)
+    graph.add_node(
+        "conversation_summary",
+        wrap_agent_node("conversation_summary", conversation_summary_node),
+    )
+    graph.add_node(
+        "short_term",
+        wrap_agent_node("short_term", short_term_constraints_node),
+    )
+    graph.add_node("router", wrap_agent_node("router", router_node))
+    graph.add_node("researcher", wrap_agent_node("researcher", researcher_node))
+    graph.add_node("logistics", wrap_agent_node("logistics", logistics_manager_node))
+    graph.add_node("generator", wrap_agent_node("generator", generator_node))
+    graph.add_node(
+        "clarify_resolver",
+        wrap_agent_node("clarify_resolver", clarify_resolver_node),
+    )
  
     # ── 入口 ──────────────────────────────────────────────
     graph.set_entry_point("conversation_summary")
@@ -277,16 +287,18 @@ async def run_turn(
         Agent 最新回复的文本
     """
     from langchain_core.messages import HumanMessage
- 
+
+    from src.observability.runtime_context import bind_invocation_session
+
     config = {"configurable": {"thread_id": thread_id}}
- 
+
     # 读取已有 state（多轮对话复用）
     try:
         current = await agent.aget_state(config)
         existing_messages = current.values.get("messages", [])
     except Exception:
         existing_messages = []
- 
+
     input_state = {
         **empty_agent_slices(),
         "messages": [HumanMessage(content=user_message)],
@@ -294,8 +306,9 @@ async def run_turn(
         "conversation_summary": current.values.get("conversation_summary", "")
             if existing_messages else "",
     }
- 
-    result = await agent.ainvoke(input_state, config=config)
+
+    with bind_invocation_session(thread_id):
+        result = await agent.ainvoke(input_state, config=config)
  
     # 取最后一条 AI 消息作为回复
     messages = result.get("messages", [])

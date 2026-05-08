@@ -15,6 +15,9 @@ from ...libs.base.settings import Settings
 from ..effective_constraint import resolve_scope_id
 from ..state import AgentState
 from ..state_accessors import get_runtime_bundle
+from src.observability.runtime_context import get_invocation_session_id
+from src.observability.structured_agent_log import emit_memory_metrics
+
 from ..degradation_messages import (
     message_generator_empty_turn,
     message_llm_call_failed,
@@ -54,6 +57,16 @@ MERGEABLE_GENERATOR_TASKS = frozenset(
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
+
+
+def _emit_nfr07_memory_metrics(state: AgentState, task_stack_after: List[str]) -> None:
+    try:
+        emit_memory_metrics(
+            get_invocation_session_id(state),
+            extra={"task_stack_after": list(task_stack_after)},
+        )
+    except Exception:
+        logger.debug("emit_memory_metrics failed", exc_info=True)
 
 CHITCHAT_SYSTEM_PROMPT = """\
 你是一个温暖、专业的家庭膳食助手，擅长回答饮食、烹饪、营养相关的问题。
@@ -574,6 +587,7 @@ async def generator_node(state: AgentState) -> Dict[str, Any]:
             **_generator_slice_patch(clarify_reply, task_stack, loop_guard_count),
             **runtime_bundle_to_slice_patches(lb_out),
         }
+        _emit_nfr07_memory_metrics(state, task_stack)
         return ret
 
 
@@ -605,10 +619,12 @@ async def generator_node(state: AgentState) -> Dict[str, Any]:
     if "recipe_adopt" in intents_round or state.get("primary_intent") == "recipe_adopt":
         inv_patch["recipe_use_confirmed"] = True  # 规格 §6.3：采纳后置位
         slice_patches["inventory_state"] = inv_patch
-    return {
+    out = {
         "messages": updated_messages,
         "task_stack": task_stack,
         "loop_guard_count": loop_guard_count,
         **slice_patches,
         **_generator_slice_patch(reply, task_stack, loop_guard_count),
     }
+    _emit_nfr07_memory_metrics(state, task_stack)
+    return out
