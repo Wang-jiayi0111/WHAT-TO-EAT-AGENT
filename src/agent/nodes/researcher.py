@@ -14,6 +14,7 @@ from typing import Any, Dict, List, Optional
 import logging
 import sys
 import json
+import time
 import os
 import subprocess
 from pathlib import Path
@@ -22,23 +23,23 @@ from mcp.client.stdio import stdio_client
 from mcp import ClientSession, StdioServerParameters
 
 
-from ..state import AgentState
-from ..degradation_messages import message_recipe_search_service_unavailable
-from ..state_accessors import get_runtime_bundle
-from ..effective_constraint import (
+from ..core.state import AgentState
+from ..responses.degradation_messages import message_recipe_search_service_unavailable
+from ..core.state_accessors import get_runtime_bundle
+from ..memory.effective_constraint import (
     augment_search_query,
     build_effective_constraint,
     effective_constraint_has_retryable_soft_signals,
     relaxed_effective_constraint_for_search_retry,
 )
-from ..recipe_ambiguity import build_ambiguity_candidates
-from ..state_sync import (
+from ..recipe.ambiguity import build_ambiguity_candidates
+from ..core.state_sync import (
     CLEAR_ERROR_STATE,
     error_state_from_expert_payloads,
     recipe_state_from_logistics_buffer,
     runtime_bundle_to_slice_patches,
 )
-from ..task_stack import consume_tasks
+from ..core.task_stack import consume_tasks
 from .schema import StructuredRecipe
 from ...libs.adapters.llm.llm_factory import LLMFactory
 from ...libs.base.settings import Settings
@@ -221,21 +222,24 @@ class RecipeResearcher:
                         raw_text = result.content[0].text
                         print(f"🔍 Server 原始返回: {repr(raw_text[:200])}")  # ← 加这行
                         try:
-                            return json.loads(raw_text)
+                            payload = json.loads(raw_text)
                         except json.JSONDecodeError as je:
                             logger.warning("MCP invalid JSON: %s", je)
-                            return {
+                            payload = {
                                 "status": "error",
                                 "error": f"invalid JSON from MCP server: {je}",
                             }
-                    return {
-                        "error": "Empty response from MCP server",
-                        "status": "error",
-                    }
+                    else:
+                        payload = {
+                            "error": "Empty response from MCP server",
+                            "status": "error",
+                        }
+                    return payload
         except Exception as e:
             import traceback
+
             # 判断是否是 ExceptionGroup
-            if hasattr(e, 'exceptions'):
+            if hasattr(e, "exceptions"):
                 print(f"❌ ExceptionGroup，子异常数量: {len(e.exceptions)}")
                 for i, sub in enumerate(e.exceptions):
                     print(f"  子异常[{i}]: {type(sub).__name__}: {sub}")

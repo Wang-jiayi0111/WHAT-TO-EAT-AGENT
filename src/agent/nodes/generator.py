@@ -12,27 +12,27 @@ from langchain_core.messages import AIMessage
 
 from ...libs.adapters.llm.llm_factory import LLMFactory
 from ...libs.base.settings import Settings
-from ..effective_constraint import resolve_scope_id
-from ..state import AgentState
-from ..state_accessors import get_runtime_bundle
+from ..memory.effective_constraint import resolve_scope_id
+from ..core.state import AgentState
+from ..core.state_accessors import get_runtime_bundle
 from src.observability.runtime_context import get_invocation_session_id
 from src.observability.structured_agent_log import emit_memory_metrics
 
-from ..degradation_messages import (
+from ..responses.degradation_messages import (
     message_generator_empty_turn,
     message_llm_call_failed,
     message_llm_empty_output,
     message_merged_segments_empty,
 )
-from ..error_code_user_messages import (
+from ..responses.error_code_user_messages import (
     message_commit_recipe_mismatch,
     message_gap_cache_miss,
     message_inventory_write_failed,
     try_error_code_direct_reply,
     user_message_for_inventory_failure,
 )
-from ..state_sync import runtime_bundle_to_slice_patches
-from ..task_stack import consume_tasks
+from ..core.state_sync import runtime_bundle_to_slice_patches
+from ..core.task_stack import consume_tasks
 from .memory_keeper import schedule_memory_keeper_after_reply
 
 
@@ -74,7 +74,7 @@ CHITCHAT_SYSTEM_PROMPT = """\
 如果用户的问题与饮食无关，可以友好地回应用户的问题。
 """
 
-# FR-02 / 规格 §11.3：元意图固定话术（help、out_of_scope）
+# FR-02 / 规格 §12.3：元意图固定话术（help、out_of_scope）
 HELP_REPLY_TEXT = """你好！我是膳食助手，可以帮你：
 · 按口味、食材或菜名**找菜谱**，并结合你家**库存**给建议；
 · **查库存**、记**补货**与做饭后的**扣减**；
@@ -218,13 +218,13 @@ class GeneratorNode:
         return messages
 
     async def handle_dietary_advice(self, state: AgentState) -> str:
-        """营养/健康类问答（dietary_advice），不触发检索（规格 §11.3）。"""
+        """营养/健康类问答（dietary_advice），不触发检索（规格 §12.3）。"""
         messages = self._build_dietary_advice_prompt(state)
         response = await self.llm.ainvoke(messages)
         return response.content.strip()
 
     async def handle_direct_reply(self, state: AgentState) -> str:
-        """TASK_DIRECT_REPLY 内按 primary_intent 分支（T-006 / §11.4）。"""
+        """TASK_DIRECT_REPLY 内按 primary_intent 分支（T-006 / §12.4）。"""
         primary = (
             state.get("primary_intent")
             or state.get("current_intent")

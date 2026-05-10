@@ -28,7 +28,7 @@ from langchain_core.messages import HumanMessage
 from rich.console import Console
 from rich.status import Status
 
-from src.agent.state import empty_agent_slices
+from src.agent.core.state import empty_agent_slices
 from src.agent.workflow import create_agent, run_turn
 from src.libs.base.config_startup_check import run_startup_configuration_check
 from src.libs.base.settings import Settings

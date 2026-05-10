@@ -2,7 +2,7 @@
 T-029 / SRS §3.2 / NFR-05：横切验收 smoke。
 
 - **规格 §2（MCP）**：失败包络、search_recipes 成功体仅 id/title/score（与 T-019 一致的最小断言）。
-- **规格 §11.2（槽位）**：`GLOBAL_SLOT_ENTITY_KEYS` 稳定；`missing_slots` 对 recipe_search 锚点。
+- **规格 §12.2（槽位）**：`GLOBAL_SLOT_ENTITY_KEYS` 稳定；`missing_slots` 对 recipe_search 锚点。
 - **S-01～S-08**：以「证据文件」存在性做自动化追溯（深度行为由各专项用例承担）。
 
 运行：`pytest tests/smoke/test_t029_acceptance_smoke.py`（不要求 LLM / MCP 子进程）。
@@ -16,7 +16,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from src.agent.slot_filling import (
+from src.agent.intent.slot_filling import (
     GLOBAL_SLOT_ENTITY_KEYS,
     MISSING_RECIPE_SEARCH_ANCHOR,
     compute_missing_slots,
@@ -31,6 +31,44 @@ from src.mcp.protocol import (
 )
 from src.mcp.tool import SearchRecipesService
 from tests.conftest import make_minimal_agent_state
+
+# 与 `docs/开发计划.md` §4 场景最低任务集对齐；变更时请与专项测试路径同步。
+_SCENARIO_EVIDENCE_PATHS: dict[str, list[str]] = {
+    "S-01": [
+        "tests/unit/t009-014Memory/test_l3_short_term.py",
+        "tests/unit/t009-014Memory/test_effective_constraint_t011.py",
+        "tests/unit/t015-019Recipe/test_t015_retrieval_effective_constraint.py",
+    ],
+    "S-02": [
+        "tests/unit/t001-031Intent/test_workflow_routing_baseline.py",
+        "tests/unit/t001-031Intent/test_logistics_silent_gap.py",
+        "tests/unit/t015-019Recipe/test_t015_retrieval_effective_constraint.py",
+    ],
+    "S-03": [
+        "tests/unit/t015-019Recipe/test_t016_high_confidence_structured_r.py",
+        "tests/unit/t020-024Inventory/test_t020_inventory_snapshot.py",
+        "tests/unit/t020-024Inventory/test_t023_gap_cache.py",
+        "tests/unit/t020-024Inventory/test_t024_shopping_list_overlay.py",
+    ],
+    "S-04": [
+        "tests/unit/t020-024Inventory/test_t020_inventory_snapshot.py",
+        "tests/unit/t025-026Reply/test_t025_section9_generator_messages.py",
+    ],
+    "S-05": [
+        "tests/unit/t001-031Intent/test_intent_priority_fr50.py",
+        "tests/unit/t001-031Intent/test_generator_merged_replies.py",
+    ],
+    "S-06": ["tests/unit/t015-019Recipe/test_t017_recipe_ambiguity_clarify.py"],
+    "S-07": [
+        "tests/unit/t009-014Memory/test_memory_keeper_t012.py",
+        "tests/unit/t009-014Memory/test_user_profiles_t014_long_term.py",
+        "tests/unit/t015-019Recipe/test_t015_retrieval_effective_constraint.py",
+    ],
+    "S-08": [
+        "tests/unit/t020-024Inventory/test_t023_gap_cache.py",
+        "tests/unit/t020-024Inventory/test_t024_shopping_list_overlay.py",
+    ],
+}
 
 pytestmark = pytest.mark.acceptance_smoke
 
@@ -69,14 +107,14 @@ async def test_mcp_section2_search_service_rejects_blank_query():
     assert is_mcp_error_response(out)
 
 
-def test_slot_section11_global_entity_keys_stable():
-    """与 `src/agent/slot_filling.py` §11.2 表一致；增删键须同步改此处期望数。"""
+def test_slot_section12_global_entity_keys_stable():
+    """与 `src/agent/intent/slot_filling.py` §12.2 表一致；增删键须同步改此处期望数。"""
     assert "list_action" in GLOBAL_SLOT_ENTITY_KEYS
     assert "mark_bought_items" in GLOBAL_SLOT_ENTITY_KEYS
     assert len(GLOBAL_SLOT_ENTITY_KEYS) == 15
 
 
-def test_slot_section11_normalize_preserves_mark_bought():
+def test_slot_section12_normalize_preserves_mark_bought():
     slots = normalize_legacy_entities_to_slots(
         {"mark_bought_items": ["鸡蛋"], "list_action": "mark_bought"},
         ["shopping_list"],
@@ -85,13 +123,13 @@ def test_slot_section11_normalize_preserves_mark_bought():
     assert slots.get("list_action") == "mark_bought"
 
 
-def test_slot_section11_merge_slots_override():
+def test_slot_section12_merge_slots_override():
     base = {"recipe_query": "a", "list_action": "show"}
     out = merge_slots(base, {"list_action": "refresh_gap"})
     assert out["recipe_query"] == "a" and out["list_action"] == "refresh_gap"
 
 
-def test_slot_section11_missing_recipe_search_anchor():
+def test_slot_section12_missing_recipe_search_anchor():
     st = make_minimal_agent_state()
     miss = compute_missing_slots(["recipe_search"], {}, st)
     assert MISSING_RECIPE_SEARCH_ANCHOR in miss
@@ -112,66 +150,7 @@ def _assert_evidence(paths: list[str]) -> None:
 
 @pytest.mark.parametrize(
     "scenario_id, evidence_files",
-    [
-        (
-            "S-01",
-            [
-                "tests/unit/t009-014Memory/test_l3_short_term.py",
-                "tests/unit/t009-014Memory/test_effective_constraint_t011.py",
-                "tests/unit/t015-019Recipe/test_t015_retrieval_effective_constraint.py",
-            ],
-        ),
-        (
-            "S-02",
-            [
-                "tests/unit/t001-031Intent/test_workflow_routing_baseline.py",
-                "tests/unit/t001-031Intent/test_logistics_silent_gap.py",
-                "tests/unit/t015-019Recipe/test_t015_retrieval_effective_constraint.py",
-            ],
-        ),
-        (
-            "S-03",
-            [
-                "tests/unit/t015-019Recipe/test_t016_high_confidence_structured_r.py",
-                "tests/unit/t020-024Inventory/test_t020_inventory_snapshot.py",
-                "tests/unit/t020-024Inventory/test_t023_gap_cache.py",
-                "tests/unit/t020-024Inventory/test_t024_shopping_list_overlay.py",
-            ],
-        ),
-        (
-            "S-04",
-            [
-                "tests/unit/t020-024Inventory/test_t020_inventory_snapshot.py",
-                "tests/unit/t025-026Reply/test_t025_section9_generator_messages.py",
-            ],
-        ),
-        (
-            "S-05",
-            [
-                "tests/unit/t001-031Intent/test_intent_priority_fr50.py",
-                "tests/unit/t001-031Intent/test_generator_merged_replies.py",
-            ],
-        ),
-        (
-            "S-06",
-            ["tests/unit/t015-019Recipe/test_t017_recipe_ambiguity_clarify.py"],
-        ),
-        (
-            "S-07",
-            [
-                "tests/unit/t009-014Memory/test_memory_keeper_t012.py",
-                "tests/unit/t009-014Memory/test_user_profiles_t014_long_term.py",
-                "tests/unit/t015-019Recipe/test_t015_retrieval_effective_constraint.py",
-            ],
-        ),
-        (
-            "S-08",
-            [
-                "tests/unit/t020-024Inventory/test_t023_gap_cache.py",
-                "tests/unit/t020-024Inventory/test_t024_shopping_list_overlay.py",
-            ],
-        ),
-    ],
+    list(sorted(_SCENARIO_EVIDENCE_PATHS.items())),
 )
 def test_scenario_evidence_registry(scenario_id: str, evidence_files: list[str]) -> None:
     """NFR-05：场景与专项测试文件的追溯关系可自动化校验。"""

@@ -35,8 +35,8 @@ from unittest.mock import patch
 
 import pytest
 
-from src.agent.state import empty_agent_slices
-from src.agent.state_sync import _normalize_inventory_snapshot, runtime_bundle_to_slice_patches
+from src.agent.core.state import empty_agent_slices
+from src.agent.core.state_sync import _normalize_inventory_snapshot, runtime_bundle_to_slice_patches
 from src.agent.nodes.logistics import LogisticsManager, logistics_manager_node
 from src.libs.base.inventory import InventoryManager
 from tests.conftest import make_logistics_buffer

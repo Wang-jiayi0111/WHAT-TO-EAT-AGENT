@@ -5,7 +5,7 @@ import asyncio
 import time
 from typing import Any, Callable, Dict, Mapping, Optional, TypeVar
 
-from src.agent.state import AgentState
+from src.agent.core.state import AgentState
 
 from .runtime_context import get_invocation_session_id
 from .structured_agent_log import emit_agent_node_span

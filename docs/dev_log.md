@@ -15,7 +15,7 @@
 
 **类型**：`功能开发`  
 **编号**：T-001  
-**对应规格**：NFR-05；规格 §10（编排路径 `workflow.py`）；里程碑 M0  
+**对应规格**：NFR-05；规格 §11（编排路径 `workflow.py`）；里程碑 M0  
 **里程碑**：M0  
 **状态**：`已完成`  
 **日期**：2026-05-06  
@@ -39,7 +39,7 @@
 ### 规格对齐要点
 
 - [NFR-05] 核心路径具备可自动化执行的单测（当前锚定编排条件边，无外部 I/O）。
-- [规格 §10] 与「编排」目录映射一致，快照锁定 `workflow.py` 路由行为。
+- [规格 §11] 与「编排」目录映射一致，快照锁定 `workflow.py` 路由行为。
 - [M0] 刻意对齐**现状**扁平状态；七切片夹具留待 T-030（规格 §1.2.0 / `dev_agent_prompt` 方案 A）。
 
 ### 规格偏差（若有）
@@ -108,7 +108,7 @@
 
 **类型**：`功能开发`  
 **编号**：T-003  
-**对应规格**：FR-04；规格 §11.4  
+**对应规格**：FR-04；规格 §12.4  
 **里程碑**：M1  
 **状态**：`已完成`  
 **日期**：2026-05-06  
@@ -130,7 +130,7 @@
 
 ### 规格对齐要点
 
-- [FR-04 / §11.4] 任务执行后轮转出队；禁止依赖「集合包含」而不移除已执行标记。
+- [FR-04 / §12.4] 任务执行后轮转出队；禁止依赖「集合包含」而不移除已执行标记。
 - [dev_agent_prompt] 仅用 `task_stack` 命名。
 
 ### 规格偏差（若有）
@@ -149,11 +149,11 @@
 
 ---
 
-## [DEV-004] router 结构化输出（FR-01 / §11.1）
+## [DEV-004] router 结构化输出（FR-01 / §12.1）
 
 **类型**：`功能开发`  
 **编号**：T-004  
-**对应规格**：FR-01；规格 §11.1（primary、intents、confidence、needs_clarification、slots）  
+**对应规格**：FR-01；规格 §12.1（primary、intents、confidence、needs_clarification、slots）  
 **里程碑**：M1  
 **状态**：`已完成`  
 **日期**：2026-05-06  
@@ -174,7 +174,7 @@
 ### 规格对齐要点
 
 - [FR-01] 每轮可观测：意图列表、实体槽位、综合置信度、是否澄清。
-- [§11.1] `primary_intent` 与 `intents[0]` 一致；`slots` 承载迁移期实体命名空间。
+- [§12.1] `primary_intent` 与 `intents[0]` 一致；`slots` 承载迁移期实体命名空间。
 
 ### 遗留问题
 
@@ -193,7 +193,7 @@
 
 **类型**：`功能开发`  
 **编号**：T-005  
-**对应规格**：FR-03；规格 §8、`intent.confidence.clarify_threshold`；§11.6  
+**对应规格**：FR-03；规格 §8、`intent.confidence.clarify_threshold`；§12.6  
 **里程碑**：M1  
 **状态**：`已完成`  
 **日期**：2026-05-06  
@@ -214,7 +214,7 @@
 ### 规格对齐要点
 
 - [§8] 配置键与默认值 0.55；可调参。
-- [FR-03 / §11.6] 低置信不展开 `TASK_INV_*` / 画像写路径。
+- [FR-03 / §12.6] 低置信不展开 `TASK_INV_*` / 画像写路径。
 
 ### 遗留问题
 
@@ -232,7 +232,7 @@
 
 **类型**：`功能开发`  
 **编号**：T-006  
-**对应规格**：FR-02；规格 §11.3～§11.4  
+**对应规格**：FR-02；规格 §12.3～§12.4  
 **里程碑**：M1  
 **状态**：`已完成`  
 **日期**：2026-05-06  
@@ -254,7 +254,7 @@
 ### 规格对齐要点
 
 - [FR-02] 支持帮助、超范围、闲聊路径区分。
-- [§11.4] help / out_of_scope / general_chat / dietary_advice 均落 `TASK_DIRECT_REPLY`，由 generator 提示词区分。
+- [§12.4] help / out_of_scope / general_chat / dietary_advice 均落 `TASK_DIRECT_REPLY`，由 generator 提示词区分。
 
 ### 遗留问题
 
@@ -272,7 +272,7 @@
 
 **类型**：`功能开发`  
 **编号**：T-007  
-**对应规格**：FR-50、FR-51；规格 §11.4（`intents` 有序）  
+**对应规格**：FR-50、FR-51；规格 §12.4（`intents` 有序）  
 **里程碑**：M1  
 **状态**：`已完成`  
 **日期**：2026-05-06  
@@ -395,14 +395,14 @@
 
 **类型**：`功能开发`  
 **编号**：T-031  
-**对应规格**：规格 §11.2～11.5；`IntentResult` / `intent_prompt`  
+**对应规格**：规格 §12.2～12.5；`IntentResult` / `intent_prompt`  
 **里程碑**：M1  
 **状态**：`已完成`  
 **日期**：2026-05-06  
 
 ### 做了什么
 
-新增 `src/agent/slot_filling.py`：`normalize_legacy_entities_to_slots` 将历史 `entities`（含 `amounts`、`preferences`、`check_inventory` 等）收敛到 §11.2 槽位键；`compute_missing_slots` 实现 §11.5 最小必填（含同轮 `recipe_search`+`shopping_list` 时对 **R** 未就绪的豁免）；`apply_slot_guards_to_task_stack` 按缺失码裁剪对应意图产生的任务，并在有缺失时在队首插入 `TASK_CLARIFY`。`IntentResult` 增加 `slots`、`missing_slots` 字段，`intents` Literal 补 `user_clarify`。路由在高置信路径合并模型与规则侧的 `missing_slots`，并将 `needs_clarification` 与必填缺口对齐。`intent_prompt.md` 补充 §11.2 键说明与响应格式中的 `slots` / `missing_slots`。
+新增 `src/agent/slot_filling.py`：`normalize_legacy_entities_to_slots` 将历史 `entities`（含 `amounts`、`preferences`、`check_inventory` 等）收敛到 §12.2 槽位键；`compute_missing_slots` 实现 §12.5 最小必填（含同轮 `recipe_search`+`shopping_list` 时对 **R** 未就绪的豁免）；`apply_slot_guards_to_task_stack` 按缺失码裁剪对应意图产生的任务，并在有缺失时在队首插入 `TASK_CLARIFY`。`IntentResult` 增加 `slots`、`missing_slots` 字段，`intents` Literal 补 `user_clarify`。路由在高置信路径合并模型与规则侧的 `missing_slots`，并将 `needs_clarification` 与必填缺口对齐。`intent_prompt.md` 补充 §12.2 键说明与响应格式中的 `slots` / `missing_slots`。
 
 ### 变更文件
 
@@ -411,16 +411,16 @@
 | `src/agent/slot_filling.py` | 新增 | 归一、缺失计算、task_stack 守卫 |
 | `src/agent/nodes/schema.py` | 修改 | `IntentResult.slots` / `missing_slots`、`user_clarify` |
 | `src/agent/nodes/router.py` | 修改 | 接入槽位管线 |
-| `src/agent/prompts/intent_prompt.md` | 修改 | §11.2 与 JSON 契约 |
+| `src/agent/prompts/intent_prompt.md` | 修改 | §12.2 与 JSON 契约 |
 
 ### 规格对齐要点
 
-- [§11.2] 全局槽位命名空间与兼容别名归一。  
-- [§11.5] 必填缺口 → `missing_slots`，并禁止对缺口意图展开写库类任务（裁剪 + 澄清）。  
+- [§12.2] 全局槽位命名空间与兼容别名归一。  
+- [§12.5] 必填缺口 → `missing_slots`，并禁止对缺口意图展开写库类任务（裁剪 + 澄清）。  
 
 ### 遗留问题
 
-- [ ] 槽位澄清与「选菜澄清」在生成器侧话术分流仍可按 §11.6 细化。  
+- [ ] 槽位澄清与「选菜澄清」在生成器侧话术分流仍可按 §12.6 细化。  
 - [ ] `inventory_query_targets` 由模型直接产出可减少对 `check_inventory` 的依赖。
 
 ### 关联
@@ -1122,7 +1122,7 @@
 
 **类型**：`功能开发`  
 **编号**：T-024  
-**对应规格**：**FR-41、FR-43**；**规格 §7.3～§7.4**；**§11.2** 槽位  
+**对应规格**：**FR-41、FR-43**；**规格 §7.3～§7.4**；**§12.2** 槽位  
 **里程碑**：M4  
 **状态**：`待测试`  
 **日期**：2026-05-07  
@@ -1333,18 +1333,18 @@
 
 ---
 
-## [DEV-035] T-029 横切验收 smoke（S-01～S-08 追溯 + §2 / §11 契约）
+## [DEV-035] T-029 横切验收 smoke（S-01～S-08 追溯 + §2 / §12 契约）
 
 **类型**：`功能开发`  
 **编号**：T-029  
-**对应规格**：**SRS §3.2**；**NFR-05**；**规格 §2、§11**  
+**对应规格**：**SRS §3.2**；**NFR-05**；**规格 §2、§12**  
 **里程碑**：M6  
 **状态**：`待测试`  
 **日期**：2026-05-07  
 
 ### 做了什么
 
-- 新增 **`tests/smoke/test_t029_acceptance_smoke.py`**：`pytest.mark.acceptance_smoke`；**§2** 侧校验 MCP 包络与 **`SearchRecipesService`** 空 query；**§11.2** 侧校验 **`GLOBAL_SLOT_ENTITY_KEYS`**、`merge_slots`、`compute_missing_slots`、`mark_bought` 实体归一。  
+- 新增 **`tests/smoke/test_t029_acceptance_smoke.py`**：`pytest.mark.acceptance_smoke`；**§2** 侧校验 MCP 包络与 **`SearchRecipesService`** 空 query；**§12.2** 侧校验 **`GLOBAL_SLOT_ENTITY_KEYS`**、`merge_slots`、`compute_missing_slots`、`mark_bought` 实体归一。  
 - **`slot_filling`**：抽出 **`ENTITY_SLOT_COPY_KEYS` / `GLOBAL_SLOT_ENTITY_KEYS`** 单源。  
 - **`pytest.ini`**：注册 **`acceptance_smoke`** 标记。  
 - **S-01～S-08**：`parametrize` 证据文件存在性（与开发计划 §4 任务追溯一致）。  
@@ -1354,14 +1354,14 @@
 | 文件 | 类型 | 说明 |
 |------|------|------|
 | `tests/smoke/test_t029_acceptance_smoke.py` | 新增 | T-029 smoke |
-| `src/agent/slot_filling.py` | 修改 | §11.2 键导出 |
+| `src/agent/slot_filling.py` | 修改 | §12.2 键导出 |
 | `pytest.ini` | 修改 | marker |
 | `docs/开发计划.md` | 修改 | T-029 状态 |
 
 ### 规格对齐要点
 
 - [NFR-05] 验收项具备可 CI 执行的 smoke 入口。  
-- [规格 §2 / §11] 契约关键分支有不依赖真实 MCP 进程的最小断言。  
+- [规格 §2 / §12] 契约关键分支有不依赖真实 MCP 进程的最小断言。  
 
 ### 规格偏差（若有）
 
@@ -1373,3 +1373,122 @@
 
 ---
 
+## [DEV-036] T-040 E2E 测评用例集（十二意图 × 6）
+
+**类型**：`功能开发`  
+**编号**：T-040  
+**对应规格**：NFR-05；开发计划 **§5.0**；SRS §3.2（S-01～S-08 映射）；用例 schema 见 `.cursor/testcase_agent_prompt.md`  
+**里程碑**：M7  
+**状态**：`已完成`  
+**日期**：2026-05-09  
+
+### 做了什么
+
+在 **`eval/cases/`** 按 `src/agent/nodes/schema.py` **§12.3 意图目录**（共 12 个标签）分别落地 **`{意图名}.json`**，每文件 **6** 条用例（合计 **72** 条）。每条含 **`case_id`**（`{scenario_category}_{三位序号}`，全局 **001～072**）、**`difficulty`**（各文件 **easy / medium / hard** 各 2 条）、**`user_turns`**、**`expected`**（含 **`needs_clarification` 与 `clarification_triggered` 一致**）、**`eval_method`**、**`linked_scenarios`**；**`recipe_query` / `dietary_filter`** 类补全 **`golden_recipe_ids`**（占位 `recipe_id_*`）；**`dietary_filter`** 补全 **`output_excludes`**；**`multi_turn`** 至少 **2** 轮且 **`context_preserved` 非空**。  
+
+### 变更文件
+
+| 文件 | 类型 | 说明 |
+|------|------|------|
+| `eval/cases/*.json` | 新增 | 12 意图 × 6 用例 |
+| `docs/开发计划.md` | 修改 | T-040 状态 |
+
+### 规格对齐要点
+
+- [NFR-05] 场景分类用例可机器读取并与 **S-01～S-08** 追溯。  
+- [§12.2] **`key_slots`** 使用全局槽位命名（`recipe_query`、`restock_items`、`list_action` 等）。  
+
+### 规格偏差（若有）
+
+无  
+
+### 关联
+
+前置：T-029 ✓  
+后续：**T-041**  
+
+---
+
+## [DEV-037] T-041 E2E 执行器（独立 CLI + 原始采集落盘）
+
+**类型**：`功能开发`  
+**编号**：T-041  
+**对应规格**：NFR-06，NFR-10；开发计划 **§5.0 步骤 2**、**§6** 入口约定（非 `main`、非 pytest 主驱动）  
+**里程碑**：M7  
+**状态**：`已完成`  
+**日期**：2026-05-10  
+
+### 做了什么
+
+- 新增 **`eval/`** 包：**`python -m eval.run_e2e`**（`--cases-dir`、`--run-id`、`--case-filter`、`--fail-fast`、`--user-id`）。启动前执行与 **`main.py`** 一致的 **`run_startup_configuration_check(Settings())`**。  
+- **`eval/runner.py`**：`create_agent(persist=True)`；按用例 **`thread_id = <run_id>:<case_id>`** 隔离会话；多轮顺序 **`ainvoke`**；每轮后 **`aget_state`** 取完整 checkpoint，经 **`eval/state_capture.build_e2e_snapshot`** 序列化 **控制面 / recipe_state+runtime_bundle / expert_payloads（含歧义时 `search_results`、成功时 `recipe_detail` 即 R）/ error_state / messages 尾部 / wall_time_ms**；**`mcp_evidence`** 为终态反推的 MCP 最小序列（软重试次数待 T-042 结合日志）。  
+- 产出：**`docs/evals/runs/<run_id>/manifest.json`**（条目列表与相对 **`capture_path`**）、**`docs/evals/runs/<run_id>/captures/<case_id>.json`**（含完整 fixture + 各轮 `snapshot`）。  
+
+### 变更文件
+
+| 文件 | 类型 | 说明 |
+|------|------|------|
+| `eval/__init__.py` | 新增 | 包说明 |
+| `eval/run_e2e.py` | 新增 | CLI 入口 |
+| `eval/runner.py` | 新增 | 批跑与 manifest |
+| `eval/state_capture.py` | 新增 | 终态 → JSON 可序列化快照 |
+| `docs/开发计划.md` | 修改 | T-041 状态 |
+
+### 规格对齐要点
+
+- [§5.0 步骤 2] 采集检索侧证据（`expert_payloads.search_results`、`runtime_bundle.recipe_candidates`）、**R**（`recipe_detail` / `recipe_requirements`）、最终回复（`response_state.final_response` / 末条 AI message）、**效率**原始量（`wall_time_ms`；**token** 若消息带 `response_metadata` 则已在 `messages_tail` 保留）。  
+- [§6] E2E 与 **`tests/`** 分离，独立 **`python -m`** 入口。  
+
+### 规格偏差（若有）
+
+- MCP **精确调用次数**（含 FR-24 软重试多次 `search_recipes`）当前未在图中计数；runner 仅输出 **`mcp_evidence.inferred_*`**，完整计数可在 T-042 接结构化日志或 researcher 埋点。  
+
+### 关联
+
+前置：T-040 ✓  
+后续：**T-042**  
+
+---
+
+## [DEV-038] T-042 E2E 分层指标与自动打分（§5.1～5.6）
+
+**类型**：`功能开发`  
+**编号**：T-042  
+**对应规格**：**NFR-08～NFR-10**；SRS §10.3；开发计划 **§5.1～5.6**  
+**里程碑**：M7  
+**状态**：`已完成`  
+**日期**：2026-05-10  
+
+### 做了什么
+
+- **`eval/scoring.py`**：读取 T-041 **`captures/<case_id>.json`**，对照 **`fixture.expected`** 计算四层指标：  
+  - **§5.1 检索**：金标 `recipe_id_*` 去前缀后与候选 **title/id** 对齐（跨轮合并 `search_results`、`recipe_candidates`、`recipe_detail`/锁定标题）；子项 **召回 hit**、**名次→排名分**、单用例 **MRR**；**NDCG@k = N/A**（fixture 无分级相关性）；配置了「有金标且零命中」时 **`hard_fail_retrieval`** → 总分按 §5.6 **封顶 0.35**（可用 **`--no-retrieval-hard-fail`** 关闭）。  
+  - **§5.2 生成**：取末轮非空 **`recipe_detail`（R）**；**准确性**（标题 vs 金标）、**幻觉 proxy**（启发式：中文词与 R 食材集合）、**格式**（ingredients/steps 列表）；无 **R** 时层分为 **N/A**。  
+  - **§5.3 对话**：**主意图**、**澄清字段**、**multi_turn** 的 **`context_preserved`** 文本命中、`output_contains`/`output_excludes`。  
+  - **§5.4 效率**：墙钟 **`wall_time_ms`** 指数映射、`response_metadata` 中 token **总和（若有）**、**`mcp_evidence.inferred_total`** 归一化。  
+- **默认层权重**（可后续改为 YAML）：检索 **0.35** / 生成 **0.25** / 对话 **0.25** / 效率 **0.15**；含 **N/A** 的层按权重重归一。  
+- **`eval/score_run.py`**：**`python -m eval.score_run --run-id <id>`**（或 **`--run-dir`**），输出 **`docs/evals/runs/<run_id>/scores.json`**；可选 **`--latest`** 写入 **`docs/evals/latest_eval.json`** 摘要。  
+
+### 变更文件
+
+| 文件 | 类型 | 说明 |
+|------|------|------|
+| `eval/scoring.py` | 新增 | 分层打分核心 |
+| `eval/score_run.py` | 新增 | CLI |
+| `eval/__init__.py` | 修改 | 包说明 |
+| `docs/开发计划.md` | 修改 | T-042 状态 |
+
+### 规格对齐要点
+
+- [§5.6] 子指标映射到 **[0,1]**，缺失数据子项 **N/A** 不参与该层均分；加权总分对可用层重归一。  
+
+### 规格偏差（若有）
+
+- **NDCG**、精细化幻觉归因、tool 精确次数依赖 T-041 日志增强或 MCP 埋点。  
+
+### 关联
+
+前置：T-041 ✓  
+后续：**T-043**  
+
+---

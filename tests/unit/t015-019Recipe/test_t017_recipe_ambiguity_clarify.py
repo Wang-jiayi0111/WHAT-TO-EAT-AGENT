@@ -16,8 +16,8 @@ from src.agent.nodes.clarify_resolver import (
 )
 from src.agent.nodes.generator import GeneratorNode
 from src.agent.nodes.researcher import researcher_node
-from src.agent.recipe_ambiguity import build_ambiguity_candidates
-from src.agent.state_accessors import get_runtime_bundle
+from src.agent.recipe.ambiguity import build_ambiguity_candidates
+from src.agent.core.state_accessors import get_runtime_bundle
 from tests.conftest import make_logistics_buffer, make_minimal_agent_state
 
 

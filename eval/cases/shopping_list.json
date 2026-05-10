@@ -1,0 +1,129 @@
+[
+  {
+    "case_id": "shopping_list_025",
+    "scenario_category": "shopping_list",
+    "difficulty": "easy",
+    "description": "显式索要购物清单（默认 show）",
+    "user_turns": [
+      { "turn": 1, "input": "根据当前这道菜还差哪些食材把购物清单列给我" }
+    ],
+    "expected": {
+      "primary_intent": "shopping_list",
+      "needs_clarification": false,
+      "key_slots": { "list_action": "show" },
+      "golden_recipe_ids": [],
+      "output_contains": ["清单", "买"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "auto",
+    "linked_scenarios": ["S-08"]
+  },
+  {
+    "case_id": "shopping_list_026",
+    "scenario_category": "shopping_list",
+    "difficulty": "easy",
+    "description": "口语化「买啥」映射清单意图",
+    "user_turns": [
+      { "turn": 1, "input": "周末请客这顿饭我还缺啥要我下班顺便买回来" }
+    ],
+    "expected": {
+      "primary_intent": "shopping_list",
+      "needs_clarification": false,
+      "key_slots": { "list_action": "show" },
+      "golden_recipe_ids": [],
+      "output_contains": ["缺"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": ["S-08"]
+  },
+  {
+    "case_id": "shopping_list_027",
+    "scenario_category": "shopping_list",
+    "difficulty": "medium",
+    "description": "按菜谱重算缺口 refresh_gap",
+    "user_turns": [
+      { "turn": 1, "input": "我改做糖醋里脊了，按新菜谱重新算一遍要买什么" }
+    ],
+    "expected": {
+      "primary_intent": "shopping_list",
+      "needs_clarification": false,
+      "key_slots": { "list_action": "refresh_gap" },
+      "golden_recipe_ids": [],
+      "output_contains": ["糖醋里脊"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": ["S-08"]
+  },
+  {
+    "case_id": "shopping_list_028",
+    "scenario_category": "shopping_list",
+    "difficulty": "medium",
+    "description": "编辑清单覆盖层 edit_overlay",
+    "user_turns": [
+      { "turn": 1, "input": "购物清单里帮我把青椒勾掉我家里有，别的保留" }
+    ],
+    "expected": {
+      "primary_intent": "shopping_list",
+      "needs_clarification": false,
+      "key_slots": { "list_action": "edit_overlay" },
+      "golden_recipe_ids": [],
+      "output_contains": ["青椒"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": ["S-08"]
+  },
+  {
+    "case_id": "multi_turn_029",
+    "scenario_category": "multi_turn",
+    "difficulty": "hard",
+    "description": "先问缺啥再买啥的多轮清单诉求",
+    "user_turns": [
+      { "turn": 1, "input": "今晚锁定做水煮鱼" },
+      { "turn": 2, "input": "告诉我除了底料和鱼以外还需要采购哪些配料一并列购物单" }
+    ],
+    "expected": {
+      "primary_intent": "shopping_list",
+      "needs_clarification": false,
+      "key_slots": { "list_action": "show" },
+      "golden_recipe_ids": [],
+      "output_contains": ["水煮鱼"],
+      "output_excludes": [],
+      "context_preserved": ["水煮鱼", "晚餐计划"],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": ["S-05", "S-08"]
+  },
+  {
+    "case_id": "edge_case_030",
+    "scenario_category": "edge_case",
+    "difficulty": "hard",
+    "description": "从缺口标记已买 mark_bought",
+    "user_turns": [
+      { "turn": 1, "input": "清单里缺的香葱我已经在楼下便利店买好了帮我勾掉" }
+    ],
+    "expected": {
+      "primary_intent": "shopping_list",
+      "needs_clarification": false,
+      "key_slots": { "list_action": "mark_bought" },
+      "golden_recipe_ids": [],
+      "output_contains": ["香葱"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": []
+  }
+]

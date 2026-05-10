@@ -9,10 +9,10 @@ import copy
 import logging
 from typing import Dict, Any, List, Optional
 
-from ..state import AgentState
-from ..state_accessors import get_runtime_bundle
-from ..state_sync import runtime_bundle_to_slice_patches
-from ..task_stack import consume_tasks
+from ..core.state import AgentState
+from ..core.state_accessors import get_runtime_bundle
+from ..core.state_sync import runtime_bundle_to_slice_patches
+from ..core.task_stack import consume_tasks
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)

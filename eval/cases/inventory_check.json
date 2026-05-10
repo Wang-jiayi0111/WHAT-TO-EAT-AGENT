@@ -1,0 +1,129 @@
+[
+  {
+    "case_id": "inventory_007",
+    "scenario_category": "inventory",
+    "difficulty": "easy",
+    "description": "查询单一食材是否还有库存",
+    "user_turns": [
+      { "turn": 1, "input": "家里冰箱里还有没有鸡蛋" }
+    ],
+    "expected": {
+      "primary_intent": "inventory_check",
+      "needs_clarification": false,
+      "key_slots": { "inventory_query_targets": ["鸡蛋"] },
+      "golden_recipe_ids": [],
+      "output_contains": ["鸡蛋"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "auto",
+    "linked_scenarios": ["S-03", "S-04"]
+  },
+  {
+    "case_id": "inventory_008",
+    "scenario_category": "inventory",
+    "difficulty": "easy",
+    "description": "全景式询问家里有什么（空目标查全部）",
+    "user_turns": [
+      { "turn": 1, "input": "咱家现在库存里大致有哪些食材，帮我列一下" }
+    ],
+    "expected": {
+      "primary_intent": "inventory_check",
+      "needs_clarification": false,
+      "key_slots": { "inventory_query_targets": null },
+      "golden_recipe_ids": [],
+      "output_contains": ["库存", "食材"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "auto",
+    "linked_scenarios": ["S-03", "S-04"]
+  },
+  {
+    "case_id": "inventory_009",
+    "scenario_category": "inventory",
+    "difficulty": "medium",
+    "description": "带数量单位的库存追问",
+    "user_turns": [
+      { "turn": 1, "input": "冷冻柜里牛肉还剩多少克够不够用" }
+    ],
+    "expected": {
+      "primary_intent": "inventory_check",
+      "needs_clarification": false,
+      "key_slots": { "inventory_query_targets": ["牛肉"] },
+      "golden_recipe_ids": [],
+      "output_contains": ["牛肉"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": ["S-03", "S-04"]
+  },
+  {
+    "case_id": "inventory_010",
+    "scenario_category": "inventory",
+    "difficulty": "medium",
+    "description": "多食材联合查询是否齐备",
+    "user_turns": [
+      { "turn": 1, "input": "想做咖喱饭，土豆洋葱胡萝卜和鸡胸肉家里都齐吗" }
+    ],
+    "expected": {
+      "primary_intent": "inventory_check",
+      "needs_clarification": false,
+      "key_slots": { "inventory_query_targets": ["土豆", "洋葱", "胡萝卜", "鸡胸肉"] },
+      "golden_recipe_ids": [],
+      "output_contains": ["土豆", "咖喱"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "auto",
+    "linked_scenarios": ["S-03", "S-04"]
+  },
+  {
+    "case_id": "multi_turn_011",
+    "scenario_category": "multi_turn",
+    "difficulty": "hard",
+    "description": "多轮中延续前轮提到的食材再查库存",
+    "user_turns": [
+      { "turn": 1, "input": "我昨天买了两盒内酯豆腐还没拆" },
+      { "turn": 2, "input": "帮我确认一下内酯豆腐现在还在不在冰箱里" }
+    ],
+    "expected": {
+      "primary_intent": "inventory_check",
+      "needs_clarification": false,
+      "key_slots": { "inventory_query_targets": ["内酯豆腐"] },
+      "golden_recipe_ids": [],
+      "output_contains": ["豆腐"],
+      "output_excludes": [],
+      "context_preserved": ["内酯豆腐", "新买的食材"],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": ["S-05"]
+  },
+  {
+    "case_id": "edge_case_012",
+    "scenario_category": "edge_case",
+    "difficulty": "hard",
+    "description": "口语化否定句识别为查库存而非删库存",
+    "user_turns": [
+      { "turn": 1, "input": "我是不是压根没买过香菜啊家里到底有没有这玩意儿" }
+    ],
+    "expected": {
+      "primary_intent": "inventory_check",
+      "needs_clarification": false,
+      "key_slots": { "inventory_query_targets": ["香菜"] },
+      "golden_recipe_ids": [],
+      "output_contains": ["香菜"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": []
+  }
+]

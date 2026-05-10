@@ -1,0 +1,129 @@
+[
+  {
+    "case_id": "ambiguity_067",
+    "scenario_category": "ambiguity",
+    "difficulty": "easy",
+    "description": "用户在候选列表澄清追问中选其一",
+    "user_turns": [
+      { "turn": 1, "input": "我要第二个酸辣口味的版本不是酸甜那个" }
+    ],
+    "expected": {
+      "primary_intent": "user_clarify",
+      "needs_clarification": false,
+      "key_slots": { "recipe_name": "酸辣" },
+      "golden_recipe_ids": [],
+      "output_contains": ["酸辣"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": ["S-06"]
+  },
+  {
+    "case_id": "ambiguity_068",
+    "scenario_category": "ambiguity",
+    "difficulty": "easy",
+    "description": "简短序号答复消除歧义",
+    "user_turns": [
+      { "turn": 1, "input": "选3" }
+    ],
+    "expected": {
+      "primary_intent": "user_clarify",
+      "needs_clarification": false,
+      "key_slots": {},
+      "golden_recipe_ids": [],
+      "output_contains": ["3"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": ["S-06"]
+  },
+  {
+    "case_id": "multi_turn_069",
+    "scenario_category": "multi_turn",
+    "difficulty": "medium",
+    "description": "澄清对话中补充食材约束",
+    "user_turns": [
+      { "turn": 1, "input": "鸡肉做法我还没想好口味" },
+      { "turn": 2, "input": "那就限定不加味精且少盐的版本里挑一道吧" }
+    ],
+    "expected": {
+      "primary_intent": "user_clarify",
+      "needs_clarification": false,
+      "key_slots": { "recipe_query": "鸡肉少盐不加味精" },
+      "golden_recipe_ids": [],
+      "output_contains": ["盐"],
+      "output_excludes": ["味精"],
+      "context_preserved": ["鸡肉", "少盐", "不加味精"],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": ["S-05"]
+  },
+  {
+    "case_id": "recipe_query_070",
+    "scenario_category": "recipe_query",
+    "difficulty": "medium",
+    "description": "否定式澄清排除某一候选",
+    "user_turns": [
+      { "turn": 1, "input": "不要带茄子食材的那几道菜里剩下的随便给我一个就行" }
+    ],
+    "expected": {
+      "primary_intent": "user_clarify",
+      "needs_clarification": false,
+      "key_slots": { "ingredients": ["茄子"] },
+      "golden_recipe_ids": ["recipe_id_糖醋里脊"],
+      "output_contains": ["糖醋里脊"],
+      "output_excludes": ["茄子"],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": ["S-01", "S-02"]
+  },
+  {
+    "case_id": "edge_case_071",
+    "scenario_category": "edge_case",
+    "difficulty": "hard",
+    "description": "自相矛盾澄清需二次追问",
+    "user_turns": [
+      { "turn": 1, "input": "既要极辣又要完全不吃辣椒你看着办吧" }
+    ],
+    "expected": {
+      "primary_intent": "user_clarify",
+      "needs_clarification": true,
+      "key_slots": {},
+      "golden_recipe_ids": [],
+      "output_contains": ["辣"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": true
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": []
+  },
+  {
+    "case_id": "edge_case_072",
+    "scenario_category": "edge_case",
+    "difficulty": "hard",
+    "description": "转移话题式澄清轮仍落在用户补答语义",
+    "user_turns": [
+      { "turn": 1, "input": "算了别问我口味了你就当我默认江浙清淡吧继续上一步" }
+    ],
+    "expected": {
+      "primary_intent": "user_clarify",
+      "needs_clarification": false,
+      "key_slots": { "recipe_query": "江浙清淡" },
+      "golden_recipe_ids": [],
+      "output_contains": ["清淡"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": []
+  }
+]

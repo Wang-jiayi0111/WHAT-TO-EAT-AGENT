@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock
 
-from src.agent.effective_constraint import (
+from src.agent.memory.effective_constraint import (
     augment_search_query,
     build_effective_constraint,
     filter_recipes_by_hard_exclusions,

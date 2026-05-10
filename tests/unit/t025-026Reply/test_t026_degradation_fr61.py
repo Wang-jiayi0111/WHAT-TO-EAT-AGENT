@@ -15,9 +15,9 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from src.agent.state import empty_agent_slices
-from src.agent.state_sync import runtime_bundle_to_slice_patches
-from src.agent.degradation_messages import (
+from src.agent.core.state import empty_agent_slices
+from src.agent.core.state_sync import runtime_bundle_to_slice_patches
+from src.agent.responses.degradation_messages import (
     message_generator_empty_turn,
     message_llm_call_failed,
     message_llm_empty_output,

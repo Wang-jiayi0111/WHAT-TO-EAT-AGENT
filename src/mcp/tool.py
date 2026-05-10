@@ -3,7 +3,7 @@ import logging
 from typing import Any, Dict, List, Optional
 from pathlib import Path
 
-from src.agent.effective_constraint import filter_recipes_by_hard_exclusions
+from src.agent.memory.effective_constraint import filter_recipes_by_hard_exclusions
 from src.mcp.protocol import (
     mcp_validation_error,
     normalize_search_recipes_success_body,

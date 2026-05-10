@@ -34,8 +34,8 @@ def make_logistics_buffer(**overrides: Any) -> Dict[str, Any]:
     return base
 
 
-from src.agent.state import empty_agent_slices
-from src.agent.state_sync import runtime_bundle_to_slice_patches
+from src.agent.core.state import empty_agent_slices
+from src.agent.core.state_sync import runtime_bundle_to_slice_patches
 
 
 def make_minimal_agent_state(

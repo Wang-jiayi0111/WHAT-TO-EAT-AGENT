@@ -4,9 +4,9 @@ from pathlib import Path
 from string import Template
 
 # 导入项目内部依赖
-from ..state import AgentState
-from ..intent_priority import sort_intents_by_fr50
-from ..slot_filling import (
+from ..core.state import AgentState
+from ..intent.intent_priority import sort_intents_by_fr50
+from ..intent.slot_filling import (
     apply_slot_guards_to_task_stack,
     compute_missing_slots,
     merge_slots,
@@ -197,7 +197,7 @@ class IntentClassifier:
                     "reasoning": f"置信度低 ({conf} < {self.clarify_threshold}): {result.reasoning}",
                 }
 
-            # 3. 动态合成任务栈（顺序与 intents_list 一致 → FR-51）；§11.5 缺口裁剪并必要时插入 TASK_CLARIFY
+            # 3. 动态合成任务栈（顺序与 intents_list 一致 → FR-51）；§12.5 缺口裁剪并必要时插入 TASK_CLARIFY
             final_tasks = apply_slot_guards_to_task_stack(
                 intents_list, self.INTENT_TASK_MAPPING, missing
             )
@@ -271,8 +271,8 @@ def router_node(state: AgentState) -> Dict[str, Any]:
     """
     LangGraph 路由节点入口。
 
-    输出对齐 FR-01 / 规格 §11.1：primary_intent、intents、confidence、needs_clarification，
-    以及 §11.2 slots、§11.5 missing_slots 与任务栈守卫（T-031）。
+    输出对齐 FR-01 / 规格 §12.1：primary_intent、intents、confidence、needs_clarification，
+    以及 §12.2 slots、§12.5 missing_slots 与任务栈守卫（T-031）。
     """
     if not state.get("messages"):
         stub = {

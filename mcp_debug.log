@@ -939,3 +939,181 @@ sqlite3.OperationalError: fts5: syntax error near "."
 2026-05-08 13:14:47,527 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
 2026-05-08 13:14:47,527 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
 2026-05-08 13:14:47,528 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-05-08 14:01:23,785 - mcp_server - INFO - --- MCP Server Starting ---
+2026-05-08 14:01:23,798 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-05-08 14:01:23,888 - chromadb.config - DEBUG - Starting component System
+2026-05-08 14:01:23,888 - chromadb.config - DEBUG - Starting component Posthog
+2026-05-08 14:01:24,008 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-05-08 14:01:24,008 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-05-08 14:01:24,009 - asyncio - DEBUG - Using selector: SelectSelector
+2026-05-08 14:01:24,020 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-05-08 14:01:26,867 - mcp_server - INFO - --- MCP Server Starting ---
+2026-05-08 14:01:26,867 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-05-08 14:01:26,948 - chromadb.config - DEBUG - Starting component System
+2026-05-08 14:01:26,948 - chromadb.config - DEBUG - Starting component Posthog
+2026-05-08 14:01:27,108 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-05-08 14:01:27,108 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-05-08 14:01:27,108 - asyncio - DEBUG - Using selector: SelectSelector
+2026-05-08 14:01:27,117 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-05-08 14:01:27,136 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-05-08 14:01:27,137 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x00000200CB01B990>
+2026-05-08 14:01:27,137 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-05-08 14:01:27,137 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-05-08 14:01:27,137 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for search_recipes, refreshing cache
+2026-05-08 14:01:27,140 - root - ERROR - DEBUG: 收到工具 search_recipes 调用, 参数: {'query': '清蒸鱼 [饮食约束] 不喜：芦笋 近期状态：短期：肠胃不适，宜清淡易消化 禁忌食材（须避开）：菌类', 'user_id': 'default_user', 'top_k': 15, 'effective_constraint': {'scope_id': 'default_user', 'hard_exclusions': ['菌类'], 'soft_negative_hints': ['芦笋'], 'soft_positive_hints': [], 'dietary_target': None, 'temporal_conditions': ['短期：肠胃不适，宜清淡易消化'], 'summary_snippet': None}}
+2026-05-08 14:01:27,146 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): dashscope.aliyuncs.com:443
+2026-05-08 14:01:29,103 - urllib3.connectionpool - DEBUG - https://dashscope.aliyuncs.com:443 "POST /api/v1/services/embeddings/text-embedding/text-embedding HTTP/1.1" 200 None
+2026-05-08 14:01:29,431 - chromadb - DEBUG - semantic scores: [0.582, 0.682, 0.686]
+2026-05-08 14:01:29,431 - chromadb - DEBUG - keyword scores: []
+2026-05-08 14:01:29,431 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-05-08 14:01:29,434 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x00000200CAAA1310>
+2026-05-08 14:01:29,434 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-05-08 14:01:29,434 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-05-08 14:01:29,434 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-05-08 17:04:40,740 - mcp_server - INFO - --- MCP Server Starting ---
+2026-05-08 17:04:40,741 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-05-08 17:04:40,879 - chromadb.config - DEBUG - Starting component System
+2026-05-08 17:04:40,880 - chromadb.config - DEBUG - Starting component Posthog
+2026-05-08 17:04:43,523 - mcp_server - INFO - --- MCP Server Starting ---
+2026-05-08 17:04:43,535 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-05-08 17:04:43,616 - chromadb.config - DEBUG - Starting component System
+2026-05-08 17:04:43,616 - chromadb.config - DEBUG - Starting component Posthog
+2026-05-08 17:04:44,119 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-05-08 17:04:44,119 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-05-08 17:04:44,119 - asyncio - DEBUG - Using selector: SelectSelector
+2026-05-08 17:04:44,124 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-05-08 17:04:44,132 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-05-08 17:04:44,133 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001F2D091FBD0>
+2026-05-08 17:04:44,134 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-05-08 17:04:44,134 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-05-08 17:04:44,134 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for search_recipes, refreshing cache
+2026-05-08 17:04:44,136 - root - ERROR - DEBUG: 收到工具 search_recipes 调用, 参数: {'query': '今晚两人清淡晚餐有什么推荐 [饮食约束] 不喜：芦笋 近期状态：口味：清淡饮食 禁忌食材（须避开）：菌类', 'user_id': 'default_user', 'top_k': 15, 'effective_constraint': {'scope_id': 'default_user', 'hard_exclusions': ['菌类'], 'soft_negative_hints': ['芦笋'], 'soft_positive_hints': [], 'dietary_target': None, 'temporal_conditions': ['口味：清淡饮食'], 'summary_snippet': None}}
+2026-05-08 17:04:44,143 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): dashscope.aliyuncs.com:443
+2026-05-08 17:04:45,954 - urllib3.connectionpool - DEBUG - https://dashscope.aliyuncs.com:443 "POST /api/v1/services/embeddings/text-embedding/text-embedding HTTP/1.1" 200 None
+2026-05-08 17:04:46,147 - chromadb - DEBUG - semantic scores: [0.797, 0.822, 0.827]
+2026-05-08 17:04:46,147 - chromadb - DEBUG - keyword scores: []
+2026-05-08 17:04:46,147 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-05-08 17:04:46,149 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001F2D0537B50>
+2026-05-08 17:04:46,150 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-05-08 17:04:46,150 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-05-08 17:04:46,150 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-05-08 23:51:18,461 - mcp_server - INFO - --- MCP Server Starting ---
+2026-05-08 23:51:18,477 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-05-08 23:51:18,621 - chromadb.config - DEBUG - Starting component System
+2026-05-08 23:51:18,621 - chromadb.config - DEBUG - Starting component Posthog
+2026-05-08 23:51:21,138 - mcp_server - INFO - --- MCP Server Starting ---
+2026-05-08 23:51:21,150 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-05-08 23:51:21,235 - chromadb.config - DEBUG - Starting component System
+2026-05-08 23:51:21,235 - chromadb.config - DEBUG - Starting component Posthog
+2026-05-08 23:51:21,516 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-05-08 23:51:21,516 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-05-08 23:51:21,517 - asyncio - DEBUG - Using selector: SelectSelector
+2026-05-08 23:51:21,526 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-05-08 23:51:21,538 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-05-08 23:51:21,539 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001AF77337F50>
+2026-05-08 23:51:21,540 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-05-08 23:51:21,540 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-05-08 23:51:21,540 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for search_recipes, refreshing cache
+2026-05-08 23:51:21,542 - root - ERROR - DEBUG: 收到工具 search_recipes 调用, 参数: {'query': '推荐一道低脂的家常菜。 [饮食约束] 不喜：芦笋 近期状态：肠胃不适 禁忌食材（须避开）：菌类', 'user_id': 'default_user', 'top_k': 15, 'effective_constraint': {'scope_id': 'default_user', 'hard_exclusions': ['菌类'], 'soft_negative_hints': ['芦笋'], 'soft_positive_hints': [], 'dietary_target': None, 'temporal_conditions': ['肠胃不适'], 'summary_snippet': None}}
+2026-05-08 23:51:21,549 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): dashscope.aliyuncs.com:443
+2026-05-08 23:51:23,416 - urllib3.connectionpool - DEBUG - https://dashscope.aliyuncs.com:443 "POST /api/v1/services/embeddings/text-embedding/text-embedding HTTP/1.1" 200 None
+2026-05-08 23:51:23,879 - chromadb - DEBUG - semantic scores: [0.695, 0.708, 0.717]
+2026-05-08 23:51:23,879 - chromadb - DEBUG - keyword scores: []
+2026-05-08 23:51:23,880 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-05-08 23:51:23,883 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000001AF76A24190>
+2026-05-08 23:51:23,883 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-05-08 23:51:23,883 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-05-08 23:51:23,883 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-05-08 23:51:37,476 - mcp_server - INFO - --- MCP Server Starting ---
+2026-05-08 23:51:37,489 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-05-08 23:51:37,581 - chromadb.config - DEBUG - Starting component System
+2026-05-08 23:51:37,581 - chromadb.config - DEBUG - Starting component Posthog
+2026-05-08 23:51:37,795 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-05-08 23:51:37,795 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-05-08 23:51:37,795 - asyncio - DEBUG - Using selector: SelectSelector
+2026-05-08 23:51:37,801 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-05-08 23:51:40,501 - mcp_server - INFO - --- MCP Server Starting ---
+2026-05-08 23:51:40,514 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-05-08 23:51:40,602 - chromadb.config - DEBUG - Starting component System
+2026-05-08 23:51:40,602 - chromadb.config - DEBUG - Starting component Posthog
+2026-05-08 23:51:41,831 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-05-08 23:51:41,832 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-05-08 23:51:41,832 - asyncio - DEBUG - Using selector: SelectSelector
+2026-05-08 23:51:41,843 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-05-08 23:51:41,855 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-05-08 23:51:41,858 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x00000173BFAD69D0>
+2026-05-08 23:51:41,858 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-05-08 23:51:41,858 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-05-08 23:51:41,859 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for search_recipes, refreshing cache
+2026-05-08 23:51:41,862 - root - ERROR - DEBUG: 收到工具 search_recipes 调用, 参数: {'query': '红烧肉 [饮食约束] 饮食目标：减脂 不喜：芦笋 近期状态：肠胃不适 禁忌食材（须避开）：菌类', 'user_id': 'default_user', 'top_k': 15, 'effective_constraint': {'scope_id': 'default_user', 'hard_exclusions': ['菌类'], 'soft_negative_hints': ['芦笋'], 'soft_positive_hints': [], 'dietary_target': '减脂', 'temporal_conditions': ['肠胃不适'], 'summary_snippet': None}}
+2026-05-08 23:51:41,870 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): dashscope.aliyuncs.com:443
+2026-05-08 23:51:43,582 - urllib3.connectionpool - DEBUG - https://dashscope.aliyuncs.com:443 "POST /api/v1/services/embeddings/text-embedding/text-embedding HTTP/1.1" 200 None
+2026-05-08 23:51:43,956 - chromadb - DEBUG - semantic scores: [0.637, 0.67, 0.703]
+2026-05-08 23:51:43,956 - chromadb - DEBUG - keyword scores: []
+2026-05-08 23:51:43,957 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-05-08 23:51:43,959 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x00000173BFAD66D0>
+2026-05-08 23:51:43,959 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-05-08 23:51:43,959 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-05-08 23:51:43,959 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-05-08 23:52:03,048 - mcp_server - INFO - --- MCP Server Starting ---
+2026-05-08 23:52:03,062 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-05-08 23:52:03,153 - chromadb.config - DEBUG - Starting component System
+2026-05-08 23:52:03,153 - chromadb.config - DEBUG - Starting component Posthog
+2026-05-08 23:52:03,474 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-05-08 23:52:03,475 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-05-08 23:52:03,475 - asyncio - DEBUG - Using selector: SelectSelector
+2026-05-08 23:52:03,495 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-05-08 23:52:06,032 - mcp_server - INFO - --- MCP Server Starting ---
+2026-05-08 23:52:06,045 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-05-08 23:52:06,131 - chromadb.config - DEBUG - Starting component System
+2026-05-08 23:52:06,131 - chromadb.config - DEBUG - Starting component Posthog
+2026-05-08 23:52:06,382 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-05-08 23:52:06,382 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-05-08 23:52:06,383 - asyncio - DEBUG - Using selector: SelectSelector
+2026-05-08 23:52:06,394 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-05-08 23:52:06,406 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-05-08 23:52:06,407 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x000002778369F490>
+2026-05-08 23:52:06,407 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-05-08 23:52:06,407 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-05-08 23:52:06,408 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for search_recipes, refreshing cache
+2026-05-08 23:52:06,411 - root - ERROR - DEBUG: 收到工具 search_recipes 调用, 参数: {'query': '推荐一道清淡的菜，顺便帮我看看冰箱里还有没有鸡蛋。 [饮食约束] 饮食目标：减脂 不喜：芦笋 近期状态：口味：清淡饮食；肠胃不适 禁忌食材（须避开）：菌类', 'user_id': 'default_user', 'top_k': 15, 'effective_constraint': {'scope_id': 'default_user', 'hard_exclusions': ['菌类'], 'soft_negative_hints': ['芦笋'], 'soft_positive_hints': [], 'dietary_target': '减脂', 'temporal_conditions': ['口味：清淡饮食', '肠胃不适'], 'summary_snippet': None}}
+2026-05-08 23:52:06,417 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): dashscope.aliyuncs.com:443
+2026-05-08 23:52:08,166 - urllib3.connectionpool - DEBUG - https://dashscope.aliyuncs.com:443 "POST /api/v1/services/embeddings/text-embedding/text-embedding HTTP/1.1" 200 None
+2026-05-08 23:52:08,505 - chromadb - DEBUG - semantic scores: [0.699, 0.699, 0.717]
+2026-05-08 23:52:08,505 - chromadb - DEBUG - keyword scores: []
+2026-05-08 23:52:08,506 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-05-08 23:52:08,508 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x00000277821FB2D0>
+2026-05-08 23:52:08,508 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-05-08 23:52:08,508 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-05-08 23:52:08,508 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-05-08 23:52:26,201 - mcp_server - INFO - --- MCP Server Starting ---
+2026-05-08 23:52:26,214 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-05-08 23:52:26,302 - chromadb.config - DEBUG - Starting component System
+2026-05-08 23:52:26,302 - chromadb.config - DEBUG - Starting component Posthog
+2026-05-08 23:52:26,857 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-05-08 23:52:26,857 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-05-08 23:52:26,857 - asyncio - DEBUG - Using selector: SelectSelector
+2026-05-08 23:52:26,871 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-05-08 23:52:29,290 - mcp_server - INFO - --- MCP Server Starting ---
+2026-05-08 23:52:29,303 - mcp.server.lowlevel.server - DEBUG - Initializing server 'recipe-researcher'
+2026-05-08 23:52:29,390 - chromadb.config - DEBUG - Starting component System
+2026-05-08 23:52:29,390 - chromadb.config - DEBUG - Starting component Posthog
+2026-05-08 23:52:30,187 - mcp.server.lowlevel.server - DEBUG - Registering handler for ListToolsRequest
+2026-05-08 23:52:30,188 - mcp.server.lowlevel.server - DEBUG - Registering handler for CallToolRequest
+2026-05-08 23:52:30,188 - asyncio - DEBUG - Using selector: SelectSelector
+2026-05-08 23:52:30,202 - mcp_server - INFO - MCP Server 管道准备就绪，开始运行...
+2026-05-08 23:52:30,216 - mcp.server.lowlevel.server - DEBUG - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2026-05-08 23:52:30,217 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x00000200AD51F490>
+2026-05-08 23:52:30,218 - mcp.server.lowlevel.server - INFO - Processing request of type CallToolRequest
+2026-05-08 23:52:30,218 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type CallToolRequest
+2026-05-08 23:52:30,218 - mcp.server.lowlevel.server - DEBUG - Tool cache miss for search_recipes, refreshing cache
+2026-05-08 23:52:30,221 - root - ERROR - DEBUG: 收到工具 search_recipes 调用, 参数: {'query': '我想做个番茄炒蛋，但不知道用哪个菜谱好，你帮我从库里挑一下。 [饮食约束] 饮食目标：减脂 不喜：芦笋 近期状态：肠胃不适 禁忌食材（须避开）：菌类', 'user_id': 'default_user', 'top_k': 15, 'effective_constraint': {'scope_id': 'default_user', 'hard_exclusions': ['菌类'], 'soft_negative_hints': ['芦笋'], 'soft_positive_hints': [], 'dietary_target': '减脂', 'temporal_conditions': ['肠胃不适'], 'summary_snippet': None}}
+2026-05-08 23:52:30,230 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): dashscope.aliyuncs.com:443
+2026-05-08 23:52:31,984 - urllib3.connectionpool - DEBUG - https://dashscope.aliyuncs.com:443 "POST /api/v1/services/embeddings/text-embedding/text-embedding HTTP/1.1" 200 None
+2026-05-08 23:52:32,335 - chromadb - DEBUG - semantic scores: [0.622, 0.649, 0.711]
+2026-05-08 23:52:32,335 - chromadb - DEBUG - keyword scores: []
+2026-05-08 23:52:32,336 - mcp.server.lowlevel.server - DEBUG - Response sent
+2026-05-08 23:52:32,339 - mcp.server.lowlevel.server - DEBUG - Received message: <mcp.shared.session.RequestResponder object at 0x00000200AD51F750>
+2026-05-08 23:52:32,339 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+2026-05-08 23:52:32,339 - mcp.server.lowlevel.server - DEBUG - Dispatching request of type ListToolsRequest
+2026-05-08 23:52:32,340 - mcp.server.lowlevel.server - DEBUG - Response sent

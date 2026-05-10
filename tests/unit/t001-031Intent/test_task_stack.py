@@ -1,6 +1,6 @@
 """T-003：task_stack 消费与调度顺序。"""
 
-from src.agent.task_stack import (
+from src.agent.core.task_stack import (
     GENERATOR_REPLY_TASK_ORDER,
     consume_tasks,
     first_present,

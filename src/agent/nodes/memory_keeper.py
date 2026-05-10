@@ -11,7 +11,7 @@ from src.observability.memory_metrics import record_keeper_run
 from ...libs.base.user_profiles import UserProfileManager
 from ...libs.adapters.llm.llm_factory import LLMFactory
 from ...libs.base.settings import Settings
-from ..state import AgentState
+from ..core.state import AgentState
 from .schema import MemoryKeeperOutput
 from pathlib import Path
 
@@ -236,7 +236,7 @@ async def memory_keeper_node(state: AgentState) -> AgentState:
     兼容入口：同步执行一轮 L4（测试或手工调用）。
     主流程已改为 generator 后 schedule_memory_keeper_after_reply（T-012）。
     """
-    from ..effective_constraint import resolve_scope_id
+    from ..memory.effective_constraint import resolve_scope_id
 
     scope_id = resolve_scope_id(state)
     messages = list(state.get("messages") or [])

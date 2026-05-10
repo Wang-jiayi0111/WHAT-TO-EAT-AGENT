@@ -8,8 +8,8 @@ from __future__ import annotations
 
 import logging
 
-from ..libs.base.settings import Settings
-from ..libs.base.user_profiles import UserProfileManager
+from ...libs.base.settings import Settings
+from ...libs.base.user_profiles import UserProfileManager
 
 logger = logging.getLogger(__name__)
 

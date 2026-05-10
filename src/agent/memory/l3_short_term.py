@@ -8,9 +8,9 @@ from typing import Any, Dict, List, Mapping, Sequence, Tuple
 
 from langchain_core.messages import BaseMessage, HumanMessage
 
-from ..libs.base.settings import Settings
-from .state import AgentState
-from .state_accessors import get_runtime_bundle
+from ...libs.base.settings import Settings
+from ..core.state import AgentState
+from ..core.state_accessors import get_runtime_bundle
 
 # 规格 §4.3 示例关键词；无配置时回退
 _DEFAULT_RULES: Tuple[Tuple[Tuple[str, ...], str], ...] = (

@@ -1,5 +1,5 @@
 """
-槽位归一与必填校验（规格 §11.2、§11.5；T-031）。
+槽位归一与必填校验（规格 §12.2、§12.5；T-031）。
 
 将 LLM `entities` 与可选 `slots` 收敛到全局槽位命名空间，并计算 `missing_slots`、
 按缺口裁剪意图后再展开 task_stack。
@@ -9,10 +9,10 @@ from __future__ import annotations
 import re
 from typing import Any, Dict, List, Set, Tuple
 
-from .state import AgentState
-from .state_accessors import get_runtime_bundle
+from ..core.state import AgentState
+from ..core.state_accessors import get_runtime_bundle
 
-# §11.2：LLM `entities` 归一到 `slots` 时复制的全局键（与 `intent_prompt.md` 对齐；T-029 验收引用）
+# §12.2：LLM `entities` 归一到 `slots` 时复制的全局键（与 `intent_prompt.md` 对齐；T-029 验收引用）
 ENTITY_SLOT_COPY_KEYS: Tuple[str, ...] = (
     "recipe_query",
     "recipe_name",
@@ -32,7 +32,7 @@ ENTITY_SLOT_COPY_KEYS: Tuple[str, ...] = (
 )
 GLOBAL_SLOT_ENTITY_KEYS = frozenset(ENTITY_SLOT_COPY_KEYS)
 
-# §11.5 OR 组未满足时的代表缺失码（用于 missing_slots 与裁剪映射）
+# §12.5 OR 组未满足时的代表缺失码（用于 missing_slots 与裁剪映射）
 MISSING_RECIPE_SEARCH_ANCHOR = "recipe_search_anchor"
 MISSING_SHOPPING_LIST_CONTEXT = "shopping_list_context"
 MISSING_RECIPE_ADOPTION_CONTEXT = "recipe_adoption_context"
@@ -76,7 +76,7 @@ def merge_slots(base: Dict[str, Any], override: Dict[str, Any]) -> Dict[str, Any
 def normalize_legacy_entities_to_slots(
     entities: Dict[str, Any], intents: List[str]
 ) -> Dict[str, Any]:
-    """把历史 entities 形状收敛到 §11.2 键空间。"""
+    """把历史 entities 形状收敛到 §12.2 键空间。"""
     slots: Dict[str, Any] = {}
     if not entities:
         return slots
@@ -132,7 +132,7 @@ def normalize_legacy_entities_to_slots(
 def compute_missing_slots(
     intents: List[str], slots: Dict[str, Any], state: AgentState
 ) -> List[str]:
-    """§11.5 最小必填集合；返回稳定排序后的缺失码列表。"""
+    """§12.5 最小必填集合；返回稳定排序后的缺失码列表。"""
     missing: Set[str] = set()
     lb = get_runtime_bundle(state)
 

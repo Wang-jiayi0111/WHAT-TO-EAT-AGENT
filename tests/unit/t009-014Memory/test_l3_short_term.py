@@ -5,7 +5,7 @@ from __future__ import annotations
 import pytest
 from langchain_core.messages import AIMessage, HumanMessage
 
-from src.agent.l3_short_term import (
+from src.agent.memory.l3_short_term import (
     augment_query_for_search,
     build_l3_memory_patch,
     extract_short_term_lines,

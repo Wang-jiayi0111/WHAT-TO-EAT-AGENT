@@ -15,9 +15,9 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from src.agent.state import empty_agent_slices
-from src.agent.state_sync import runtime_bundle_to_slice_patches
-from src.agent.error_code_user_messages import (
+from src.agent.core.state import empty_agent_slices
+from src.agent.core.state_sync import runtime_bundle_to_slice_patches
+from src.agent.responses.error_code_user_messages import (
     message_gap_basis_mismatch,
     message_gap_cache_miss,
     message_commit_recipe_mismatch,

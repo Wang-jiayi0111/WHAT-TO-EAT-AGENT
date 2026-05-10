@@ -30,8 +30,8 @@ from typing import Literal
 from langgraph.graph import StateGraph, END
 from langgraph.checkpoint.memory import MemorySaver
 
-from .state import AgentState, empty_agent_slices
-from .state_accessors import get_runtime_bundle
+from .core.state import AgentState, empty_agent_slices
+from .core.state_accessors import get_runtime_bundle
 from .nodes.router import router_node
 from .nodes.generator import generator_node
 from .nodes.researcher import researcher_node
@@ -276,13 +276,13 @@ async def run_turn(
 ) -> str:
     """
     执行单轮对话。
- 
+
     Args:
         agent:        create_agent() 返回的图实例
         user_message: 用户输入
         thread_id:    对话线程 ID（同一 thread 共享 checkpointer 记忆）
         user_id:      用户 ID
- 
+
     Returns:
         Agent 最新回复的文本
     """
@@ -292,7 +292,6 @@ async def run_turn(
 
     config = {"configurable": {"thread_id": thread_id}}
 
-    # 读取已有 state（多轮对话复用）
     try:
         current = await agent.aget_state(config)
         existing_messages = current.values.get("messages", [])
@@ -304,13 +303,13 @@ async def run_turn(
         "messages": [HumanMessage(content=user_message)],
         "active_user_id": user_id,
         "conversation_summary": current.values.get("conversation_summary", "")
-            if existing_messages else "",
+        if existing_messages
+        else "",
     }
 
     with bind_invocation_session(thread_id):
-        result = await agent.ainvoke(input_state, config=config)
- 
-    # 取最后一条 AI 消息作为回复
+        result = await agent.ainvoke(input_state, config)
+
     messages = result.get("messages", [])
     for msg in reversed(messages):
         if hasattr(msg, "type") and msg.type == "ai":

@@ -21,13 +21,13 @@ from unittest.mock import MagicMock, patch
 import pytest
 from langchain_core.messages import HumanMessage
 
-from src.agent.effective_constraint import (
+from src.agent.memory.effective_constraint import (
     augment_search_query,
     build_effective_constraint,
     filter_recipes_by_hard_exclusions,
 )
-from src.agent.l3_short_term import augment_query_for_search, build_l3_memory_patch
-from src.agent.short_term_ttl import run_short_term_ttl_cleanup
+from src.agent.memory.l3_short_term import augment_query_for_search, build_l3_memory_patch
+from src.agent.memory.short_term_ttl import run_short_term_ttl_cleanup
 from src.libs.base.user_profiles import UserProfileManager
 from tests.conftest import make_minimal_agent_state
 
@@ -103,7 +103,7 @@ def test_m2_T013_run_short_term_ttl_cleanup_purges_expired(tmp_path: Path):
     mock_settings.get_user_profiles_db_path.return_value = str(db)
     mock_settings.get_scope_id.return_value = scope
 
-    with patch("src.agent.short_term_ttl.Settings", return_value=mock_settings):
+    with patch("src.agent.memory.short_term_ttl.Settings", return_value=mock_settings):
         n = run_short_term_ttl_cleanup(scope)
 
     assert n >= 1

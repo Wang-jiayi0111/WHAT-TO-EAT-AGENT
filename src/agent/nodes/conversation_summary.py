@@ -17,7 +17,7 @@ from langchain_core.messages import BaseMessage, HumanMessage, AIMessage, System
 
 from ...libs.adapters.llm.llm_factory import LLMFactory
 from ...libs.base.settings import Settings
-from ..state import AgentState
+from ..core.state import AgentState
 from src.observability.memory_metrics import record_l2_turn
 
 logger = logging.getLogger(__name__)

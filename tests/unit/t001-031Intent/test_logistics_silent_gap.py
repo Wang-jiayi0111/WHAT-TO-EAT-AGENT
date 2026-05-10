@@ -6,8 +6,8 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from src.agent.state import empty_agent_slices
-from src.agent.state_sync import runtime_bundle_to_slice_patches
+from src.agent.core.state import empty_agent_slices
+from src.agent.core.state_sync import runtime_bundle_to_slice_patches
 
 from src.agent.nodes.logistics import (
     _inventory_fingerprint,

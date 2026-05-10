@@ -9,13 +9,13 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from langchain_core.messages import HumanMessage
 
-from src.agent.effective_constraint import (
+from src.agent.memory.effective_constraint import (
     effective_constraint_has_retryable_soft_signals,
     relaxed_effective_constraint_for_search_retry,
 )
 from src.agent.nodes.researcher import researcher_node
 from src.agent.nodes.schema import Ingredient, StructuredRecipe
-from src.agent.state_accessors import get_runtime_bundle
+from src.agent.core.state_accessors import get_runtime_bundle
 from tests.conftest import make_logistics_buffer, make_minimal_agent_state
 
 

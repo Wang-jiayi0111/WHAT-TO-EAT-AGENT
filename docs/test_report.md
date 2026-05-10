@@ -22,7 +22,7 @@
 | T-007 | 多意图 FR-50 排序（`sort_intents_by_fr50`） | ✅ 通过 | — | — | 2026-05-06 |
 | T-008 | 次意图合并答复（`generator` FR-52） | ✅ 通过 | — | — | 2026-05-06 |
 | T-030 | 方案 A 七切片 AgentState（§1.2.0～1.2.1） | ✅ 通过 | — | — | 2026-05-06（[TR-011]） |
-| T-031 | 槽位归一、`missing_slots`、`apply_slot_guards`（§11） | ✅ 通过 | — | — | 2026-05-06（[TR-012]） |
+| T-031 | 槽位归一、`missing_slots`、`apply_slot_guards`（§12） | ✅ 通过 | — | — | 2026-05-06（[TR-012]） |
 | INT-LLM | 集成：真实 LLM 意图识别（`IntentClassifier` 端到端） | ✅ 通过 | — | — | 2026-05-06（[TR-013]） |
 | T-009 | L2 摘要与业务清场解耦（§4.2） | ✅ 通过 | — | — | 2026-05-06（[TR-014]） |
 | T-010 | L3 当轮约束 + 检索 query 增强（FR-17 / §4.3） | ✅ 通过 | — | — | 2026-05-06（[TR-015]） |
@@ -50,7 +50,8 @@
 | T-026 | 全链路降级 FR-61；`degradation_messages.py`、`generator`、`researcher`；单测 `tests/unit/test_t026_degradation_fr61.py` | ✅ 通过 | — | — | 2026-05-07（[TR-039]） |
 | T-027 | 配置单源与启动自检（IR-04 / §8）；`Settings`、`config_startup_check`、`main.py`；单测 `tests/unit/test_t027_config_startup.py` | ✅ 通过 | — | — | 2026-05-07（[TR-041]） |
 | T-028 | 可观测 NFR-06/07；`observability/`、`wrap_agent_node`、记忆指标；单测 `tests/unit/test_t028_observability.py` | ✅ 通过 | — | — | 2026-05-07（[TR-042]） |
-| T-029 | 横切验收 smoke（S-01～S-08、§2 MCP、§11.2 槽位）；`tests/smoke/test_t029_acceptance_smoke.py`，标记 `acceptance_smoke` | ✅ 通过 | — | — | 2026-05-07（[TR-043]） |
+| T-029 | 横切验收 smoke（S-01～S-08、§2 MCP、§12.2 槽位）；`tests/smoke/test_t029_acceptance_smoke.py`，标记 `acceptance_smoke` | ✅ 通过 | — | — | 2026-05-07（[TR-043]） |
+| T-041 | M7 E2E 执行器：`eval/runner` 用例加载与过滤、`state_capture` 快照与 `mcp_evidence`；单测 `tests/unit/test_t041_e2e_runner.py`；全量批跑 `python -m eval.run_e2e` | ✅ 通过（契约） | — | — | 2026-05-08（[TR-049]） |
 
 ---
 
@@ -83,7 +84,7 @@
 | 用例 | 描述 | 对应场景 / 依据 | 结果 |
 |------|------|-----------------|------|
 | TC-001 | 夹具最小状态：`task_stack` 为空、`recipe_candidates` 为空 | T-001 夹具语义 | ✅ 通过 |
-| TC-002 | `route_by_task` / `route_after_research` / `route_after_clarify` / `route_after_generator` 与快照 JSON 一致 | NFR-05；规格 §10 编排目录 | ✅ 通过 |
+| TC-002 | `route_by_task` / `route_after_research` / `route_after_clarify` / `route_after_generator` 与快照 JSON 一致 | NFR-05；规格 §11 编排目录 | ✅ 通过 |
 | TC-003 | `TASK_INV_CHECK` 栈顶让位于 `TASK_SEARCH`（覆盖路由优先级） | 规格 §1.3 / 工作流边 | ✅ 通过 |
 
 ### 禁止行为与基线合规（通用检查）
@@ -556,9 +557,9 @@ T-030 阶段 `logistics_manager_node` 返回 `recipe_state`、`inventory_state` 
 
 ---
 
-## [TR-012] T-031 功能验证（槽位 §11.2～11.5 与路由守卫）
+## [TR-012] T-031 功能验证（槽位 §12.2～12.5 与路由守卫）
 
-**验证任务**：T-031——`slot_filling.py` 归一与 `compute_missing_slots`；`router.apply_slot_guards_to_task_stack`；`IntentResult.slots` / `missing_slots` 与 `intent_prompt.md` 契约（**规格 §11**；`docs/dev_log.md` [DEV-010]）。
+**验证任务**：T-031——`slot_filling.py` 归一与 `compute_missing_slots`；`router.apply_slot_guards_to_task_stack`；`IntentResult.slots` / `missing_slots` 与 `intent_prompt.md` 契约（**规格 §12**；`docs/dev_log.md` [DEV-010]）。
 
 **验证时间**：2026-05-06
 
@@ -582,18 +583,18 @@ T-030 阶段 `logistics_manager_node` 返回 `recipe_state`、`inventory_state` 
 
 | 用例 | 描述 | 对应规格 / 任务 | 结果 |
 |------|------|-----------------|------|
-| TC-T031-01 | `recipe_search` 且无 `recipe_query`/`recipe_name`/食材 → `missing_slots` 含 `recipe_search_anchor` | §11.5 | ✅ |
-| TC-T031-02 | 有上述缺失时 `apply_slot_guards_to_task_stack` 去掉 `TASK_SEARCH`、队首插入 `TASK_CLARIFY`，保留未阻塞意图任务 | §11.5、裁剪 | ✅ |
+| TC-T031-01 | `recipe_search` 且无 `recipe_query`/`recipe_name`/食材 → `missing_slots` 含 `recipe_search_anchor` | §12.5 | ✅ |
+| TC-T031-02 | 有上述缺失时 `apply_slot_guards_to_task_stack` 去掉 `TASK_SEARCH`、队首插入 `TASK_CLARIFY`，保留未阻塞意图任务 | §12.5、裁剪 | ✅ |
 | TC-T031-03 | 同轮 `recipe_search`+`shopping_list` 且仅有 `recipe_name` 锚点、无 **R** → 不追加 `shopping_list_context` | DEV-010 豁免语义 | ✅ |
-| TC-T031-04 | `entities.amounts` → `slots.restock_items` 行结构 | §11.2 | ✅ |
+| TC-T031-04 | `entities.amounts` → `slots.restock_items` 行结构 | §12.2 | ✅ |
 | TC-T031-05 | `merge_slots` 对值为 `None` 的键不覆盖基槽 | — | ✅ |
-| TC-T031-06 | `IntentClassifier.INTENT_TASK_MAPPING` 的意图键 ⊆ `IntentResult.intents` 的 Literal 集合 | §11.3～11.4 | ✅ |
+| TC-T031-06 | `IntentClassifier.INTENT_TASK_MAPPING` 的意图键 ⊆ `IntentResult.intents` 的 Literal 集合 | §12.3～12.4 | ✅ |
 
 ### 文档与 Prompt 抽查
 
 | 检查项 | 结果 |
 |--------|------|
-| `intent_prompt.md` 含 `slots` / `missing_slots` 与 §11.2 说明 | ✅ |
+| `intent_prompt.md` 含 `slots` / `missing_slots` 与 §12.2 说明 | ✅ |
 | 规范码 `recipe_search_anchor` 与常量 `MISSING_RECIPE_SEARCH_ANCHOR` 一致 | ✅ |
 
 ### 禁止行为与基线合规
@@ -608,7 +609,7 @@ T-030 阶段 `logistics_manager_node` 返回 `recipe_state`、`inventory_state` 
 
 ### 遗留与建议（非阻塞）
 
-- 建议在后续迭代为 `slot_filling.py` 增加 **`tests/unit/test_slot_filling.py`**，固化 §11.5 边界（`inventory_commit`、`recipe_adopt`、`profile_sync` 等），减少对手工脚本的依赖。
+- 建议在后续迭代为 `slot_filling.py` 增加 **`tests/unit/test_slot_filling.py`**，固化 §12.5 边界（`inventory_commit`、`recipe_adopt`、`profile_sync` 等），减少对手工脚本的依赖。
 
 ### 开发计划同步
 
@@ -666,7 +667,7 @@ python -m pytest tests/integration/test_intent_recognition_llm.py -v --tb=short
 | 需求或任务 | 本集成项覆盖说明 |
 |------------|------------------|
 | FR-01 | `primary_intent`、`intents`、`confidence`、`needs_clarification` 等结构化输出契约（脚本内 `assert_structural_contract`） |
-| 规格 §11、`intent_prompt.md` | 意图标签合法性、`slots`/`missing_slots` 类型、§11.5 与澄清路径（`ex07_*`） |
+| 规格 §12、`intent_prompt.md` | 意图标签合法性、`slots`/`missing_slots` 类型、§12.5 与澄清路径（`ex07_*`） |
 | FR-50（多意图） | 模型输出多意图后由路由排序；用例 `ex07_*`、`multi_add_search_list` 覆盖多意图话术 |
 | T-031 | 路由侧合并规则缺失与 `task_stack` 守卫后的可执行栈（间接随整条链路验证） |
 
@@ -1660,7 +1661,7 @@ python -m pytest tests -q --tb=no
 
 ## [TR-036] T-024 功能验证（购物清单 overlay 与 `list_action` / FR-41、FR-43）
 
-**验证任务**：T-024 / [DEV-029]——**`_merge_shopping_gap_overlay`**（**`pending_manual`** + **`shopping_list`** 底表，顺序 overlay **`remove` / `adjust_note` / `add`**）；**`_apply_list_action_to_overlay_updates`**（**`refresh_gap`** 清空 **`shopping_list_overlay`** 并失效 **`gap_basis`**；**`mark_bought`** + **`mark_bought_items`** → **`remove`**；**`edit_overlay`** + **`list_edit_ops`**）；**`_coerce_list_edit_ops`**；静默路径下 **`mark_bought`** 与缓存交付叠加；**`GeneratorNode.handle_gap_calc`** overlay 非空时的手动调整提示（**§7.4**；**§11.2**）。
+**验证任务**：T-024 / [DEV-029]——**`_merge_shopping_gap_overlay`**（**`pending_manual`** + **`shopping_list`** 底表，顺序 overlay **`remove` / `adjust_note` / `add`**）；**`_apply_list_action_to_overlay_updates`**（**`refresh_gap`** 清空 **`shopping_list_overlay`** 并失效 **`gap_basis`**；**`mark_bought`** + **`mark_bought_items`** → **`remove`**；**`edit_overlay`** + **`list_edit_ops`**）；**`_coerce_list_edit_ops`**；静默路径下 **`mark_bought`** 与缓存交付叠加；**`GeneratorNode.handle_gap_calc`** overlay 非空时的手动调整提示（**§7.4**；**§12.2**）。
 
 **验证时间**：2026-05-07
 
@@ -1965,9 +1966,9 @@ python -m pytest tests -q --tb=no
 
 ---
 
-## [TR-043] T-029 功能验证（横切验收 smoke / NFR-05、§2、§11）
+## [TR-043] T-029 功能验证（横切验收 smoke / NFR-05、§2、§12）
 
-**验证任务**：T-029 / [DEV-035]——**规格 §2**：`mcp_validation_error`、`is_mcp_error_response`、`normalize_search_recipe_item`、`normalize_search_recipes_success_body`、**`SearchRecipesService`** 空 query；**§11.2**：**`GLOBAL_SLOT_ENTITY_KEYS`**（15 键）、**`normalize_legacy_entities_to_slots`**（**`mark_bought`**）、**`merge_slots`**、**`compute_missing_slots`**（**`recipe_search`** 锚点）；**S-01～S-08**：与 **`docs/开发计划.md` §4** 对齐的**证据文件**存在性 **`parametrize`**。
+**验证任务**：T-029 / [DEV-035]——**规格 §2**：`mcp_validation_error`、`is_mcp_error_response`、`normalize_search_recipe_item`、`normalize_search_recipes_success_body`、**`SearchRecipesService`** 空 query；**§12.2**：**`GLOBAL_SLOT_ENTITY_KEYS`**（15 键）、**`normalize_legacy_entities_to_slots`**（**`mark_bought`**）、**`merge_slots`**、**`compute_missing_slots`**（**`recipe_search`** 锚点）；**S-01～S-08**：与 **`docs/开发计划.md` §4** 对齐的**证据文件**存在性 **`parametrize`**。
 
 **验证时间**：2026-05-07
 
@@ -1989,12 +1990,53 @@ python -m pytest tests -q --tb=no
 | 分组 | 用例数 | 说明 |
 |------|--------|------|
 | §2 MCP | 5 | 包络、归一、空 query |
-| §11.2 槽位 | 4 | 全局键、归一、合并、缺失锚点 |
+| §12.2 槽位 | 4 | 全局键、归一、合并、缺失锚点 |
 | S-01～S-08 | 8 | 证据文件追溯 |
 
 ### 开发计划同步
 
 已将 `docs/开发计划.md` §3：**T-029**「测试状态」**待测试** → **已完成**。
+
+---
+
+## [TR-049] T-041 功能验证（E2E 执行器重构后 / §5.0 步骤 2）
+
+**验证任务**：T-041（重新实现后）——**`eval/runner.py`**：`default_cases_dir`、`load_case_files`（跳过 `_` 前缀）、`load_cases_from_file`（须为 JSON 数组）、**`_case_matches_filter`**；**`eval/state_capture.py`**：**`extract_assistant_reply`**（`final_response` 优先于末条 AI）、**`build_e2e_snapshot`** 与 **`mcp_evidence`**（`expert_payloads.search_results` → `search_recipes`；**`recipe_detail`** → **`get_recipe_source` + `parse_recipe_content`**）；**`RunManifestEntry`** 可 JSON 序列化。说明：本批为**离线契约单测**，**不**替代 **`python -m eval.run_e2e`** 全量 Agent 批跑（开发计划约定 pytest 非 E2E 主驱动）。
+
+**验证时间**：2026-05-08
+
+**最终结论**：✅ 通过（契约层）
+
+**测试文档与用例**：`tests/unit/test_t041_e2e_runner.py`
+
+### 测试过程信息
+
+```text
+python -m pytest tests/unit/test_t041_e2e_runner.py -v --tb=short
+```
+
+**结果（本轮）**：**10 passed**。
+
+### 测试用例执行情况
+
+| 用例 | 描述 | 结果 |
+|------|------|------|
+| TC-001 | `eval/cases` 目录存在 | ✅ |
+| TC-002 | `load_case_files` 跳过 `_` 前缀文件 | ✅ |
+| TC-003 | `load_cases_from_file` 接受数组 | ✅ |
+| TC-004 | 非数组根 → `ValueError` | ✅ |
+| TC-005 | `--case-filter` 语义（子串匹配） | ✅ |
+| TC-006～007 | `extract_assistant_reply` | ✅ |
+| TC-008～009 | `build_e2e_snapshot` / `mcp_evidence` | ✅ |
+| TC-010 | `RunManifestEntry.__dict__` 可 `json.dumps` | ✅ |
+
+### 缺陷列表
+
+- 本次验证未登记新 BUG。
+
+### 开发计划同步
+
+已将 `docs/开发计划.md` §3：**T-041**「测试状态」**不适用** → **已完成**（备注区分契约单测与 **`python -m eval.run_e2e`** 全量批跑）。
 
 ---
 

@@ -1,0 +1,129 @@
+[
+  {
+    "case_id": "edge_case_037",
+    "scenario_category": "edge_case",
+    "difficulty": "easy",
+    "description": "弱相关寒暄不接业务任务栈",
+    "user_turns": [
+      { "turn": 1, "input": "今天下班好累啊随便聊聊吃啥能让我开心点" }
+    ],
+    "expected": {
+      "primary_intent": "general_chat",
+      "needs_clarification": false,
+      "key_slots": {},
+      "golden_recipe_ids": [],
+      "output_contains": ["吃"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": []
+  },
+  {
+    "case_id": "edge_case_038",
+    "scenario_category": "edge_case",
+    "difficulty": "easy",
+    "description": "与膳食无关的闲聊分流",
+    "user_turns": [
+      { "turn": 1, "input": "你觉得周末先去爬山还是先做家务更解压" }
+    ],
+    "expected": {
+      "primary_intent": "general_chat",
+      "needs_clarification": false,
+      "key_slots": {},
+      "golden_recipe_ids": [],
+      "output_contains": ["解压", "周末"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": []
+  },
+  {
+    "case_id": "nutrition_query_039",
+    "scenario_category": "nutrition_query",
+    "difficulty": "medium",
+    "description": "聊天口吻但夹杂轻微膳食话题边界",
+    "user_turns": [
+      { "turn": 1, "input": "我朋友都说我做饭太咸但我吃着刚好这算口味重吗聊聊呗" }
+    ],
+    "expected": {
+      "primary_intent": "general_chat",
+      "needs_clarification": false,
+      "key_slots": {},
+      "golden_recipe_ids": [],
+      "output_contains": ["盐", "口味"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": ["S-02"]
+  },
+  {
+    "case_id": "multi_turn_040",
+    "scenario_category": "multi_turn",
+    "difficulty": "medium",
+    "description": "多轮闲聊延续同一话题不求菜谱",
+    "user_turns": [
+      { "turn": 1, "input": "我儿子最近挑食我都愁死了" },
+      { "turn": 2, "input": "你说我是不是太焦虑了这种事常见吗" }
+    ],
+    "expected": {
+      "primary_intent": "general_chat",
+      "needs_clarification": false,
+      "key_slots": {},
+      "golden_recipe_ids": [],
+      "output_contains": ["挑食"],
+      "output_excludes": [],
+      "context_preserved": ["孩子挑食", "焦虑"],
+      "clarification_triggered": false
+    },
+    "eval_method": "human",
+    "linked_scenarios": ["S-05"]
+  },
+  {
+    "case_id": "edge_case_041",
+    "scenario_category": "edge_case",
+    "difficulty": "hard",
+    "description": "讽刺挖苦类表述仍应保持礼貌不接恶意指令",
+    "user_turns": [
+      { "turn": 1, "input": "你这个助手要是连泡面都不会推荐可以下岗了哈哈" }
+    ],
+    "expected": {
+      "primary_intent": "general_chat",
+      "needs_clarification": false,
+      "key_slots": {},
+      "golden_recipe_ids": [],
+      "output_contains": [],
+      "output_excludes": ["笨蛋", "白痴"],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "human",
+    "linked_scenarios": []
+  },
+  {
+    "case_id": "ambiguity_042",
+    "scenario_category": "ambiguity",
+    "difficulty": "hard",
+    "description": "空洞开场引导澄清但不误入检索写库",
+    "user_turns": [
+      { "turn": 1, "input": "那个……额……我就是想说点啥吃的吧你懂的" }
+    ],
+    "expected": {
+      "primary_intent": "general_chat",
+      "needs_clarification": true,
+      "key_slots": {},
+      "golden_recipe_ids": [],
+      "output_contains": ["想"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": true
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": ["S-06"]
+  }
+]

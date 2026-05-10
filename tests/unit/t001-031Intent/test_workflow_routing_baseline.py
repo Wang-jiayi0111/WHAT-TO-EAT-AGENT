@@ -18,7 +18,7 @@ from src.agent.workflow import (
     route_after_research,
     route_by_task,
 )
-from src.agent.state_accessors import get_runtime_bundle
+from src.agent.core.state_accessors import get_runtime_bundle
 
 from tests.conftest import make_logistics_buffer, make_minimal_agent_state
 

@@ -1,0 +1,140 @@
+[
+  {
+    "case_id": "inventory_013",
+    "scenario_category": "inventory",
+    "difficulty": "easy",
+    "description": "结构化补货：名称+数量+单位明确",
+    "user_turns": [
+      { "turn": 1, "input": "超市买了牛奶1升帮我记进库存" }
+    ],
+    "expected": {
+      "primary_intent": "inventory_add",
+      "needs_clarification": false,
+      "key_slots": {
+        "restock_items": [{ "name": "牛奶", "amount": 1, "unit": "L", "merge_mode": "add" }]
+      },
+      "golden_recipe_ids": [],
+      "output_contains": ["牛奶"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "auto",
+    "linked_scenarios": ["S-03", "S-04"]
+  },
+  {
+    "case_id": "inventory_014",
+    "scenario_category": "inventory",
+    "difficulty": "easy",
+    "description": "散装称重口语转化为 restock_items",
+    "user_turns": [
+      { "turn": 1, "input": "菜场买了三百克五花肉入库" }
+    ],
+    "expected": {
+      "primary_intent": "inventory_add",
+      "needs_clarification": false,
+      "key_slots": {
+        "restock_items": [{ "name": "五花肉", "amount": 300, "unit": "g", "merge_mode": "add" }]
+      },
+      "golden_recipe_ids": [],
+      "output_contains": ["五花肉"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "auto",
+    "linked_scenarios": ["S-03", "S-04"]
+  },
+  {
+    "case_id": "inventory_015",
+    "scenario_category": "inventory",
+    "difficulty": "medium",
+    "description": "多件批量补货解析",
+    "user_turns": [
+      { "turn": 1, "input": "帮我加上：生抽一瓶500毫升，陈醋一瓶420毫升" }
+    ],
+    "expected": {
+      "primary_intent": "inventory_add",
+      "needs_clarification": false,
+      "key_slots": {
+        "restock_items": [
+          { "name": "生抽", "amount": 500, "unit": "ml", "merge_mode": "add" },
+          { "name": "陈醋", "amount": 420, "unit": "ml", "merge_mode": "add" }
+        ]
+      },
+      "golden_recipe_ids": [],
+      "output_contains": ["生抽"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": ["S-03", "S-04"]
+  },
+  {
+    "case_id": "inventory_016",
+    "scenario_category": "inventory",
+    "difficulty": "medium",
+    "description": "缺少数量单位时应触发澄清或追问",
+    "user_turns": [
+      { "turn": 1, "input": "今天买了一袋大米帮我入库" }
+    ],
+    "expected": {
+      "primary_intent": "inventory_add",
+      "needs_clarification": true,
+      "key_slots": { "restock_items": [] },
+      "golden_recipe_ids": [],
+      "output_contains": ["多少"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": true
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": ["S-03", "S-04"]
+  },
+  {
+    "case_id": "multi_turn_017",
+    "scenario_category": "multi_turn",
+    "difficulty": "hard",
+    "description": "前轮只说食材后轮补充数量完成补货意图",
+    "user_turns": [
+      { "turn": 1, "input": "刚才盒马下单了一盒蓝莓" },
+      { "turn": 2, "input": "那一盒是125克你帮我记进库存吧" }
+    ],
+    "expected": {
+      "primary_intent": "inventory_add",
+      "needs_clarification": false,
+      "key_slots": {
+        "restock_items": [{ "name": "蓝莓", "amount": 125, "unit": "g", "merge_mode": "add" }]
+      },
+      "golden_recipe_ids": [],
+      "output_contains": ["蓝莓"],
+      "output_excludes": [],
+      "context_preserved": ["蓝莓", "盒马下单"],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": ["S-05"]
+  },
+  {
+    "case_id": "edge_case_018",
+    "scenario_category": "edge_case",
+    "difficulty": "hard",
+    "description": "混合口语单位（斤两）需规范化解析",
+    "user_turns": [
+      { "turn": 1, "input": "老家带了半扇排骨大概两斤多点你也帮我估一下入库" }
+    ],
+    "expected": {
+      "primary_intent": "inventory_add",
+      "needs_clarification": true,
+      "key_slots": { "restock_items": [{ "name": "排骨", "amount": 1000, "unit": "g", "merge_mode": "add" }] },
+      "golden_recipe_ids": [],
+      "output_contains": ["排骨"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": true
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": []
+  }
+]

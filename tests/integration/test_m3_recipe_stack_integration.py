@@ -14,15 +14,15 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from langchain_core.messages import HumanMessage
 
-from src.agent.effective_constraint import (
+from src.agent.memory.effective_constraint import (
     augment_search_query,
     build_effective_constraint,
 )
 from src.agent.nodes.clarify_resolver import clarify_resolver_node
 from src.agent.nodes.researcher import researcher_node
 from src.agent.nodes.schema import Ingredient, StructuredRecipe
-from src.agent.recipe_ambiguity import build_ambiguity_candidates
-from src.agent.state_accessors import get_runtime_bundle
+from src.agent.recipe.ambiguity import build_ambiguity_candidates
+from src.agent.core.state_accessors import get_runtime_bundle
 from src.mcp.protocol import (
     is_mcp_error_response,
     normalize_search_recipes_success_body,

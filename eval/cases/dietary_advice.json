@@ -1,0 +1,129 @@
+[
+  {
+    "case_id": "nutrition_query_019",
+    "scenario_category": "nutrition_query",
+    "difficulty": "easy",
+    "description": "单一营养概念问答，不强制触发菜谱检索",
+    "user_turns": [
+      { "turn": 1, "input": "糖尿病患者喝汤要不要撇浮油，有什么原则" }
+    ],
+    "expected": {
+      "primary_intent": "dietary_advice",
+      "needs_clarification": false,
+      "key_slots": { "diet_topic": "糖尿病饮食油脂控制" },
+      "golden_recipe_ids": [],
+      "output_contains": ["油", "血糖"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": ["S-02"]
+  },
+  {
+    "case_id": "nutrition_query_020",
+    "scenario_category": "nutrition_query",
+    "difficulty": "easy",
+    "description": "食材与症状关联的膳食建议",
+    "user_turns": [
+      { "turn": 1, "input": "感冒了嗓子疼饮食上要注意什么能吃点啥缓解" }
+    ],
+    "expected": {
+      "primary_intent": "dietary_advice",
+      "needs_clarification": false,
+      "key_slots": { "diet_topic": "感冒咽痛饮食", "ingredients": [] },
+      "golden_recipe_ids": [],
+      "output_contains": ["清淡"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": ["S-02"]
+  },
+  {
+    "case_id": "edge_case_021",
+    "scenario_category": "edge_case",
+    "difficulty": "medium",
+    "description": "辛辣刺激 vs 胃病矛盾的冲突提示（不应武断单一结论）",
+    "user_turns": [
+      { "turn": 1, "input": "我有胃溃疡但又特别想吃重庆火锅级别的辣，你给个权威说法行不行" }
+    ],
+    "expected": {
+      "primary_intent": "dietary_advice",
+      "needs_clarification": false,
+      "key_slots": { "diet_topic": "胃病与辛辣饮食冲突" },
+      "golden_recipe_ids": [],
+      "output_contains": ["胃", "辣"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": []
+  },
+  {
+    "case_id": "nutrition_query_022",
+    "scenario_category": "nutrition_query",
+    "difficulty": "medium",
+    "description": "减脂宏量营养素分配咨询",
+    "user_turns": [
+      { "turn": 1, "input": "我每天健身一小时想减脂，碳水蛋白脂肪大概怎么分配比较现实" }
+    ],
+    "expected": {
+      "primary_intent": "dietary_advice",
+      "needs_clarification": false,
+      "key_slots": { "diet_topic": "减脂宏量营养素分配" },
+      "golden_recipe_ids": [],
+      "output_contains": ["蛋白质", "碳水"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": ["S-02"]
+  },
+  {
+    "case_id": "multi_turn_023",
+    "scenario_category": "multi_turn",
+    "difficulty": "hard",
+    "description": "前轮声明过敏后轮追问交叉食材风险",
+    "user_turns": [
+      { "turn": 1, "input": "我对花生严重过敏，帮我记住" },
+      { "turn": 2, "input": "那酱油和调和油里会不会也有花生成分我需要担心吗" }
+    ],
+    "expected": {
+      "primary_intent": "dietary_advice",
+      "needs_clarification": false,
+      "key_slots": { "diet_topic": "加工调味品过敏原交叉", "ingredients": ["酱油", "调和油"] },
+      "golden_recipe_ids": [],
+      "output_contains": ["花生", "标签"],
+      "output_excludes": [],
+      "context_preserved": ["花生过敏"],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": ["S-05"]
+  },
+  {
+    "case_id": "edge_case_024",
+    "scenario_category": "edge_case",
+    "difficulty": "hard",
+    "description": "医嘱药物与西柚相互作用的营养安全问答",
+    "user_turns": [
+      { "turn": 1, "input": "我吃他汀类降脂药，听说不能吃西柚是真的吗具体机制是啥" }
+    ],
+    "expected": {
+      "primary_intent": "dietary_advice",
+      "needs_clarification": false,
+      "key_slots": { "diet_topic": "他汀与西柚相互作用" },
+      "golden_recipe_ids": [],
+      "output_contains": ["西柚", "药物"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": []
+  }
+]

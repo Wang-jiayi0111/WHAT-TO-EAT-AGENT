@@ -1,6 +1,6 @@
 """T-007：FR-50 多意图排序。"""
 
-from src.agent.intent_priority import sort_intents_by_fr50
+from src.agent.intent.intent_priority import sort_intents_by_fr50
 
 
 def test_recipe_search_before_inventory_check():

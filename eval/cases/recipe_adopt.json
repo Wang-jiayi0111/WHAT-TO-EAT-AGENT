@@ -1,0 +1,129 @@
+[
+  {
+    "case_id": "recipe_query_055",
+    "scenario_category": "recipe_query",
+    "difficulty": "easy",
+    "description": "单轮明确采纳当前候选菜谱",
+    "user_turns": [
+      { "turn": 1, "input": "就选第一道糖醋排骨了我今晚就做这个" }
+    ],
+    "expected": {
+      "primary_intent": "recipe_adopt",
+      "needs_clarification": false,
+      "key_slots": { "recipe_adoption": true, "recipe_name": "糖醋排骨" },
+      "golden_recipe_ids": ["recipe_id_糖醋排骨"],
+      "output_contains": ["糖醋排骨"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "auto",
+    "linked_scenarios": ["S-01", "S-02"]
+  },
+  {
+    "case_id": "recipe_query_056",
+    "scenario_category": "recipe_query",
+    "difficulty": "easy",
+    "description": "口语确认「就它」映射 recipe_adoption",
+    "user_turns": [
+      { "turn": 1, "input": "别挑了就它了按刚才那个葱煎豆腐版本走" }
+    ],
+    "expected": {
+      "primary_intent": "recipe_adopt",
+      "needs_clarification": false,
+      "key_slots": { "recipe_adoption": true, "recipe_name": "葱煎豆腐" },
+      "golden_recipe_ids": ["recipe_id_葱煎豆腐"],
+      "output_contains": ["葱煎豆腐"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "auto",
+    "linked_scenarios": ["S-01", "S-02"]
+  },
+  {
+    "case_id": "ambiguity_057",
+    "scenario_category": "ambiguity",
+    "difficulty": "medium",
+    "description": "多候选时需消歧后再采纳",
+    "user_turns": [
+      { "turn": 1, "input": "列表里两个红烧肉我做评分更高的那个吧就锁定它" }
+    ],
+    "expected": {
+      "primary_intent": "recipe_adopt",
+      "needs_clarification": true,
+      "key_slots": { "recipe_adoption": true, "recipe_name": "简易红烧肉" },
+      "golden_recipe_ids": ["recipe_id_简易红烧肉"],
+      "output_contains": ["红烧"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": true
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": ["S-06"]
+  },
+  {
+    "case_id": "dietary_filter_058",
+    "scenario_category": "dietary_filter",
+    "difficulty": "medium",
+    "description": "在忌口语境下仍然采纳锁定菜谱",
+    "user_turns": [
+      { "turn": 1, "input": "我不吃香菜但如果这本菜谱里去香菜也能做我就采纳这道鸡蛋羹" }
+    ],
+    "expected": {
+      "primary_intent": "recipe_adopt",
+      "needs_clarification": false,
+      "key_slots": { "recipe_adoption": true, "recipe_name": "鸡蛋羹" },
+      "golden_recipe_ids": ["recipe_id_鸡蛋羹"],
+      "output_contains": ["鸡蛋羹"],
+      "output_excludes": ["香菜"],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": ["S-07"]
+  },
+  {
+    "case_id": "multi_turn_059",
+    "scenario_category": "multi_turn",
+    "difficulty": "hard",
+    "description": "比较后轮拍板采纳指定序号候选",
+    "user_turns": [
+      { "turn": 1, "input": "这几道面食我都看了碳水有点高还在纠结" },
+      { "turn": 2, "input": "我想通了就用第二道葱油拌面今晚主食定它了" }
+    ],
+    "expected": {
+      "primary_intent": "recipe_adopt",
+      "needs_clarification": false,
+      "key_slots": { "recipe_adoption": true, "recipe_name": "葱油拌面" },
+      "golden_recipe_ids": ["recipe_id_葱油拌面"],
+      "output_contains": ["葱油拌面"],
+      "output_excludes": [],
+      "context_preserved": ["面食候选", "碳水顾虑"],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": ["S-05"]
+  },
+  {
+    "case_id": "edge_case_060",
+    "scenario_category": "edge_case",
+    "difficulty": "hard",
+    "description": "会话无候选时采纳需追问菜名",
+    "user_turns": [
+      { "turn": 1, "input": "我就采纳刚才那个吧你懂的" }
+    ],
+    "expected": {
+      "primary_intent": "recipe_adopt",
+      "needs_clarification": true,
+      "key_slots": { "recipe_adoption": true },
+      "golden_recipe_ids": [],
+      "output_contains": ["哪道"],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": true
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": []
+  }
+]

@@ -1,0 +1,50 @@
+{
+  "run_id": "",
+  "user_id": "default_user",
+  "environment": {
+    "suite": "docs/evals/agent_eval_suite.json",
+    "note": "与 SRS §3.2 S-01～S-08 及 eval_quality_rubric 场景对齐；run_id 空则由 CLI 生成 UTC 时间戳"
+  },
+  "scenarios": [
+    {
+      "scenario_id": "S-01",
+      "user_input": "最近肠胃不太好，能推荐点适合吃的吗？",
+      "expected_summary": "短期健康约束纳入 C/L3；答复偏清淡易消化，不硬推刺激性菜。"
+    },
+    {
+      "scenario_id": "S-02",
+      "user_input": "推荐一道低脂的家常菜。",
+      "expected_summary": "完成检索或澄清；未索要则不强制展开库存与购物清单。"
+    },
+    {
+      "scenario_id": "S-03",
+      "user_input": "我想做红烧肉，帮我看看家里还缺什么料？",
+      "expected_summary": "锁定菜后 R 与 I 就绪，缺口清单与 R 来源可追溯。"
+    },
+    {
+      "scenario_id": "S-04",
+      "user_input": "冰箱里还有鸡蛋吗？",
+      "expected_summary": "走库存查询；数量与快照一致。"
+    },
+    {
+      "scenario_id": "S-05",
+      "user_input": "推荐一道清淡的菜，顺便帮我看看冰箱里还有没有鸡蛋。",
+      "expected_summary": "多意图按优先级执行或合并答复。"
+    },
+    {
+      "scenario_id": "S-06",
+      "user_input": "我想做个番茄炒蛋，但不知道用哪个菜谱好，你帮我从库里挑一下。",
+      "expected_summary": "多候选时澄清；未锁定前不输出最终购物清单。"
+    },
+    {
+      "scenario_id": "S-07",
+      "user_input": "我对花生过敏，请帮我记下来，以后推荐菜要避开。",
+      "expected_summary": "偏好写入或显式确认流；Keeper 失败不挡主回复。"
+    },
+    {
+      "scenario_id": "S-08",
+      "user_input": "今晚就做糖醋排骨吧，我已经定好这道菜了。",
+      "expected_summary": "先定菜得 R；若后续单独要清单应能读缓存缺口（本套件仅首轮，可人工续跑第二轮测清单）。"
+    }
+  ]
+}

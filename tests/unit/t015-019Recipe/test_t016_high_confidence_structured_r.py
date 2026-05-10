@@ -21,7 +21,7 @@ from src.agent.nodes.researcher import (
     stage1_high_confidence,
 )
 from src.agent.nodes.schema import Ingredient, StructuredRecipe
-from src.agent.state_accessors import get_runtime_bundle
+from src.agent.core.state_accessors import get_runtime_bundle
 from tests.conftest import make_logistics_buffer, make_minimal_agent_state
 
 

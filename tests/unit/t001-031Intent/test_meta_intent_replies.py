@@ -1,4 +1,4 @@
-"""T-006：元意图 help / out_of_scope / dietary_advice / recipe_adopt（FR-02；§11.3～11.4）。"""
+"""T-006：元意图 help / out_of_scope / dietary_advice / recipe_adopt（FR-02；§12.3～12.4）。"""
 
 from __future__ import annotations
 

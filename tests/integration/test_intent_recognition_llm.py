@@ -1,7 +1,7 @@
 """
 LLM 意图识别端到端验收（IntentClassifier.get_intent_details）。
 
-对照 ``src/agent/prompts/intent_prompt.md`` 的意图目录、§11.5 缺失码与示例话术，
+对照 ``src/agent/prompts/intent_prompt.md`` 的意图目录、§12.5 缺失码与示例话术，
 校验：**结构化字段契约** + **主意图/任务栈与需求一致（宽松集合）**。
 
 **默认跳过**（无 API 费用、CI 稳定）。启用真实调用::

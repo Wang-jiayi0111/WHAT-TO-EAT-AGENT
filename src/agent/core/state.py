@@ -61,9 +61,9 @@ class AgentState(TypedDict):
     # 2. 任务控制流：整表替换（replace_list）；消费语义见 task_stack.py（FR-04 执行即出队）
     task_stack: Annotated[List[str], replace_list]
     current_task: Optional[str]  # 正在处理的任务 ID
-    current_intent: Optional[str] # 兼容字段：与 primary_intent 同步（规格 §11.1 迁移期）
+    current_intent: Optional[str] # 兼容字段：与 primary_intent 同步（规格 §12.1 迁移期）
 
-    # 2b 意图结构化输出（FR-01；规格 §11.1；迁入 control_state 见 T-030）
+    # 2b 意图结构化输出（FR-01；规格 §12.1；迁入 control_state 见 T-030）
     primary_intent: NotRequired[Optional[str]]
     intents: NotRequired[List[str]]
     secondary_intents: NotRequired[List[str]]

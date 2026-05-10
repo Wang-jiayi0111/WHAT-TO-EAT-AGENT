@@ -13,8 +13,8 @@ import pytest
 
 from langchain_core.messages import HumanMessage
 
-from src.agent.state import empty_agent_slices
-from src.agent.state_sync import runtime_bundle_to_slice_patches
+from src.agent.core.state import empty_agent_slices
+from src.agent.core.state_sync import runtime_bundle_to_slice_patches
 from src.agent.nodes.generator import (
     GeneratorNode,
     HELP_REPLY_TEXT,

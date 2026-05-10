@@ -17,9 +17,9 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from src.agent.state import empty_agent_slices
-from src.agent.state_accessors import get_runtime_bundle
-from src.agent.state_sync import materialize_runtime_bundle_from_slices, runtime_bundle_to_slice_patches
+from src.agent.core.state import empty_agent_slices
+from src.agent.core.state_accessors import get_runtime_bundle
+from src.agent.core.state_sync import materialize_runtime_bundle_from_slices, runtime_bundle_to_slice_patches
 from src.agent.nodes.logistics import (
     _inventory_fingerprint,
     _stable_r_fingerprint,

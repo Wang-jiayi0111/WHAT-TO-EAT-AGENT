@@ -8,14 +8,14 @@ L3 当轮约束节点（规格 §4.3；T-010）。
 """
 import logging
 
-from ..effective_constraint import resolve_scope_id
-from ..l3_short_term import (
+from ..memory.effective_constraint import resolve_scope_id
+from ..memory.l3_short_term import (
     build_l3_memory_patch,
     extract_short_term_lines,
     latest_user_text,
 )
-from ..short_term_ttl import run_short_term_ttl_cleanup
-from ..state import AgentState
+from ..memory.short_term_ttl import run_short_term_ttl_cleanup
+from ..core.state import AgentState
 from src.observability.memory_metrics import record_l3_turn
 
 logger = logging.getLogger(__name__)

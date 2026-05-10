@@ -23,7 +23,7 @@ class Settings:
     def get_intent_clarify_threshold(self, default: float = 0.55) -> float:
         """
         `intent.confidence.clarify_threshold`（规格 §8）。
-        低于该值的综合置信度 → `needs_clarification`，且不映射写库类任务（FR-03；§11.6）。
+        低于该值的综合置信度 → `needs_clarification`，且不映射写库类任务（FR-03；§12.6）。
         """
         intent = self._config.get("intent")
         if not isinstance(intent, dict):

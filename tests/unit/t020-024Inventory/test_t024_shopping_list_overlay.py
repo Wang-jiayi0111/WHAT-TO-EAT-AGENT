@@ -1,9 +1,9 @@
 """
-T-024 购物清单 overlay 与 `list_action`（FR-41/43 / §7.4、§11.2）
+T-024 购物清单 overlay 与 `list_action`（FR-41/43 / §7.4、§12.2）
 ================================================================
 
 **任务**：T-024  
-**规格**：FR-41、FR-43；§7.3～§7.4；§11.2  
+**规格**：FR-41、FR-43；§7.3～§7.4；§12.2  
 **开发记录**：`docs/dev_log.md` [DEV-029]
 
 验收结论写入 **`docs/test_report.md`** [TR-036]。
@@ -13,8 +13,8 @@ from __future__ import annotations
 
 from unittest.mock import MagicMock, patch
 
-from src.agent.state import empty_agent_slices
-from src.agent.state_sync import runtime_bundle_to_slice_patches
+from src.agent.core.state import empty_agent_slices
+from src.agent.core.state_sync import runtime_bundle_to_slice_patches
 from src.agent.nodes.logistics import (
     _apply_list_action_to_overlay_updates,
     _coerce_list_edit_ops,

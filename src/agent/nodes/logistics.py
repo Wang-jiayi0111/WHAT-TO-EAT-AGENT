@@ -32,9 +32,9 @@ from ...libs.base.inventory import InventoryManager
 from ...libs.base.settings import Settings
 from ...libs.utils.ingredient_normalize import normalize_name as normalize_ingredient_name
 from ...libs.utils.unit_converter import UnitConverter
-from ..state import AgentState
-from ..state_accessors import get_runtime_bundle
-from ..state_sync import CLEAR_ERROR_STATE, runtime_bundle_to_slice_patches
+from ..core.state import AgentState
+from ..core.state_accessors import get_runtime_bundle
+from ..core.state_sync import CLEAR_ERROR_STATE, runtime_bundle_to_slice_patches
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -226,7 +226,7 @@ def _apply_list_action_to_overlay_updates(
     slots: Dict[str, Any],
 ) -> None:
     """
-    规格 §7.4 项 3、§11.2：`list_action` / `list_edit_ops` → 持久化 `shopping_list_overlay`；
+    规格 §7.4 项 3、§12.2：`list_action` / `list_edit_ops` → 持久化 `shopping_list_overlay`；
     `refresh_gap` 清空 overlay 并失效 `gap_basis` 以强制 §7.2 重算。
     """
     prior = list(logistics_buffer.get("shopping_list_overlay") or [])
