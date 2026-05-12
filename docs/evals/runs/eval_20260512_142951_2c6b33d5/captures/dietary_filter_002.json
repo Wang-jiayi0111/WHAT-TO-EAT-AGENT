@@ -1,0 +1,326 @@
+{
+  "case_id": "dietary_filter_002",
+  "source_file": "recipe_search.json",
+  "fixture": {
+    "case_id": "dietary_filter_002",
+    "scenario_category": "dietary_filter",
+    "difficulty": "medium",
+    "description": "忌口海鲜约束下的菜谱检索与硬过滤期望",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "我想吃鱼但不要那种刺很多的鱼，给我一道清蒸做法的菜谱"
+      }
+    ],
+    "expected": {
+      "primary_intent": "recipe_search",
+      "intents": [
+        "recipe_search"
+      ],
+      "needs_clarification": false,
+      "key_slots": {
+        "recipe_query": "清蒸少刺鱼类",
+        "ingredients": [
+          "鱼"
+        ]
+      },
+      "golden_recipe_ids": [
+        "recipe_id_清蒸鲈鱼",
+        "recipe_id_清蒸鳜鱼"
+      ],
+      "output_contains": [
+        "清蒸"
+      ],
+      "output_excludes": [
+        "鲫鱼",
+        "带鱼骨"
+      ],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": [
+      "S-07"
+    ]
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:dietary_filter_002",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "我想吃鱼但不要那种刺很多的鱼，给我一道清蒸做法的菜谱",
+      "wall_time_ms": 16572.859700001572,
+      "snapshot": {
+        "final_response": "我找到了以下几个相关菜谱（按检索相关性排序），请问您想做哪一个？\n\n  1. 清蒸鲈鱼\n  2. 水煮鱼\n  3. 清蒸鳜鱼\n  4. 烤鱼\n  5. 葱油桂鱼\n  6. 红烧鱼\n\n请回复序号数字（如 1）或菜名即可。",
+        "task_stack": [
+          "TASK_CLARIFY"
+        ],
+        "current_task": null,
+        "primary_intent": "recipe_search",
+        "intents": [
+          "recipe_search"
+        ],
+        "confidence": 0.85,
+        "needs_clarification": false,
+        "slots": {
+          "profile_fragments": [
+            "不吃刺多的鱼"
+          ],
+          "recipe_query": "清蒸鱼"
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "recipe_search",
+          "secondary_intents": [],
+          "intents": [
+            "recipe_search"
+          ],
+          "task_stack": [
+            "TASK_SEARCH"
+          ],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 0,
+          "slots": {
+            "profile_fragments": [
+              "不吃刺多的鱼"
+            ],
+            "recipe_query": "清蒸鱼"
+          },
+          "missing_slots": [],
+          "confidence": 0.85,
+          "extracted_entities": {
+            "preferences": [
+              "不要那种刺很多的鱼"
+            ]
+          },
+          "router_reasoning": "用户表达了想吃鱼但不喜欢刺多的鱼，并要求提供一道清蒸做法的菜谱。这属于 recipe_search 意图，且用户有特定偏好。",
+          "pending_tasks": [],
+          "clarification_kind": "recipe_pick"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [
+            {
+              "title": "清蒸鲈鱼"
+            },
+            {
+              "title": "水煮鱼"
+            },
+            {
+              "title": "清蒸鳜鱼"
+            },
+            {
+              "title": "烤鱼"
+            },
+            {
+              "title": "葱油桂鱼"
+            },
+            {
+              "title": "红烧鱼"
+            }
+          ],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {
+            "preferences": [
+              "不要那种刺很多的鱼"
+            ]
+          },
+          "router_reasoning": "用户表达了想吃鱼但不喜欢刺多的鱼，并要求提供一道清蒸做法的菜谱。这属于 recipe_search 意图，且用户有特定偏好。",
+          "pending_tasks": [],
+          "clarification_kind": "recipe_pick",
+          "recipe_candidates": [
+            "清蒸鲈鱼",
+            "水煮鱼",
+            "清蒸鳜鱼",
+            "烤鱼",
+            "葱油桂鱼",
+            "红烧鱼"
+          ],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "effective_constraint": {
+            "scope_id": "default_user",
+            "hard_exclusions": [
+              "芒果"
+            ],
+            "soft_negative_hints": [
+              "某种香料"
+            ],
+            "soft_positive_hints": [],
+            "dietary_target": "低卡/低碳水",
+            "temporal_conditions": [
+              "暂时放弃低碳水目标",
+              "想吃重庆火锅级别的辣",
+              "极清淡少油少纤维",
+              "偏好偏咸",
+              "感冒嗓子疼",
+              "肠胃不适"
+            ],
+            "summary_snippet": null
+          },
+          "slots": {
+            "profile_fragments": [
+              "不吃刺多的鱼"
+            ],
+            "recipe_query": "清蒸鱼"
+          },
+          "error_state": {
+            "error_code": null,
+            "recoverable": true,
+            "error_detail": null
+          }
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {
+          "error_code": null,
+          "recoverable": true,
+          "error_detail": null
+        },
+        "expert_payloads": {
+          "search_results": [
+            {
+              "id": "combined_620932",
+              "title": "清蒸鲈鱼",
+              "score": 0.44034955142959614
+            },
+            {
+              "id": "combined_547171",
+              "title": "水煮鱼",
+              "score": 0.4207737201014238
+            },
+            {
+              "id": "combined_761645",
+              "title": "清蒸鳜鱼",
+              "score": 0.41783925320098014
+            },
+            {
+              "id": "combined_121946",
+              "title": "清蒸鳜鱼",
+              "score": 0.4133365206283025
+            },
+            {
+              "id": "combined_423651",
+              "title": "烤鱼",
+              "score": 0.4117270890948084
+            },
+            {
+              "id": "combined_687793",
+              "title": "清蒸鲈鱼",
+              "score": 0.41056341787521144
+            },
+            {
+              "id": "combined_509804",
+              "title": "清蒸鲈鱼",
+              "score": 0.40988155054191977
+            },
+            {
+              "id": "combined_475598",
+              "title": "葱油桂鱼",
+              "score": 0.3994816557626066
+            },
+            {
+              "id": "combined_609802",
+              "title": "烤鱼",
+              "score": 0.3994259637240227
+            },
+            {
+              "id": "combined_843165",
+              "title": "清蒸鳜鱼",
+              "score": 0.3992547458549283
+            },
+            {
+              "id": "combined_834322",
+              "title": "葱油桂鱼",
+              "score": 0.3978161667801779
+            },
+            {
+              "id": "combined_17281",
+              "title": "烤鱼",
+              "score": 0.39679462697007806
+            },
+            {
+              "id": "combined_282365",
+              "title": "红烧鱼",
+              "score": 0.3966093961908306
+            },
+            {
+              "id": "combined_125146",
+              "title": "香煎翘嘴鱼",
+              "score": 0.39650694569505873
+            },
+            {
+              "id": "combined_865566",
+              "title": "清蒸鳜鱼",
+              "score": 0.39612268281552143
+            }
+          ],
+          "status": "ambiguous",
+          "ambiguity_candidate_count": 6
+        },
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "我想吃鱼但不要那种刺很多的鱼，给我一道清蒸做法的菜谱"
+          },
+          {
+            "type": "ai",
+            "content": "我找到了以下几个相关菜谱（按检索相关性排序），请问您想做哪一个？\n\n  1. 清蒸鲈鱼\n  2. 水煮鱼\n  3. 清蒸鳜鱼\n  4. 烤鱼\n  5. 葱油桂鱼\n  6. 红烧鱼\n\n请回复序号数字（如 1）或菜名即可。"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [
+            "search_recipes"
+          ],
+          "inferred_total": 1
+        },
+        "wall_time_ms": 16572.859700001572,
+        "user_input": "我想吃鱼但不要那种刺很多的鱼，给我一道清蒸做法的菜谱"
+      },
+      "assistant_reply": "我找到了以下几个相关菜谱（按检索相关性排序），请问您想做哪一个？\n\n  1. 清蒸鲈鱼\n  2. 水煮鱼\n  3. 清蒸鳜鱼\n  4. 烤鱼\n  5. 葱油桂鱼\n  6. 红烧鱼\n\n请回复序号数字（如 1）或菜名即可。"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 16572.859700001572,
+    "turn_count": 1
+  }
+}

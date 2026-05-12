@@ -1,0 +1,153 @@
+{
+  "case_id": "ambiguity_068",
+  "source_file": "user_clarify.json",
+  "fixture": {
+    "case_id": "ambiguity_068",
+    "scenario_category": "ambiguity",
+    "difficulty": "easy",
+    "description": "简短序号答复消除歧义",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "选3"
+      }
+    ],
+    "expected": {
+      "primary_intent": "user_clarify",
+      "intents": [
+        "user_clarify"
+      ],
+      "needs_clarification": false,
+      "key_slots": {},
+      "golden_recipe_ids": [],
+      "output_contains": [
+        "3"
+      ],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": [
+      "S-06"
+    ]
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:ambiguity_068",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "选3",
+      "wall_time_ms": 5580.272200000763,
+      "snapshot": {
+        "final_response": "抱歉，我没有找到合适的菜谱，请换个关键词再试试？",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "recipe_adopt",
+        "intents": [
+          "recipe_adopt"
+        ],
+        "confidence": 0.5,
+        "needs_clarification": true,
+        "slots": {},
+        "missing_slots": [
+          "recipe_adoption_context"
+        ],
+        "control_state": {
+          "primary_intent": "recipe_adopt",
+          "secondary_intents": [],
+          "intents": [
+            "recipe_adopt"
+          ],
+          "task_stack": [
+            "TASK_CLARIFY"
+          ],
+          "current_task": null,
+          "needs_clarification": true,
+          "loop_guard_count": 0,
+          "slots": {},
+          "missing_slots": [
+            "recipe_adoption_context"
+          ],
+          "confidence": 0.5,
+          "extracted_entities": {},
+          "router_reasoning": "置信度低 (0.5 < 0.55): 用户选择了当前会话中推荐的菜谱中的第3个选项，但上下文中没有明确的菜谱列表，因此无法直接确定具体的菜名。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {},
+          "router_reasoning": "置信度低 (0.5 < 0.55): 用户选择了当前会话中推荐的菜谱中的第3个选项，但上下文中没有明确的菜谱列表，因此无法直接确定具体的菜名。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "error_state": {}
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {},
+        "expert_payloads": {},
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "选3"
+          },
+          {
+            "type": "ai",
+            "content": "抱歉，我没有找到合适的菜谱，请换个关键词再试试？"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [],
+          "inferred_total": 0
+        },
+        "wall_time_ms": 5580.272200000763,
+        "user_input": "选3"
+      },
+      "assistant_reply": "抱歉，我没有找到合适的菜谱，请换个关键词再试试？"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 5580.272200000763,
+    "turn_count": 1
+  }
+}

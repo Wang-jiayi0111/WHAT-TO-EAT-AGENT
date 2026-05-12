@@ -1,0 +1,147 @@
+{
+  "case_id": "edge_case_048",
+  "source_file": "help.json",
+  "fixture": {
+    "case_id": "edge_case_048",
+    "scenario_category": "edge_case",
+    "difficulty": "hard",
+    "description": "辱骂式求助仍识别为帮助意图而非对骂",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "你这破说明书在哪赶紧告诉我怎么用别废话"
+      }
+    ],
+    "expected": {
+      "primary_intent": "help",
+      "intents": [
+        "help"
+      ],
+      "needs_clarification": false,
+      "key_slots": {},
+      "golden_recipe_ids": [],
+      "output_contains": [
+        "可以"
+      ],
+      "output_excludes": [
+        "滚"
+      ],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "human",
+    "linked_scenarios": []
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:edge_case_048",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "你这破说明书在哪赶紧告诉我怎么用别废话",
+      "wall_time_ms": 8465.632000001278,
+      "snapshot": {
+        "final_response": "你好！我是膳食助手，可以帮你：\n· 按口味、食材或菜名**找菜谱**，并结合你家**库存**给建议；\n· **查库存**、记**补货**与做饭后的**扣减**；\n· 生成**购物缺口清单**（在菜谱与库存就绪后）；\n· 记录**饮食偏好与忌口**（过敏等）。\n\n直接说你想吃什么、家里有什么，或问「能做什么」都可以。",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "help",
+        "intents": [
+          "help"
+        ],
+        "confidence": 0.95,
+        "needs_clarification": false,
+        "slots": {},
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "help",
+          "secondary_intents": [],
+          "intents": [
+            "help"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 1,
+          "slots": {},
+          "missing_slots": [],
+          "confidence": 0.95,
+          "extracted_entities": {},
+          "router_reasoning": "用户表达了对当前说明书的不满，并要求了解如何使用，这属于寻求帮助的行为。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {},
+          "router_reasoning": "用户表达了对当前说明书的不满，并要求了解如何使用，这属于寻求帮助的行为。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "error_state": {}
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {},
+        "expert_payloads": {},
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "你这破说明书在哪赶紧告诉我怎么用别废话"
+          },
+          {
+            "type": "ai",
+            "content": "你好！我是膳食助手，可以帮你：\n· 按口味、食材或菜名**找菜谱**，并结合你家**库存**给建议；\n· **查库存**、记**补货**与做饭后的**扣减**；\n· 生成**购物缺口清单**（在菜谱与库存就绪后）；\n· 记录**饮食偏好与忌口**（过敏等）。\n\n直接说你想吃什么、家里有什么，或问「能做什么」都可以。"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [],
+          "inferred_total": 0
+        },
+        "wall_time_ms": 8465.632000001278,
+        "user_input": "你这破说明书在哪赶紧告诉我怎么用别废话"
+      },
+      "assistant_reply": "你好！我是膳食助手，可以帮你：\n· 按口味、食材或菜名**找菜谱**，并结合你家**库存**给建议；\n· **查库存**、记**补货**与做饭后的**扣减**；\n· 生成**购物缺口清单**（在菜谱与库存就绪后）；\n· 记录**饮食偏好与忌口**（过敏等）。\n\n直接说你想吃什么、家里有什么，或问「能做什么」都可以。"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 8465.632000001278,
+    "turn_count": 1
+  }
+}

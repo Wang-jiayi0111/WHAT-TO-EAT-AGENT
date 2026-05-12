@@ -12,11 +12,8 @@ if sys.platform == "win32":
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 from typing import Any, Dict, List, Optional
 import logging
-import sys
 import json
-import time
 import os
-import subprocess
 from pathlib import Path
 from string import Template
 from mcp.client.stdio import stdio_client
@@ -80,6 +77,71 @@ def stage1_high_confidence(recipes: List[Dict[str, Any]], gap: float) -> bool:
         s2 = float(recipes[1].get("score") or 0)
         return (s1 - s2) / (s2 + 1e-6) > gap
     return False
+
+
+def _normalize_recipe_title_anchor(s: str) -> str:
+    """菜名比较：去空白，避免全角空格等导致无法对齐。"""
+    return "".join(str(s or "").split()).strip()
+
+
+def _merged_slots_for_researcher(state: AgentState, lb: Dict[str, Any]) -> Dict[str, Any]:
+    return {**(lb.get("slots") or {}), **(state.get("slots") or {})}
+
+
+def _recipe_name_anchor_from_state(
+    state: AgentState, entities: Dict[str, Any], lb: Dict[str, Any]
+) -> str:
+    slots = _merged_slots_for_researcher(state, lb)
+    rn = entities.get("recipe_name") or slots.get("recipe_name")
+    if isinstance(rn, str) and rn.strip():
+        return rn.strip()
+    return ""
+
+
+def _last_human_message_text(state: AgentState) -> str:
+    for m in reversed(state.get("messages") or []):
+        if getattr(m, "type", None) == "human":
+            return str(getattr(m, "content", "") or "")
+    return ""
+
+
+def _resolve_locked_title_by_explicit_anchor(
+    state: AgentState,
+    entities: Dict[str, Any],
+    lb: Dict[str, Any],
+    recipes: List[Dict[str, Any]],
+) -> str:
+    """
+    用户已明确菜名时，不依赖 top1/top2 分差即可锁定（规格 §5.1 补充）：
+    - `recipe_name`（entities 或 slots）与检索结果中某条 title 规范化一致 → 锁定该 title；
+    - 同轮含 `recipe_adopt` 且用户最后一轮话中**包含** top1 完整菜名（规范化子串，长度≥4）→ 锁定 top1。
+    无命中返回空串。
+    """
+    if not recipes:
+        return ""
+    intents = list(state.get("intents") or [])
+    adopt = "recipe_adopt" in intents
+
+    anchor = _recipe_name_anchor_from_state(state, entities, lb)
+    an = _normalize_recipe_title_anchor(anchor)
+    if an and len(an) >= 1:
+        for r in recipes[:30]:
+            t = str(r.get("title") or "").strip()
+            if not t:
+                continue
+            if _normalize_recipe_title_anchor(t) == an:
+                return t
+
+    if adopt:
+        top_t = str(recipes[0].get("title") or "").strip()
+        tn = _normalize_recipe_title_anchor(top_t)
+        if len(tn) < 4:
+            return ""
+        last = _last_human_message_text(state)
+        un = _normalize_recipe_title_anchor(last)
+        if tn and tn in un:
+            return top_t
+    return ""
 
 
 async def resolve_authoritative_structured_recipe(
@@ -183,20 +245,6 @@ class RecipeResearcher:
                 env=full_env
             )
 
-            # ============ 调试用 ===============
-            proc = subprocess.Popen(
-                [sys.executable, str(server_script)],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                env=full_env
-            )
-            import time
-            time.sleep(3)  # 等3秒让它初始化
-            proc.terminate()
-            out, err = proc.communicate()
-            print(f"🔍 Server stdout: {out[:1000]}")
-            print(f"🔍 Server stderr: {err[:1000]}")
-            
             settings = Settings()
             # 获取主力模型并注入结构化输出能力
             base_llm = LLMFactory.get_llm(settings)
@@ -471,9 +519,24 @@ async def researcher_node(state: AgentState) -> AgentState:
         top_recipe = recipes[0]  # 取分数最高
         top_score = top_recipe["score"]
         locked_title = str(top_recipe.get("title") or "").strip()
-        print(f"🎯 [Researcher] 最高分候选: {locked_title} (评分: {top_score})")
 
-        is_confident = stage1_high_confidence(recipes, _rel_gap)
+        forced_title = _resolve_locked_title_by_explicit_anchor(
+            state, entities, logistics_buffer, recipes
+        )
+        if forced_title:
+            locked_title = forced_title
+            logger.info(
+                "[Researcher] §5.1 用户已点名菜名，跳过分差歧义，锁定 title=%s",
+                locked_title,
+            )
+
+        print(f"🎯 [Researcher] 最高分候选: {locked_title} (评分: {top_score})")  # 调试信息
+
+        is_confident = (
+            True
+            if forced_title
+            else stage1_high_confidence(recipes, _rel_gap)
+        )
 
         if is_confident:
             # §5.1：高置信仅锁定 title；§5.2：**R** 必须通过 get_recipe_source(锁定 title) → 全文解析
@@ -514,6 +577,9 @@ async def researcher_node(state: AgentState) -> AgentState:
             logistics_buffer["recipe_use_confirmed"] = False
 
             current_stack = consume_tasks(current_stack, ["TASK_SEARCH"])
+            # 与「已有 selected_recipe_title」分支一致：须入队 TASK_SUMMARIZE，否则经 logistics 后
+            # task_stack 为空，generator 无可合并话术（FR-61 空回复）。
+            current_stack.append("TASK_SUMMARIZE")
 
             result = {
                 "task_stack": current_stack,

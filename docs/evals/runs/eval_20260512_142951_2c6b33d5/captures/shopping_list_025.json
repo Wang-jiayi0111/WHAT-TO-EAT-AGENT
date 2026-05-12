@@ -1,0 +1,1173 @@
+{
+  "case_id": "shopping_list_025",
+  "source_file": "shopping_list.json",
+  "fixture": {
+    "case_id": "shopping_list_025",
+    "scenario_category": "shopping_list",
+    "difficulty": "easy",
+    "description": "显式索要购物清单（默认 show）；首轮注入 R+I+gap 缓存",
+    "e2e_seed": {
+      "recipe_state": {
+        "recipe_title_locked": "青椒肉丝",
+        "recipe_requirements": [
+          {
+            "name": "青椒",
+            "amount": 200,
+            "unit": "g"
+          },
+          {
+            "name": "猪肉",
+            "amount": 300,
+            "unit": "g"
+          }
+        ]
+      },
+      "inventory_state": {
+        "inventory_snapshot": {
+          "猪肉": {
+            "amount": 100,
+            "unit": "g"
+          }
+        },
+        "cached_shopping_gap": {
+          "shopping_list": [
+            {
+              "name": "青椒",
+              "amount": 200,
+              "unit": "g"
+            },
+            {
+              "name": "猪肉",
+              "amount": 200,
+              "unit": "g"
+            }
+          ],
+          "sufficient_items": [],
+          "missing_items": [
+            {
+              "name": "青椒",
+              "amount": 200,
+              "unit": "g"
+            }
+          ],
+          "pending_manual": [],
+          "computed_at": "2026-05-11T00:00:00Z"
+        },
+        "gap_basis": {
+          "recipe_title": "青椒肉丝"
+        },
+        "shopping_list_overlay": []
+      }
+    },
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "想做糖醋鲤鱼，还差哪些食材把购物清单列给我"
+      }
+    ],
+    "expected": {
+      "primary_intent": "shopping_list",
+      "intents": [
+        "shopping_list",
+        "recipe_search"
+      ],
+      "needs_clarification": false,
+      "key_slots": {
+        "list_action": "show"
+      },
+      "golden_recipe_ids": [
+        "recipe_id_糖醋鲤鱼"
+      ],
+      "output_contains": [
+        "清单",
+        "买"
+      ],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false,
+      "shopping_list_assert": {
+        "gap_cache_present": true,
+        "gap_shopping_names_contain": [
+          "青椒"
+        ]
+      }
+    },
+    "eval_method": "auto",
+    "linked_scenarios": [
+      "S-08"
+    ]
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:shopping_list_025",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "想做糖醋鲤鱼，还差哪些食材把购物清单列给我",
+      "wall_time_ms": 62757.31530000121,
+      "snapshot": {
+        "final_response": "已按**最新库存**与菜谱用料重新计算缺口，待购清单如下：\n\n  · 鲤鱼：1500.0 g\n  · 清水：50.0 ml\n  · 番茄酱：40.0 g\n  · 白糖：20.0 g\n  · 白醋：10.0 ml\n  · 淀粉：210.0 g\n  · 盐：35.0 g\n  · 葱：30.0 g\n  · 姜：30.0 g\n  · 料酒：25.0 ml\n  · 香菜：1.0 颗\n  · 面粉：100.0 g\n  · 鸡蛋：1.0 个\n\n以下为「糖醋鲤鱼」的用料清单（来自本地菜谱解析）：\n\n  · 鲤鱼：1500 g\n  · 清水：50 ml\n  · 番茄酱：40 g\n  · 白糖：20 g\n  · 白醋：10 ml\n  · 淀粉：210 g\n  · 盐：35 g\n  · 葱：30 g\n  · 姜：30 g\n  · 料酒：25 ml\n  · 香菜：1 颗\n  · 面粉：100 g\n  · 鸡蛋：1 个",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "recipe_search",
+        "intents": [
+          "recipe_search",
+          "shopping_list"
+        ],
+        "confidence": 0.9,
+        "needs_clarification": false,
+        "slots": {
+          "recipe_name": "糖醋鲤鱼"
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "recipe_search",
+          "secondary_intents": [
+            "shopping_list"
+          ],
+          "intents": [
+            "recipe_search",
+            "shopping_list"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 1,
+          "slots": {
+            "recipe_name": "糖醋鲤鱼"
+          },
+          "missing_slots": [],
+          "confidence": 0.9,
+          "extracted_entities": {
+            "recipe_name": "糖醋鲤鱼"
+          },
+          "router_reasoning": "用户想做糖醋鲤鱼，并希望系统列出所需的购物清单，这涉及到搜索菜谱（以确定所需食材）和生成购物清单两个意图。用户明确提供了菜名。"
+        },
+        "recipe_state": {
+          "recipe_title_locked": "糖醋鲤鱼",
+          "recipe_requirements": [
+            {
+              "name": "鲤鱼",
+              "amount": 1500.0,
+              "unit": "g"
+            },
+            {
+              "name": "清水",
+              "amount": 50.0,
+              "unit": "ml"
+            },
+            {
+              "name": "番茄酱",
+              "amount": 40.0,
+              "unit": "g"
+            },
+            {
+              "name": "白糖",
+              "amount": 20.0,
+              "unit": "g"
+            },
+            {
+              "name": "白醋",
+              "amount": 10.0,
+              "unit": "ml"
+            },
+            {
+              "name": "淀粉",
+              "amount": 210.0,
+              "unit": "g"
+            },
+            {
+              "name": "盐",
+              "amount": 35.0,
+              "unit": "g"
+            },
+            {
+              "name": "葱",
+              "amount": 30.0,
+              "unit": "g"
+            },
+            {
+              "name": "姜",
+              "amount": 30.0,
+              "unit": "g"
+            },
+            {
+              "name": "料酒",
+              "amount": 25.0,
+              "unit": "ml"
+            },
+            {
+              "name": "香菜",
+              "amount": 1.0,
+              "unit": "颗"
+            },
+            {
+              "name": "面粉",
+              "amount": 100.0,
+              "unit": "g"
+            },
+            {
+              "name": "鸡蛋",
+              "amount": 1.0,
+              "unit": "个"
+            }
+          ],
+          "recipe_file_ref": "F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\aquatic\\糖醋鲤鱼\\糖醋鲤鱼.md",
+          "recipe_candidates": [],
+          "selected_recipe_title": "糖醋鲤鱼",
+          "selected_recipe_id": "F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\aquatic\\糖醋鲤鱼\\糖醋鲤鱼.md",
+          "recipe_steps": [
+            "将鱼清洗干净，确保无鱼鳞等异物。",
+            "将鱼头朝左，鱼肚朝下，右手持刀。刀竖直切下 1cm，按紧鱼身往左片 3-4cm，再将鱼片中间轻轻划一刀。",
+            "将鱼放进盆里，然后将大姜切片，大葱切段（随便切切就行了，主要是需要去腥味）。",
+            "用吃奶的力气将大葱大姜里的汁水挤到盆中。",
+            "加入 20g 盐，25g 料酒，然后给鲤鱼搓个澡，涂抹均匀。",
+            "腌制 30 分钟以上。",
+            "找个干净的盆，加入 100g 面粉、200g 淀粉、180g 水、5g 盐，用手将其搅拌均匀，面糊此时粘稠呈可拉丝状态，然后打入一个鸡蛋，再次搅匀。",
+            "等待 30 分钟。",
+            "将鱼放在案板上，用干毛巾将鱼身上的水擦干（这样可以更好的挂糊）。",
+            "将盆冲洗干净，用干毛巾擦干。",
+            "起锅烧油，加入约 1L 的油，将油温烧至 7 成热，约 200-240 度。",
+            "捏起鱼的尾巴，将鱼头沉入锅底，用勺子往鱼的身上淋热油，待面糊成型后，将鱼慢慢放入锅中，拿锅铲轻轻铲起鱼的头部，然后垫上笊篱。防止底部炸糊。",
+            "准备一个盛鱼的盘子，放在锅的旁边。",
+            "用锅铲从鱼身处轻轻铲入，两个工具配合鱼翻个身。再炸两分钟，还是同样的方式（笊篱托着鱼头，锅铲托着鱼身，将鱼盛入盘中）。",
+            "将锅中的油倒入擦干的盆中，放置一边，然后将锅刷干净。",
+            "将 50g 清水、40g 番茄酱、20g 白糖、10g 白醋放入小碗中，搅拌均匀。",
+            "再准备一个小碗加入 10g 淀粉、10g 水，搅拌成水淀粉。",
+            "开大火将锅烧热，然后倒入之前准备的料汁，大火烧开，转小火。",
+            "加入调好的水淀粉，边倒边搅拌，然后 20 秒后关火。",
+            "将熬好的糖醋汁用勺子均匀地浇在鱼身上，可以加点香菜或葱花点缀，糖醋鲤鱼就做好了。"
+          ],
+          "recipe_parser_version": "llm_structured_v1"
+        },
+        "runtime_bundle": {
+          "extracted_entities": {
+            "recipe_name": "糖醋鲤鱼"
+          },
+          "router_reasoning": "用户想做糖醋鲤鱼，并希望系统列出所需的购物清单，这涉及到搜索菜谱（以确定所需食材）和生成购物清单两个意图。用户明确提供了菜名。",
+          "recipe_candidates": [],
+          "selected_recipe_id": "F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\aquatic\\糖醋鲤鱼\\糖醋鲤鱼.md",
+          "selected_recipe_title": "糖醋鲤鱼",
+          "recipe_requirements": [
+            {
+              "name": "鲤鱼",
+              "amount": 1500.0,
+              "unit": "g"
+            },
+            {
+              "name": "清水",
+              "amount": 50.0,
+              "unit": "ml"
+            },
+            {
+              "name": "番茄酱",
+              "amount": 40.0,
+              "unit": "g"
+            },
+            {
+              "name": "白糖",
+              "amount": 20.0,
+              "unit": "g"
+            },
+            {
+              "name": "白醋",
+              "amount": 10.0,
+              "unit": "ml"
+            },
+            {
+              "name": "淀粉",
+              "amount": 210.0,
+              "unit": "g"
+            },
+            {
+              "name": "盐",
+              "amount": 35.0,
+              "unit": "g"
+            },
+            {
+              "name": "葱",
+              "amount": 30.0,
+              "unit": "g"
+            },
+            {
+              "name": "姜",
+              "amount": 30.0,
+              "unit": "g"
+            },
+            {
+              "name": "料酒",
+              "amount": 25.0,
+              "unit": "ml"
+            },
+            {
+              "name": "香菜",
+              "amount": 1.0,
+              "unit": "颗"
+            },
+            {
+              "name": "面粉",
+              "amount": 100.0,
+              "unit": "g"
+            },
+            {
+              "name": "鸡蛋",
+              "amount": 1.0,
+              "unit": "个"
+            }
+          ],
+          "recipe_title_locked": "糖醋鲤鱼",
+          "recipe_parser_version": "llm_structured_v1",
+          "recipe_cook_step": [
+            "将鱼清洗干净，确保无鱼鳞等异物。",
+            "将鱼头朝左，鱼肚朝下，右手持刀。刀竖直切下 1cm，按紧鱼身往左片 3-4cm，再将鱼片中间轻轻划一刀。",
+            "将鱼放进盆里，然后将大姜切片，大葱切段（随便切切就行了，主要是需要去腥味）。",
+            "用吃奶的力气将大葱大姜里的汁水挤到盆中。",
+            "加入 20g 盐，25g 料酒，然后给鲤鱼搓个澡，涂抹均匀。",
+            "腌制 30 分钟以上。",
+            "找个干净的盆，加入 100g 面粉、200g 淀粉、180g 水、5g 盐，用手将其搅拌均匀，面糊此时粘稠呈可拉丝状态，然后打入一个鸡蛋，再次搅匀。",
+            "等待 30 分钟。",
+            "将鱼放在案板上，用干毛巾将鱼身上的水擦干（这样可以更好的挂糊）。",
+            "将盆冲洗干净，用干毛巾擦干。",
+            "起锅烧油，加入约 1L 的油，将油温烧至 7 成热，约 200-240 度。",
+            "捏起鱼的尾巴，将鱼头沉入锅底，用勺子往鱼的身上淋热油，待面糊成型后，将鱼慢慢放入锅中，拿锅铲轻轻铲起鱼的头部，然后垫上笊篱。防止底部炸糊。",
+            "准备一个盛鱼的盘子，放在锅的旁边。",
+            "用锅铲从鱼身处轻轻铲入，两个工具配合鱼翻个身。再炸两分钟，还是同样的方式（笊篱托着鱼头，锅铲托着鱼身，将鱼盛入盘中）。",
+            "将锅中的油倒入擦干的盆中，放置一边，然后将锅刷干净。",
+            "将 50g 清水、40g 番茄酱、20g 白糖、10g 白醋放入小碗中，搅拌均匀。",
+            "再准备一个小碗加入 10g 淀粉、10g 水，搅拌成水淀粉。",
+            "开大火将锅烧热，然后倒入之前准备的料汁，大火烧开，转小火。",
+            "加入调好的水淀粉，边倒边搅拌，然后 20 秒后关火。",
+            "将熬好的糖醋汁用勺子均匀地浇在鱼身上，可以加点香菜或葱花点缀，糖醋鲤鱼就做好了。"
+          ],
+          "inventory_snapshot": {
+            "五花肉": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "排骨": {
+              "amount": 250.0,
+              "unit": "g"
+            },
+            "牛筋": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "胡萝卜": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "苦瓜": {
+              "amount": 2.0,
+              "unit": "根"
+            },
+            "西红柿": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "豆腐": {
+              "amount": 1.0,
+              "unit": "块"
+            },
+            "饼干": {
+              "amount": 1.0,
+              "unit": "盒"
+            },
+            "鸡胸肉": {
+              "amount": 1.0,
+              "unit": "个"
+            }
+          },
+          "cached_shopping_gap": {
+            "shopping_list": [
+              {
+                "name": "鲤鱼",
+                "amount": 1500.0,
+                "unit": "g"
+              },
+              {
+                "name": "清水",
+                "amount": 50.0,
+                "unit": "ml"
+              },
+              {
+                "name": "番茄酱",
+                "amount": 40.0,
+                "unit": "g"
+              },
+              {
+                "name": "白糖",
+                "amount": 20.0,
+                "unit": "g"
+              },
+              {
+                "name": "白醋",
+                "amount": 10.0,
+                "unit": "ml"
+              },
+              {
+                "name": "淀粉",
+                "amount": 210.0,
+                "unit": "g"
+              },
+              {
+                "name": "盐",
+                "amount": 35.0,
+                "unit": "g"
+              },
+              {
+                "name": "葱",
+                "amount": 30.0,
+                "unit": "g"
+              },
+              {
+                "name": "姜",
+                "amount": 30.0,
+                "unit": "g"
+              },
+              {
+                "name": "料酒",
+                "amount": 25.0,
+                "unit": "ml"
+              },
+              {
+                "name": "香菜",
+                "amount": 1.0,
+                "unit": "颗"
+              },
+              {
+                "name": "面粉",
+                "amount": 100.0,
+                "unit": "g"
+              },
+              {
+                "name": "鸡蛋",
+                "amount": 1.0,
+                "unit": "个"
+              }
+            ],
+            "sufficient_items": [],
+            "missing_items": [
+              {
+                "name": "鲤鱼",
+                "amount": 1500.0,
+                "unit": "g"
+              },
+              {
+                "name": "清水",
+                "amount": 50.0,
+                "unit": "ml"
+              },
+              {
+                "name": "番茄酱",
+                "amount": 40.0,
+                "unit": "g"
+              },
+              {
+                "name": "白糖",
+                "amount": 20.0,
+                "unit": "g"
+              },
+              {
+                "name": "白醋",
+                "amount": 10.0,
+                "unit": "ml"
+              },
+              {
+                "name": "淀粉",
+                "amount": 210.0,
+                "unit": "g"
+              },
+              {
+                "name": "盐",
+                "amount": 35.0,
+                "unit": "g"
+              },
+              {
+                "name": "葱",
+                "amount": 30.0,
+                "unit": "g"
+              },
+              {
+                "name": "姜",
+                "amount": 30.0,
+                "unit": "g"
+              },
+              {
+                "name": "料酒",
+                "amount": 25.0,
+                "unit": "ml"
+              },
+              {
+                "name": "香菜",
+                "amount": 1.0,
+                "unit": "颗"
+              },
+              {
+                "name": "面粉",
+                "amount": 100.0,
+                "unit": "g"
+              },
+              {
+                "name": "鸡蛋",
+                "amount": 1.0,
+                "unit": "个"
+              }
+            ],
+            "pending_manual": [],
+            "computed_at": "2026-05-12T06:47:14.442518+00:00"
+          },
+          "gap_basis": {
+            "recipe_title": "糖醋鲤鱼",
+            "r_fingerprint": "1e8fbfa41a28b6da272fbebb",
+            "inventory_fingerprint": "aa6a5c9fdd4ec008e641e672"
+          },
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "shopping_list": [
+            {
+              "name": "鲤鱼",
+              "amount": 1500.0,
+              "unit": "g"
+            },
+            {
+              "name": "清水",
+              "amount": 50.0,
+              "unit": "ml"
+            },
+            {
+              "name": "番茄酱",
+              "amount": 40.0,
+              "unit": "g"
+            },
+            {
+              "name": "白糖",
+              "amount": 20.0,
+              "unit": "g"
+            },
+            {
+              "name": "白醋",
+              "amount": 10.0,
+              "unit": "ml"
+            },
+            {
+              "name": "淀粉",
+              "amount": 210.0,
+              "unit": "g"
+            },
+            {
+              "name": "盐",
+              "amount": 35.0,
+              "unit": "g"
+            },
+            {
+              "name": "葱",
+              "amount": 30.0,
+              "unit": "g"
+            },
+            {
+              "name": "姜",
+              "amount": 30.0,
+              "unit": "g"
+            },
+            {
+              "name": "料酒",
+              "amount": 25.0,
+              "unit": "ml"
+            },
+            {
+              "name": "香菜",
+              "amount": 1.0,
+              "unit": "颗"
+            },
+            {
+              "name": "面粉",
+              "amount": 100.0,
+              "unit": "g"
+            },
+            {
+              "name": "鸡蛋",
+              "amount": 1.0,
+              "unit": "个"
+            }
+          ],
+          "sufficient_items": [],
+          "missing_items": [
+            {
+              "name": "鲤鱼",
+              "amount": 1500.0,
+              "unit": "g"
+            },
+            {
+              "name": "清水",
+              "amount": 50.0,
+              "unit": "ml"
+            },
+            {
+              "name": "番茄酱",
+              "amount": 40.0,
+              "unit": "g"
+            },
+            {
+              "name": "白糖",
+              "amount": 20.0,
+              "unit": "g"
+            },
+            {
+              "name": "白醋",
+              "amount": 10.0,
+              "unit": "ml"
+            },
+            {
+              "name": "淀粉",
+              "amount": 210.0,
+              "unit": "g"
+            },
+            {
+              "name": "盐",
+              "amount": 35.0,
+              "unit": "g"
+            },
+            {
+              "name": "葱",
+              "amount": 30.0,
+              "unit": "g"
+            },
+            {
+              "name": "姜",
+              "amount": 30.0,
+              "unit": "g"
+            },
+            {
+              "name": "料酒",
+              "amount": 25.0,
+              "unit": "ml"
+            },
+            {
+              "name": "香菜",
+              "amount": 1.0,
+              "unit": "颗"
+            },
+            {
+              "name": "面粉",
+              "amount": 100.0,
+              "unit": "g"
+            },
+            {
+              "name": "鸡蛋",
+              "amount": 1.0,
+              "unit": "个"
+            }
+          ],
+          "gap_delivery_mode": "fresh",
+          "effective_constraint": {
+            "scope_id": "default_user",
+            "hard_exclusions": [
+              "芒果"
+            ],
+            "soft_negative_hints": [
+              "某种香料",
+              "刺多的鱼",
+              "羊肉, 膻味重的肉类"
+            ],
+            "soft_positive_hints": [],
+            "dietary_target": "低卡/低碳水",
+            "temporal_conditions": [
+              "暂时放弃低碳水目标",
+              "想吃重庆火锅级别的辣",
+              "极清淡少油少纤维",
+              "偏好偏咸",
+              "感冒嗓子疼",
+              "肠胃不适"
+            ],
+            "summary_snippet": null
+          },
+          "slots": {
+            "recipe_name": "糖醋鲤鱼"
+          },
+          "error_state": {
+            "error_code": null,
+            "recoverable": true,
+            "error_detail": null
+          }
+        },
+        "inventory_state": {
+          "inventory_snapshot": {
+            "五花肉": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "排骨": {
+              "amount": 250.0,
+              "unit": "g"
+            },
+            "牛筋": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "胡萝卜": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "苦瓜": {
+              "amount": 2.0,
+              "unit": "根"
+            },
+            "西红柿": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "豆腐": {
+              "amount": 1.0,
+              "unit": "块"
+            },
+            "饼干": {
+              "amount": 1.0,
+              "unit": "盒"
+            },
+            "鸡胸肉": {
+              "amount": 1.0,
+              "unit": "个"
+            }
+          },
+          "cached_shopping_gap": {
+            "shopping_list": [
+              {
+                "name": "鲤鱼",
+                "amount": 1500.0,
+                "unit": "g"
+              },
+              {
+                "name": "清水",
+                "amount": 50.0,
+                "unit": "ml"
+              },
+              {
+                "name": "番茄酱",
+                "amount": 40.0,
+                "unit": "g"
+              },
+              {
+                "name": "白糖",
+                "amount": 20.0,
+                "unit": "g"
+              },
+              {
+                "name": "白醋",
+                "amount": 10.0,
+                "unit": "ml"
+              },
+              {
+                "name": "淀粉",
+                "amount": 210.0,
+                "unit": "g"
+              },
+              {
+                "name": "盐",
+                "amount": 35.0,
+                "unit": "g"
+              },
+              {
+                "name": "葱",
+                "amount": 30.0,
+                "unit": "g"
+              },
+              {
+                "name": "姜",
+                "amount": 30.0,
+                "unit": "g"
+              },
+              {
+                "name": "料酒",
+                "amount": 25.0,
+                "unit": "ml"
+              },
+              {
+                "name": "香菜",
+                "amount": 1.0,
+                "unit": "颗"
+              },
+              {
+                "name": "面粉",
+                "amount": 100.0,
+                "unit": "g"
+              },
+              {
+                "name": "鸡蛋",
+                "amount": 1.0,
+                "unit": "个"
+              }
+            ],
+            "sufficient_items": [],
+            "missing_items": [
+              {
+                "name": "鲤鱼",
+                "amount": 1500.0,
+                "unit": "g"
+              },
+              {
+                "name": "清水",
+                "amount": 50.0,
+                "unit": "ml"
+              },
+              {
+                "name": "番茄酱",
+                "amount": 40.0,
+                "unit": "g"
+              },
+              {
+                "name": "白糖",
+                "amount": 20.0,
+                "unit": "g"
+              },
+              {
+                "name": "白醋",
+                "amount": 10.0,
+                "unit": "ml"
+              },
+              {
+                "name": "淀粉",
+                "amount": 210.0,
+                "unit": "g"
+              },
+              {
+                "name": "盐",
+                "amount": 35.0,
+                "unit": "g"
+              },
+              {
+                "name": "葱",
+                "amount": 30.0,
+                "unit": "g"
+              },
+              {
+                "name": "姜",
+                "amount": 30.0,
+                "unit": "g"
+              },
+              {
+                "name": "料酒",
+                "amount": 25.0,
+                "unit": "ml"
+              },
+              {
+                "name": "香菜",
+                "amount": 1.0,
+                "unit": "颗"
+              },
+              {
+                "name": "面粉",
+                "amount": 100.0,
+                "unit": "g"
+              },
+              {
+                "name": "鸡蛋",
+                "amount": 1.0,
+                "unit": "个"
+              }
+            ],
+            "pending_manual": [],
+            "computed_at": "2026-05-12T06:47:14.442518+00:00"
+          },
+          "gap_basis": {
+            "recipe_title": "糖醋鲤鱼",
+            "r_fingerprint": "1e8fbfa41a28b6da272fbebb",
+            "inventory_fingerprint": "aa6a5c9fdd4ec008e641e672"
+          },
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "gap_delivery_mode": "fresh",
+          "shopping_list": [
+            {
+              "name": "鲤鱼",
+              "amount": 1500.0,
+              "unit": "g"
+            },
+            {
+              "name": "清水",
+              "amount": 50.0,
+              "unit": "ml"
+            },
+            {
+              "name": "番茄酱",
+              "amount": 40.0,
+              "unit": "g"
+            },
+            {
+              "name": "白糖",
+              "amount": 20.0,
+              "unit": "g"
+            },
+            {
+              "name": "白醋",
+              "amount": 10.0,
+              "unit": "ml"
+            },
+            {
+              "name": "淀粉",
+              "amount": 210.0,
+              "unit": "g"
+            },
+            {
+              "name": "盐",
+              "amount": 35.0,
+              "unit": "g"
+            },
+            {
+              "name": "葱",
+              "amount": 30.0,
+              "unit": "g"
+            },
+            {
+              "name": "姜",
+              "amount": 30.0,
+              "unit": "g"
+            },
+            {
+              "name": "料酒",
+              "amount": 25.0,
+              "unit": "ml"
+            },
+            {
+              "name": "香菜",
+              "amount": 1.0,
+              "unit": "颗"
+            },
+            {
+              "name": "面粉",
+              "amount": 100.0,
+              "unit": "g"
+            },
+            {
+              "name": "鸡蛋",
+              "amount": 1.0,
+              "unit": "个"
+            }
+          ],
+          "sufficient_items": [],
+          "missing_items": [
+            {
+              "name": "鲤鱼",
+              "amount": 1500.0,
+              "unit": "g"
+            },
+            {
+              "name": "清水",
+              "amount": 50.0,
+              "unit": "ml"
+            },
+            {
+              "name": "番茄酱",
+              "amount": 40.0,
+              "unit": "g"
+            },
+            {
+              "name": "白糖",
+              "amount": 20.0,
+              "unit": "g"
+            },
+            {
+              "name": "白醋",
+              "amount": 10.0,
+              "unit": "ml"
+            },
+            {
+              "name": "淀粉",
+              "amount": 210.0,
+              "unit": "g"
+            },
+            {
+              "name": "盐",
+              "amount": 35.0,
+              "unit": "g"
+            },
+            {
+              "name": "葱",
+              "amount": 30.0,
+              "unit": "g"
+            },
+            {
+              "name": "姜",
+              "amount": 30.0,
+              "unit": "g"
+            },
+            {
+              "name": "料酒",
+              "amount": 25.0,
+              "unit": "ml"
+            },
+            {
+              "name": "香菜",
+              "amount": 1.0,
+              "unit": "颗"
+            },
+            {
+              "name": "面粉",
+              "amount": 100.0,
+              "unit": "g"
+            },
+            {
+              "name": "鸡蛋",
+              "amount": 1.0,
+              "unit": "个"
+            }
+          ]
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [
+            "五花肉",
+            "排骨",
+            "牛筋",
+            "胡萝卜",
+            "苦瓜",
+            "西红柿",
+            "豆腐",
+            "饼干",
+            "鸡胸肉"
+          ],
+          "cached_shopping_gap_present": true,
+          "gap_basis": {
+            "recipe_title": "糖醋鲤鱼",
+            "r_fingerprint": "1e8fbfa41a28b6da272fbebb",
+            "inventory_fingerprint": "aa6a5c9fdd4ec008e641e672"
+          },
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {
+          "error_code": null,
+          "recoverable": true,
+          "error_detail": null
+        },
+        "expert_payloads": {
+          "recipe_detail": {
+            "title": "糖醋鲤鱼",
+            "ingredients": [
+              {
+                "name": "鲤鱼",
+                "amount": 1500.0,
+                "unit": "g"
+              },
+              {
+                "name": "清水",
+                "amount": 50.0,
+                "unit": "ml"
+              },
+              {
+                "name": "番茄酱",
+                "amount": 40.0,
+                "unit": "g"
+              },
+              {
+                "name": "白糖",
+                "amount": 20.0,
+                "unit": "g"
+              },
+              {
+                "name": "白醋",
+                "amount": 10.0,
+                "unit": "ml"
+              },
+              {
+                "name": "淀粉",
+                "amount": 210.0,
+                "unit": "g"
+              },
+              {
+                "name": "盐",
+                "amount": 35.0,
+                "unit": "g"
+              },
+              {
+                "name": "葱",
+                "amount": 30.0,
+                "unit": "g"
+              },
+              {
+                "name": "姜",
+                "amount": 30.0,
+                "unit": "g"
+              },
+              {
+                "name": "料酒",
+                "amount": 25.0,
+                "unit": "ml"
+              },
+              {
+                "name": "香菜",
+                "amount": 1.0,
+                "unit": "颗"
+              },
+              {
+                "name": "面粉",
+                "amount": 100.0,
+                "unit": "g"
+              },
+              {
+                "name": "鸡蛋",
+                "amount": 1.0,
+                "unit": "个"
+              }
+            ],
+            "steps": [
+              "将鱼清洗干净，确保无鱼鳞等异物。",
+              "将鱼头朝左，鱼肚朝下，右手持刀。刀竖直切下 1cm，按紧鱼身往左片 3-4cm，再将鱼片中间轻轻划一刀。",
+              "将鱼放进盆里，然后将大姜切片，大葱切段（随便切切就行了，主要是需要去腥味）。",
+              "用吃奶的力气将大葱大姜里的汁水挤到盆中。",
+              "加入 20g 盐，25g 料酒，然后给鲤鱼搓个澡，涂抹均匀。",
+              "腌制 30 分钟以上。",
+              "找个干净的盆，加入 100g 面粉、200g 淀粉、180g 水、5g 盐，用手将其搅拌均匀，面糊此时粘稠呈可拉丝状态，然后打入一个鸡蛋，再次搅匀。",
+              "等待 30 分钟。",
+              "将鱼放在案板上，用干毛巾将鱼身上的水擦干（这样可以更好的挂糊）。",
+              "将盆冲洗干净，用干毛巾擦干。",
+              "起锅烧油，加入约 1L 的油，将油温烧至 7 成热，约 200-240 度。",
+              "捏起鱼的尾巴，将鱼头沉入锅底，用勺子往鱼的身上淋热油，待面糊成型后，将鱼慢慢放入锅中，拿锅铲轻轻铲起鱼的头部，然后垫上笊篱。防止底部炸糊。",
+              "准备一个盛鱼的盘子，放在锅的旁边。",
+              "用锅铲从鱼身处轻轻铲入，两个工具配合鱼翻个身。再炸两分钟，还是同样的方式（笊篱托着鱼头，锅铲托着鱼身，将鱼盛入盘中）。",
+              "将锅中的油倒入擦干的盆中，放置一边，然后将锅刷干净。",
+              "将 50g 清水、40g 番茄酱、20g 白糖、10g 白醋放入小碗中，搅拌均匀。",
+              "再准备一个小碗加入 10g 淀粉、10g 水，搅拌成水淀粉。",
+              "开大火将锅烧热，然后倒入之前准备的料汁，大火烧开，转小火。",
+              "加入调好的水淀粉，边倒边搅拌，然后 20 秒后关火。",
+              "将熬好的糖醋汁用勺子均匀地浇在鱼身上，可以加点香菜或葱花点缀，糖醋鲤鱼就做好了。"
+            ]
+          },
+          "status": "success"
+        },
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "想做糖醋鲤鱼，还差哪些食材把购物清单列给我"
+          },
+          {
+            "type": "ai",
+            "content": "已按**最新库存**与菜谱用料重新计算缺口，待购清单如下：\n\n  · 鲤鱼：1500.0 g\n  · 清水：50.0 ml\n  · 番茄酱：40.0 g\n  · 白糖：20.0 g\n  · 白醋：10.0 ml\n  · 淀粉：210.0 g\n  · 盐：35.0 g\n  · 葱：30.0 g\n  · 姜：30.0 g\n  · 料酒：25.0 ml\n  · 香菜：1.0 颗\n  · 面粉：100.0 g\n  · 鸡蛋：1.0 个\n\n以下为「糖醋鲤鱼」的用料清单（来自本地菜谱解析）：\n\n  · 鲤鱼：1500 g\n  · 清水：50 ml\n  · 番茄酱：40 g\n  · 白糖：20 g\n  · 白醋：10 ml\n  · 淀粉：210 g\n  · 盐：35 g\n  · 葱：30 g\n  · 姜：30 g\n  · 料酒：25 ml\n  · 香菜：1 颗\n  · 面粉：100 g\n  · 鸡蛋：1 个"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [
+            "get_recipe_source",
+            "parse_recipe_content"
+          ],
+          "inferred_total": 2
+        },
+        "wall_time_ms": 62757.31530000121,
+        "user_input": "想做糖醋鲤鱼，还差哪些食材把购物清单列给我"
+      },
+      "assistant_reply": "已按**最新库存**与菜谱用料重新计算缺口，待购清单如下：\n\n  · 鲤鱼：1500.0 g\n  · 清水：50.0 ml\n  · 番茄酱：40.0 g\n  · 白糖：20.0 g\n  · 白醋：10.0 ml\n  · 淀粉：210.0 g\n  · 盐：35.0 g\n  · 葱：30.0 g\n  · 姜：30.0 g\n  · 料酒：25.0 ml\n  · 香菜：1.0 颗\n  · 面粉：100.0 g\n  · 鸡蛋：1.0 个\n\n以下为「糖醋鲤鱼」的用料清单（来自本地菜谱解析）：\n\n  · 鲤鱼：1500 g\n  · 清水：50 ml\n  · 番茄酱：40 g\n  · 白糖：20 g\n  · 白醋：10 ml\n  · 淀粉：210 g\n  · 盐：35 g\n  · 葱：30 g\n  · 姜：30 g\n  · 料酒：25 ml\n  · 香菜：1 颗\n  · 面粉：100 g\n  · 鸡蛋：1 个"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 62757.31530000121,
+    "turn_count": 1
+  }
+}

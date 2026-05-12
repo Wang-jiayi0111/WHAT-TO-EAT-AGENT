@@ -1,0 +1,179 @@
+{
+  "case_id": "edge_case_021",
+  "source_file": "dietary_advice.json",
+  "fixture": {
+    "case_id": "edge_case_021",
+    "scenario_category": "edge_case",
+    "difficulty": "medium",
+    "description": "辛辣刺激 vs 胃病矛盾的冲突提示（不应武断单一结论）",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "我有胃溃疡但又特别想吃重庆火锅级别的辣，你给个权威说法行不行"
+      }
+    ],
+    "expected": {
+      "primary_intent": "dietary_advice",
+      "intents": [
+        "dietary_advice"
+      ],
+      "needs_clarification": false,
+      "key_slots": {
+        "diet_topic": "胃病与辛辣饮食冲突"
+      },
+      "golden_recipe_ids": [],
+      "output_contains": [
+        "胃",
+        "辣"
+      ],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": []
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:edge_case_021",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "我有胃溃疡但又特别想吃重庆火锅级别的辣，你给个权威说法行不行",
+      "wall_time_ms": 23899.659200000315,
+      "snapshot": {
+        "final_response": "好的，我已记录您的饮食偏好，以后推荐菜谱时会注意。\n\n哎呀，理解你对重庆火锅的热爱，但考虑到你的胃溃疡情况，真的得小心点哦。辛辣食物可能会刺激胃黏膜，加重溃疡症状，甚至引起疼痛。建议先以温和饮食为主，等身体恢复得差不多了，再偶尔尝试一点点辣味，也记得要控制量哦。如果实在想吃火锅的话，可以试试清汤锅底，多加一些蔬菜和容易消化的食材，这样既满足了口腹之欲，又照顾到了健康。希望你能早日康复！",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "profile_sync",
+        "intents": [
+          "profile_sync",
+          "dietary_advice"
+        ],
+        "confidence": 0.85,
+        "needs_clarification": false,
+        "slots": {
+          "profile_fragments": [
+            "有胃溃疡"
+          ],
+          "target_member": "default_user",
+          "diet_topic": "胃溃疡与辛辣食物"
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "profile_sync",
+          "secondary_intents": [
+            "dietary_advice"
+          ],
+          "intents": [
+            "profile_sync",
+            "dietary_advice"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 1,
+          "slots": {
+            "profile_fragments": [
+              "有胃溃疡"
+            ],
+            "target_member": "default_user",
+            "diet_topic": "胃溃疡与辛辣食物"
+          },
+          "missing_slots": [],
+          "confidence": 0.85,
+          "extracted_entities": {
+            "preferences": [
+              "有胃溃疡"
+            ]
+          },
+          "router_reasoning": "用户询问关于胃溃疡情况下食用辣的食物（重庆火锅级别）的权威建议，这属于营养健康类问答，归为 dietary_advice。用户同时提供了自身情况（胃溃疡），这是 profile_sync 的信息。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {
+            "preferences": [
+              "有胃溃疡"
+            ]
+          },
+          "router_reasoning": "用户询问关于胃溃疡情况下食用辣的食物（重庆火锅级别）的权威建议，这属于营养健康类问答，归为 dietary_advice。用户同时提供了自身情况（胃溃疡），这是 profile_sync 的信息。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "slots": {
+            "profile_fragments": [
+              "有胃溃疡"
+            ],
+            "target_member": "default_user",
+            "diet_topic": "胃溃疡与辛辣食物"
+          },
+          "error_state": {}
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {},
+        "expert_payloads": {},
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "我有胃溃疡但又特别想吃重庆火锅级别的辣，你给个权威说法行不行"
+          },
+          {
+            "type": "ai",
+            "content": "好的，我已记录您的饮食偏好，以后推荐菜谱时会注意。\n\n哎呀，理解你对重庆火锅的热爱，但考虑到你的胃溃疡情况，真的得小心点哦。辛辣食物可能会刺激胃黏膜，加重溃疡症状，甚至引起疼痛。建议先以温和饮食为主，等身体恢复得差不多了，再偶尔尝试一点点辣味，也记得要控制量哦。如果实在想吃火锅的话，可以试试清汤锅底，多加一些蔬菜和容易消化的食材，这样既满足了口腹之欲，又照顾到了健康。希望你能早日康复！"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [],
+          "inferred_total": 0
+        },
+        "wall_time_ms": 23899.659200000315,
+        "user_input": "我有胃溃疡但又特别想吃重庆火锅级别的辣，你给个权威说法行不行"
+      },
+      "assistant_reply": "好的，我已记录您的饮食偏好，以后推荐菜谱时会注意。\n\n哎呀，理解你对重庆火锅的热爱，但考虑到你的胃溃疡情况，真的得小心点哦。辛辣食物可能会刺激胃黏膜，加重溃疡症状，甚至引起疼痛。建议先以温和饮食为主，等身体恢复得差不多了，再偶尔尝试一点点辣味，也记得要控制量哦。如果实在想吃火锅的话，可以试试清汤锅底，多加一些蔬菜和容易消化的食材，这样既满足了口腹之欲，又照顾到了健康。希望你能早日康复！"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 23899.659200000315,
+    "turn_count": 1
+  }
+}

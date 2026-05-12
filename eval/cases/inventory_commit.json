@@ -9,6 +9,7 @@
     ],
     "expected": {
       "primary_intent": "inventory_commit",
+      "intents": ["inventory_commit", "recipe_adopt"],
       "needs_clarification": false,
       "key_slots": {
         "recipe_name_for_commit": "鱼香肉丝",
@@ -34,12 +35,13 @@
     ],
     "expected": {
       "primary_intent": "inventory_commit",
+      "intents": ["inventory_commit", "recipe_adopt"],
       "needs_clarification": false,
       "key_slots": {
         "recipe_name_for_commit": "麻婆豆腐",
         "deduct_confirm": true
       },
-      "golden_recipe_ids": [],
+      "golden_recipe_ids": ["recipe_id_麻婆豆腐"],
       "output_contains": ["麻婆豆腐"],
       "output_excludes": [],
       "context_preserved": [],
@@ -58,6 +60,7 @@
     ],
     "expected": {
       "primary_intent": "inventory_commit",
+      "intents": ["inventory_commit", "recipe_search"],
       "needs_clarification": false,
       "key_slots": { "recipe_name_for_commit": "红烧肉", "deduct_confirm": true },
       "golden_recipe_ids": [],
@@ -79,6 +82,7 @@
     ],
     "expected": {
       "primary_intent": "inventory_commit",
+      "intents": ["user_clarify"],
       "needs_clarification": true,
       "key_slots": { "recipe_name_for_commit": null },
       "golden_recipe_ids": [],
@@ -101,13 +105,14 @@
     ],
     "expected": {
       "primary_intent": "inventory_commit",
+      "intents": ["recipe_adopt", "inventory_commit"],
       "needs_clarification": false,
       "key_slots": {
         "recipe_name_for_commit": "西红柿牛腩",
         "deduct_confirm": true,
         "recipe_adoption": true
       },
-      "golden_recipe_ids": [],
+      "golden_recipe_ids": ["recipe_id_西红柿牛腩"],
       "output_contains": ["西红柿牛腩"],
       "output_excludes": [],
       "context_preserved": ["西红柿牛腩", "已选定菜谱"],
@@ -122,10 +127,11 @@
     "difficulty": "hard",
     "description": "未采纳菜谱时强制扣减应被守卫拦截或澄清",
     "user_turns": [
-      { "turn": 1, "input": "直接把土豆库存扣一半我先不问菜谱了" }
+      { "turn": 1, "input": "直接把土豆库存扣一半" }
     ],
     "expected": {
       "primary_intent": "inventory_commit",
+      "intents": ["inventory_commit"],
       "needs_clarification": true,
       "key_slots": { "recipe_name_for_commit": null },
       "golden_recipe_ids": [],

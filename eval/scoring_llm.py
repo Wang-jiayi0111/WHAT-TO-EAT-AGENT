@@ -39,6 +39,7 @@ def _build_eval_context_json(
     ctx = {
         "expected_summary": {
             "primary_intent": expected.get("primary_intent"),
+            "intents": expected.get("intents"),
             "needs_clarification": expected.get("needs_clarification"),
             "scenario_category": expected.get("scenario_category"),
             "output_contains": expected.get("output_contains"),
@@ -47,6 +48,12 @@ def _build_eval_context_json(
         },
         "user_turn_inputs": user_inputs,
         "assistant_replies": replies,
+        "last_turn_snapshot_excerpt": {
+            "primary_intent": (turns[-1].get("snapshot") or {}).get("primary_intent")
+            if turns
+            else None,
+            "intents": (turns[-1].get("snapshot") or {}).get("intents") if turns else None,
+        },
         "recipe_detail_excerpt": None,
     }
     if isinstance(recipe_detail, dict):

@@ -1,0 +1,999 @@
+{
+  "case_id": "recipe_query_055",
+  "source_file": "recipe_adopt.json",
+  "fixture": {
+    "case_id": "recipe_query_055",
+    "scenario_category": "recipe_query",
+    "difficulty": "easy",
+    "description": "单轮明确采纳当前候选菜谱",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "就选糖醋排骨了，我今晚就做这个，帮我找这道菜"
+      }
+    ],
+    "expected": {
+      "primary_intent": "recipe_adopt",
+      "intents": [
+        "recipe_adopt",
+        "recipe_search"
+      ],
+      "needs_clarification": false,
+      "key_slots": {
+        "recipe_adoption": true,
+        "recipe_name": "糖醋排骨"
+      },
+      "golden_recipe_ids": [
+        "recipe_id_糖醋排骨"
+      ],
+      "output_contains": [
+        "糖醋排骨"
+      ],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "auto",
+    "linked_scenarios": [
+      "S-01",
+      "S-02"
+    ]
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:recipe_query_055",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "就选糖醋排骨了，我今晚就做这个，帮我找这道菜",
+      "wall_time_ms": 75023.11220000047,
+      "snapshot": {
+        "final_response": "好的呀，糖醋排骨真是个好选择，酸甜可口，特别下饭。下面给你分享一个简单的做法：\n\n### 材料\n- 排骨 500克\n- 生姜几片\n- 大葱一根（切段）\n- 白芝麻少许（装饰用）\n\n### 调料\n- 酱油 1大勺\n- 米醋或白醋 4大勺\n- 糖 3大勺\n- 料酒 1大勺\n- 水适量\n- 盐少许\n\n### 做法\n1. **准备排骨**：排骨洗净后切成小段，用开水焯一下去除血水和杂质。\n2. **腌制**：将排骨放入碗中，加入酱油、少量盐以及料酒腌制约15分钟。\n3. **炸排骨**：锅里放足够的油加热至六成热，把排骨分批放入油锅中炸至金黄色捞出沥油。\n4. **调汁**：另一个干净的锅内加入适量清水，然后加入米醋、糖、剩下的酱油和之前腌排骨时未用完的调料，大火煮沸后转小火慢慢熬制成浓稠状。\n5. **混合烹饪**：将炸好的排骨倒入锅内快速翻炒均匀，让每块排骨都裹上漂亮的糖醋汁。\n6. **装盘**：最后撒上一些白芝麻和葱花作为点缀即可。\n\n希望你做出来的糖醋排骨美味极了！如果过程中遇到什么问题或者需要调整的地方，随时可以问我哦~\n\n以下为「糖醋排骨」的用料清单（来自本地菜谱解析）：\n\n  · 排骨：300 g\n  · 白砂糖：30 g\n  · 食用油：300 ml\n  · 生抽：5 ml\n  · 蚝油：5 ml\n  · 老抽：5 ml\n  · 鸡精：2 g\n  · 姜片：2 片\n  · 芝麻：2 g\n  · 番茄酱：10 g\n  · 香醋：5 ml\n  · 五香粉：2 g\n\n以下为「糖醋排骨」的烹饪步骤（来自本地菜谱解析）：\n\n  · 排骨与姜片放入冷水中，大火加热至水沸腾、出现大量泡沫后转中火，待水持续沸腾时再转小火焯水 2–3 分钟，捞出备用。\n  · 用开水反复清洗排骨 2–3 遍，确保彻底去除血沫。\n  · 在锅中倒入足够量的食用油进行深炸（油量依据锅具大小而定，建议约 300 ml 供一般家庭使用），待油温升至约 170°C 后，下排骨炸制 3–5 分钟，直至表面略呈金黄色，捞出控油。\n  · 另取干净锅，置于小火上加热 50 ml 热水，加入白砂糖 30 g，轻轻搅拌直至糖完全溶解，并略呈淡黄色。此步骤的重点在于观察糖溶解情况，无需过分依赖颜色变化。\n  · 将炸好的排骨倒入炒制糖水的锅中，迅速翻炒 30 秒后，依次加入香醋 5 ml、生抽 5 ml、蚝油 5 ml、鸡精 2 g、番茄酱 10 g、五香粉 2 g，再次翻炒 30 秒，使调料均匀裹覆排骨，然后加入开水至刚好没过排骨。\n  · 用大火将锅中液体煮沸后，加入老抽 5 ml 进行上色，并快速收汁；若排骨块较大，可转小火焖煮 5–10 分钟以便更好地入味，切勿采用中火长时间炖煮 20 分钟，以免损伤口感。\n  · 起锅装盘，撒上芝麻 2 g，即可享用。",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "recipe_search",
+        "intents": [
+          "recipe_search",
+          "recipe_adopt"
+        ],
+        "confidence": 0.9,
+        "needs_clarification": false,
+        "slots": {
+          "recipe_name": "糖醋排骨",
+          "recipe_adoption": true
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "recipe_search",
+          "secondary_intents": [
+            "recipe_adopt"
+          ],
+          "intents": [
+            "recipe_search",
+            "recipe_adopt"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 1,
+          "slots": {
+            "recipe_name": "糖醋排骨",
+            "recipe_adoption": true
+          },
+          "missing_slots": [],
+          "confidence": 0.9,
+          "extracted_entities": {
+            "recipe_name": "糖醋排骨"
+          },
+          "router_reasoning": "用户明确采纳当前会话中推荐的糖醋排骨，并表示今晚就做这道菜，同时请求查找该菜谱。这里涉及到了recipe_adopt和recipe_search两个意图。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": "F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\糖醋排骨\\糖醋排骨.md",
+          "recipe_candidates": [],
+          "selected_recipe_title": "糖醋排骨",
+          "selected_recipe_id": "F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\糖醋排骨\\糖醋排骨.md",
+          "recipe_requirements": [
+            {
+              "name": "排骨",
+              "amount": 300.0,
+              "unit": "g"
+            },
+            {
+              "name": "白砂糖",
+              "amount": 30.0,
+              "unit": "g"
+            },
+            {
+              "name": "食用油",
+              "amount": 300.0,
+              "unit": "ml"
+            },
+            {
+              "name": "生抽",
+              "amount": 5.0,
+              "unit": "ml"
+            },
+            {
+              "name": "蚝油",
+              "amount": 5.0,
+              "unit": "ml"
+            },
+            {
+              "name": "老抽",
+              "amount": 5.0,
+              "unit": "ml"
+            },
+            {
+              "name": "鸡精",
+              "amount": 2.0,
+              "unit": "g"
+            },
+            {
+              "name": "姜片",
+              "amount": 2.0,
+              "unit": "片"
+            },
+            {
+              "name": "芝麻",
+              "amount": 2.0,
+              "unit": "g"
+            },
+            {
+              "name": "番茄酱",
+              "amount": 10.0,
+              "unit": "g"
+            },
+            {
+              "name": "香醋",
+              "amount": 5.0,
+              "unit": "ml"
+            },
+            {
+              "name": "五香粉",
+              "amount": 2.0,
+              "unit": "g"
+            }
+          ],
+          "recipe_steps": [
+            "排骨与姜片放入冷水中，大火加热至水沸腾、出现大量泡沫后转中火，待水持续沸腾时再转小火焯水 2–3 分钟，捞出备用。",
+            "用开水反复清洗排骨 2–3 遍，确保彻底去除血沫。",
+            "在锅中倒入足够量的食用油进行深炸（油量依据锅具大小而定，建议约 300 ml 供一般家庭使用），待油温升至约 170°C 后，下排骨炸制 3–5 分钟，直至表面略呈金黄色，捞出控油。",
+            "另取干净锅，置于小火上加热 50 ml 热水，加入白砂糖 30 g，轻轻搅拌直至糖完全溶解，并略呈淡黄色。此步骤的重点在于观察糖溶解情况，无需过分依赖颜色变化。",
+            "将炸好的排骨倒入炒制糖水的锅中，迅速翻炒 30 秒后，依次加入香醋 5 ml、生抽 5 ml、蚝油 5 ml、鸡精 2 g、番茄酱 10 g、五香粉 2 g，再次翻炒 30 秒，使调料均匀裹覆排骨，然后加入开水至刚好没过排骨。",
+            "用大火将锅中液体煮沸后，加入老抽 5 ml 进行上色，并快速收汁；若排骨块较大，可转小火焖煮 5–10 分钟以便更好地入味，切勿采用中火长时间炖煮 20 分钟，以免损伤口感。",
+            "起锅装盘，撒上芝麻 2 g，即可享用。"
+          ],
+          "recipe_title_locked": "糖醋排骨",
+          "recipe_parser_version": "llm_structured_v1"
+        },
+        "runtime_bundle": {
+          "extracted_entities": {
+            "recipe_name": "糖醋排骨"
+          },
+          "router_reasoning": "用户明确采纳当前会话中推荐的糖醋排骨，并表示今晚就做这道菜，同时请求查找该菜谱。这里涉及到了recipe_adopt和recipe_search两个意图。",
+          "recipe_candidates": [],
+          "selected_recipe_id": "F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\糖醋排骨\\糖醋排骨.md",
+          "selected_recipe_title": "糖醋排骨",
+          "recipe_requirements": [
+            {
+              "name": "排骨",
+              "amount": 300.0,
+              "unit": "g"
+            },
+            {
+              "name": "白砂糖",
+              "amount": 30.0,
+              "unit": "g"
+            },
+            {
+              "name": "食用油",
+              "amount": 300.0,
+              "unit": "ml"
+            },
+            {
+              "name": "生抽",
+              "amount": 5.0,
+              "unit": "ml"
+            },
+            {
+              "name": "蚝油",
+              "amount": 5.0,
+              "unit": "ml"
+            },
+            {
+              "name": "老抽",
+              "amount": 5.0,
+              "unit": "ml"
+            },
+            {
+              "name": "鸡精",
+              "amount": 2.0,
+              "unit": "g"
+            },
+            {
+              "name": "姜片",
+              "amount": 2.0,
+              "unit": "片"
+            },
+            {
+              "name": "芝麻",
+              "amount": 2.0,
+              "unit": "g"
+            },
+            {
+              "name": "番茄酱",
+              "amount": 10.0,
+              "unit": "g"
+            },
+            {
+              "name": "香醋",
+              "amount": 5.0,
+              "unit": "ml"
+            },
+            {
+              "name": "五香粉",
+              "amount": 2.0,
+              "unit": "g"
+            }
+          ],
+          "recipe_title_locked": "糖醋排骨",
+          "recipe_parser_version": "llm_structured_v1",
+          "recipe_cook_step": [
+            "排骨与姜片放入冷水中，大火加热至水沸腾、出现大量泡沫后转中火，待水持续沸腾时再转小火焯水 2–3 分钟，捞出备用。",
+            "用开水反复清洗排骨 2–3 遍，确保彻底去除血沫。",
+            "在锅中倒入足够量的食用油进行深炸（油量依据锅具大小而定，建议约 300 ml 供一般家庭使用），待油温升至约 170°C 后，下排骨炸制 3–5 分钟，直至表面略呈金黄色，捞出控油。",
+            "另取干净锅，置于小火上加热 50 ml 热水，加入白砂糖 30 g，轻轻搅拌直至糖完全溶解，并略呈淡黄色。此步骤的重点在于观察糖溶解情况，无需过分依赖颜色变化。",
+            "将炸好的排骨倒入炒制糖水的锅中，迅速翻炒 30 秒后，依次加入香醋 5 ml、生抽 5 ml、蚝油 5 ml、鸡精 2 g、番茄酱 10 g、五香粉 2 g，再次翻炒 30 秒，使调料均匀裹覆排骨，然后加入开水至刚好没过排骨。",
+            "用大火将锅中液体煮沸后，加入老抽 5 ml 进行上色，并快速收汁；若排骨块较大，可转小火焖煮 5–10 分钟以便更好地入味，切勿采用中火长时间炖煮 20 分钟，以免损伤口感。",
+            "起锅装盘，撒上芝麻 2 g，即可享用。"
+          ],
+          "inventory_snapshot": {
+            "五花肉": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "排骨": {
+              "amount": 250.0,
+              "unit": "g"
+            },
+            "牛筋": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "胡萝卜": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "苦瓜": {
+              "amount": 2.0,
+              "unit": "根"
+            },
+            "西红柿": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "豆腐": {
+              "amount": 1.0,
+              "unit": "块"
+            },
+            "饼干": {
+              "amount": 1.0,
+              "unit": "盒"
+            },
+            "鸡胸肉": {
+              "amount": 1.0,
+              "unit": "个"
+            }
+          },
+          "cached_shopping_gap": {
+            "shopping_list": [
+              {
+                "name": "排骨",
+                "amount": 50.0,
+                "unit": "g"
+              },
+              {
+                "name": "白砂糖",
+                "amount": 30.0,
+                "unit": "g"
+              },
+              {
+                "name": "食用油",
+                "amount": 300.0,
+                "unit": "ml"
+              },
+              {
+                "name": "生抽",
+                "amount": 5.0,
+                "unit": "ml"
+              },
+              {
+                "name": "蚝油",
+                "amount": 5.0,
+                "unit": "ml"
+              },
+              {
+                "name": "老抽",
+                "amount": 5.0,
+                "unit": "ml"
+              },
+              {
+                "name": "鸡精",
+                "amount": 2.0,
+                "unit": "g"
+              },
+              {
+                "name": "姜片",
+                "amount": 2.0,
+                "unit": "片"
+              },
+              {
+                "name": "芝麻",
+                "amount": 2.0,
+                "unit": "g"
+              },
+              {
+                "name": "番茄酱",
+                "amount": 10.0,
+                "unit": "g"
+              },
+              {
+                "name": "香醋",
+                "amount": 5.0,
+                "unit": "ml"
+              },
+              {
+                "name": "五香粉",
+                "amount": 2.0,
+                "unit": "g"
+              }
+            ],
+            "sufficient_items": [],
+            "missing_items": [
+              {
+                "name": "白砂糖",
+                "amount": 30.0,
+                "unit": "g"
+              },
+              {
+                "name": "食用油",
+                "amount": 300.0,
+                "unit": "ml"
+              },
+              {
+                "name": "生抽",
+                "amount": 5.0,
+                "unit": "ml"
+              },
+              {
+                "name": "蚝油",
+                "amount": 5.0,
+                "unit": "ml"
+              },
+              {
+                "name": "老抽",
+                "amount": 5.0,
+                "unit": "ml"
+              },
+              {
+                "name": "鸡精",
+                "amount": 2.0,
+                "unit": "g"
+              },
+              {
+                "name": "姜片",
+                "amount": 2.0,
+                "unit": "片"
+              },
+              {
+                "name": "芝麻",
+                "amount": 2.0,
+                "unit": "g"
+              },
+              {
+                "name": "番茄酱",
+                "amount": 10.0,
+                "unit": "g"
+              },
+              {
+                "name": "香醋",
+                "amount": 5.0,
+                "unit": "ml"
+              },
+              {
+                "name": "五香粉",
+                "amount": 2.0,
+                "unit": "g"
+              }
+            ],
+            "pending_manual": [],
+            "computed_at": "2026-05-12T06:41:35.133493+00:00"
+          },
+          "gap_basis": {
+            "recipe_title": "糖醋排骨",
+            "r_fingerprint": "a809b82fee913171e9811f8d",
+            "inventory_fingerprint": "aa6a5c9fdd4ec008e641e672"
+          },
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": true,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "shopping_list": [
+            {
+              "name": "排骨",
+              "amount": 50.0,
+              "unit": "g"
+            },
+            {
+              "name": "白砂糖",
+              "amount": 30.0,
+              "unit": "g"
+            },
+            {
+              "name": "食用油",
+              "amount": 300.0,
+              "unit": "ml"
+            },
+            {
+              "name": "生抽",
+              "amount": 5.0,
+              "unit": "ml"
+            },
+            {
+              "name": "蚝油",
+              "amount": 5.0,
+              "unit": "ml"
+            },
+            {
+              "name": "老抽",
+              "amount": 5.0,
+              "unit": "ml"
+            },
+            {
+              "name": "鸡精",
+              "amount": 2.0,
+              "unit": "g"
+            },
+            {
+              "name": "姜片",
+              "amount": 2.0,
+              "unit": "片"
+            },
+            {
+              "name": "芝麻",
+              "amount": 2.0,
+              "unit": "g"
+            },
+            {
+              "name": "番茄酱",
+              "amount": 10.0,
+              "unit": "g"
+            },
+            {
+              "name": "香醋",
+              "amount": 5.0,
+              "unit": "ml"
+            },
+            {
+              "name": "五香粉",
+              "amount": 2.0,
+              "unit": "g"
+            }
+          ],
+          "sufficient_items": [],
+          "missing_items": [
+            {
+              "name": "白砂糖",
+              "amount": 30.0,
+              "unit": "g"
+            },
+            {
+              "name": "食用油",
+              "amount": 300.0,
+              "unit": "ml"
+            },
+            {
+              "name": "生抽",
+              "amount": 5.0,
+              "unit": "ml"
+            },
+            {
+              "name": "蚝油",
+              "amount": 5.0,
+              "unit": "ml"
+            },
+            {
+              "name": "老抽",
+              "amount": 5.0,
+              "unit": "ml"
+            },
+            {
+              "name": "鸡精",
+              "amount": 2.0,
+              "unit": "g"
+            },
+            {
+              "name": "姜片",
+              "amount": 2.0,
+              "unit": "片"
+            },
+            {
+              "name": "芝麻",
+              "amount": 2.0,
+              "unit": "g"
+            },
+            {
+              "name": "番茄酱",
+              "amount": 10.0,
+              "unit": "g"
+            },
+            {
+              "name": "香醋",
+              "amount": 5.0,
+              "unit": "ml"
+            },
+            {
+              "name": "五香粉",
+              "amount": 2.0,
+              "unit": "g"
+            }
+          ],
+          "gap_delivery_mode": "fresh",
+          "effective_constraint": {
+            "scope_id": "default_user",
+            "hard_exclusions": [
+              "芒果"
+            ],
+            "soft_negative_hints": [],
+            "soft_positive_hints": [],
+            "dietary_target": null,
+            "temporal_conditions": [
+              "想吃重庆火锅级别的辣",
+              "极清淡少油少纤维",
+              "偏好偏咸",
+              "感冒嗓子疼",
+              "肠胃不适"
+            ],
+            "summary_snippet": null
+          },
+          "slots": {
+            "recipe_name": "糖醋排骨",
+            "recipe_adoption": true
+          },
+          "error_state": {
+            "error_code": null,
+            "recoverable": true,
+            "error_detail": null
+          }
+        },
+        "inventory_state": {
+          "inventory_snapshot": {
+            "五花肉": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "排骨": {
+              "amount": 250.0,
+              "unit": "g"
+            },
+            "牛筋": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "胡萝卜": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "苦瓜": {
+              "amount": 2.0,
+              "unit": "根"
+            },
+            "西红柿": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "豆腐": {
+              "amount": 1.0,
+              "unit": "块"
+            },
+            "饼干": {
+              "amount": 1.0,
+              "unit": "盒"
+            },
+            "鸡胸肉": {
+              "amount": 1.0,
+              "unit": "个"
+            }
+          },
+          "cached_shopping_gap": {
+            "shopping_list": [
+              {
+                "name": "排骨",
+                "amount": 50.0,
+                "unit": "g"
+              },
+              {
+                "name": "白砂糖",
+                "amount": 30.0,
+                "unit": "g"
+              },
+              {
+                "name": "食用油",
+                "amount": 300.0,
+                "unit": "ml"
+              },
+              {
+                "name": "生抽",
+                "amount": 5.0,
+                "unit": "ml"
+              },
+              {
+                "name": "蚝油",
+                "amount": 5.0,
+                "unit": "ml"
+              },
+              {
+                "name": "老抽",
+                "amount": 5.0,
+                "unit": "ml"
+              },
+              {
+                "name": "鸡精",
+                "amount": 2.0,
+                "unit": "g"
+              },
+              {
+                "name": "姜片",
+                "amount": 2.0,
+                "unit": "片"
+              },
+              {
+                "name": "芝麻",
+                "amount": 2.0,
+                "unit": "g"
+              },
+              {
+                "name": "番茄酱",
+                "amount": 10.0,
+                "unit": "g"
+              },
+              {
+                "name": "香醋",
+                "amount": 5.0,
+                "unit": "ml"
+              },
+              {
+                "name": "五香粉",
+                "amount": 2.0,
+                "unit": "g"
+              }
+            ],
+            "sufficient_items": [],
+            "missing_items": [
+              {
+                "name": "白砂糖",
+                "amount": 30.0,
+                "unit": "g"
+              },
+              {
+                "name": "食用油",
+                "amount": 300.0,
+                "unit": "ml"
+              },
+              {
+                "name": "生抽",
+                "amount": 5.0,
+                "unit": "ml"
+              },
+              {
+                "name": "蚝油",
+                "amount": 5.0,
+                "unit": "ml"
+              },
+              {
+                "name": "老抽",
+                "amount": 5.0,
+                "unit": "ml"
+              },
+              {
+                "name": "鸡精",
+                "amount": 2.0,
+                "unit": "g"
+              },
+              {
+                "name": "姜片",
+                "amount": 2.0,
+                "unit": "片"
+              },
+              {
+                "name": "芝麻",
+                "amount": 2.0,
+                "unit": "g"
+              },
+              {
+                "name": "番茄酱",
+                "amount": 10.0,
+                "unit": "g"
+              },
+              {
+                "name": "香醋",
+                "amount": 5.0,
+                "unit": "ml"
+              },
+              {
+                "name": "五香粉",
+                "amount": 2.0,
+                "unit": "g"
+              }
+            ],
+            "pending_manual": [],
+            "computed_at": "2026-05-12T06:41:35.133493+00:00"
+          },
+          "gap_basis": {
+            "recipe_title": "糖醋排骨",
+            "r_fingerprint": "a809b82fee913171e9811f8d",
+            "inventory_fingerprint": "aa6a5c9fdd4ec008e641e672"
+          },
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": true,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "gap_delivery_mode": "fresh",
+          "shopping_list": [
+            {
+              "name": "排骨",
+              "amount": 50.0,
+              "unit": "g"
+            },
+            {
+              "name": "白砂糖",
+              "amount": 30.0,
+              "unit": "g"
+            },
+            {
+              "name": "食用油",
+              "amount": 300.0,
+              "unit": "ml"
+            },
+            {
+              "name": "生抽",
+              "amount": 5.0,
+              "unit": "ml"
+            },
+            {
+              "name": "蚝油",
+              "amount": 5.0,
+              "unit": "ml"
+            },
+            {
+              "name": "老抽",
+              "amount": 5.0,
+              "unit": "ml"
+            },
+            {
+              "name": "鸡精",
+              "amount": 2.0,
+              "unit": "g"
+            },
+            {
+              "name": "姜片",
+              "amount": 2.0,
+              "unit": "片"
+            },
+            {
+              "name": "芝麻",
+              "amount": 2.0,
+              "unit": "g"
+            },
+            {
+              "name": "番茄酱",
+              "amount": 10.0,
+              "unit": "g"
+            },
+            {
+              "name": "香醋",
+              "amount": 5.0,
+              "unit": "ml"
+            },
+            {
+              "name": "五香粉",
+              "amount": 2.0,
+              "unit": "g"
+            }
+          ],
+          "sufficient_items": [],
+          "missing_items": [
+            {
+              "name": "白砂糖",
+              "amount": 30.0,
+              "unit": "g"
+            },
+            {
+              "name": "食用油",
+              "amount": 300.0,
+              "unit": "ml"
+            },
+            {
+              "name": "生抽",
+              "amount": 5.0,
+              "unit": "ml"
+            },
+            {
+              "name": "蚝油",
+              "amount": 5.0,
+              "unit": "ml"
+            },
+            {
+              "name": "老抽",
+              "amount": 5.0,
+              "unit": "ml"
+            },
+            {
+              "name": "鸡精",
+              "amount": 2.0,
+              "unit": "g"
+            },
+            {
+              "name": "姜片",
+              "amount": 2.0,
+              "unit": "片"
+            },
+            {
+              "name": "芝麻",
+              "amount": 2.0,
+              "unit": "g"
+            },
+            {
+              "name": "番茄酱",
+              "amount": 10.0,
+              "unit": "g"
+            },
+            {
+              "name": "香醋",
+              "amount": 5.0,
+              "unit": "ml"
+            },
+            {
+              "name": "五香粉",
+              "amount": 2.0,
+              "unit": "g"
+            }
+          ]
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [
+            "五花肉",
+            "排骨",
+            "牛筋",
+            "胡萝卜",
+            "苦瓜",
+            "西红柿",
+            "豆腐",
+            "饼干",
+            "鸡胸肉"
+          ],
+          "cached_shopping_gap_present": true,
+          "gap_basis": {
+            "recipe_title": "糖醋排骨",
+            "r_fingerprint": "a809b82fee913171e9811f8d",
+            "inventory_fingerprint": "aa6a5c9fdd4ec008e641e672"
+          },
+          "recipe_use_confirmed": true
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {
+          "error_code": null,
+          "recoverable": true,
+          "error_detail": null
+        },
+        "expert_payloads": {
+          "recipe_detail": {
+            "title": "糖醋排骨",
+            "ingredients": [
+              {
+                "name": "排骨",
+                "amount": 300.0,
+                "unit": "g"
+              },
+              {
+                "name": "白砂糖",
+                "amount": 30.0,
+                "unit": "g"
+              },
+              {
+                "name": "食用油",
+                "amount": 300.0,
+                "unit": "ml"
+              },
+              {
+                "name": "生抽",
+                "amount": 5.0,
+                "unit": "ml"
+              },
+              {
+                "name": "蚝油",
+                "amount": 5.0,
+                "unit": "ml"
+              },
+              {
+                "name": "老抽",
+                "amount": 5.0,
+                "unit": "ml"
+              },
+              {
+                "name": "鸡精",
+                "amount": 2.0,
+                "unit": "g"
+              },
+              {
+                "name": "姜片",
+                "amount": 2.0,
+                "unit": "片"
+              },
+              {
+                "name": "芝麻",
+                "amount": 2.0,
+                "unit": "g"
+              },
+              {
+                "name": "番茄酱",
+                "amount": 10.0,
+                "unit": "g"
+              },
+              {
+                "name": "香醋",
+                "amount": 5.0,
+                "unit": "ml"
+              },
+              {
+                "name": "五香粉",
+                "amount": 2.0,
+                "unit": "g"
+              }
+            ],
+            "steps": [
+              "排骨与姜片放入冷水中，大火加热至水沸腾、出现大量泡沫后转中火，待水持续沸腾时再转小火焯水 2–3 分钟，捞出备用。",
+              "用开水反复清洗排骨 2–3 遍，确保彻底去除血沫。",
+              "在锅中倒入足够量的食用油进行深炸（油量依据锅具大小而定，建议约 300 ml 供一般家庭使用），待油温升至约 170°C 后，下排骨炸制 3–5 分钟，直至表面略呈金黄色，捞出控油。",
+              "另取干净锅，置于小火上加热 50 ml 热水，加入白砂糖 30 g，轻轻搅拌直至糖完全溶解，并略呈淡黄色。此步骤的重点在于观察糖溶解情况，无需过分依赖颜色变化。",
+              "将炸好的排骨倒入炒制糖水的锅中，迅速翻炒 30 秒后，依次加入香醋 5 ml、生抽 5 ml、蚝油 5 ml、鸡精 2 g、番茄酱 10 g、五香粉 2 g，再次翻炒 30 秒，使调料均匀裹覆排骨，然后加入开水至刚好没过排骨。",
+              "用大火将锅中液体煮沸后，加入老抽 5 ml 进行上色，并快速收汁；若排骨块较大，可转小火焖煮 5–10 分钟以便更好地入味，切勿采用中火长时间炖煮 20 分钟，以免损伤口感。",
+              "起锅装盘，撒上芝麻 2 g，即可享用。"
+            ]
+          },
+          "status": "success"
+        },
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "就选糖醋排骨了，我今晚就做这个，帮我找这道菜"
+          },
+          {
+            "type": "ai",
+            "content": "好的呀，糖醋排骨真是个好选择，酸甜可口，特别下饭。下面给你分享一个简单的做法：\n\n### 材料\n- 排骨 500克\n- 生姜几片\n- 大葱一根（切段）\n- 白芝麻少许（装饰用）\n\n### 调料\n- 酱油 1大勺\n- 米醋或白醋 4大勺\n- 糖 3大勺\n- 料酒 1大勺\n- 水适量\n- 盐少许\n\n### 做法\n1. **准备排骨**：排骨洗净后切成小段，用开水焯一下去除血水和杂质。\n2. **腌制**：将排骨放入碗中，加入酱油、少量盐以及料酒腌制约15分钟。\n3. **炸排骨**：锅里放足够的油加热至六成热，把排骨分批放入油锅中炸至金黄色捞出沥油。\n4. **调汁**：另一个干净的锅内加入适量清水，然后加入米醋、糖、剩下的酱油和之前腌排骨时未用完的调料，大火煮沸后转小火慢慢熬制成浓稠状。\n5. **混合烹饪**：将炸好的排骨倒入锅内快速翻炒均匀，让每块排骨都裹上漂亮的糖醋汁。\n6. **装盘**：最后撒上一些白芝麻和葱花作为点缀即可。\n\n希望你做出来的糖醋排骨美味极了！如果过程中遇到什么问题或者需要调整的地方，随时可以问我哦~\n\n以下为「糖醋排骨」的用料清单（来自本地菜谱解析）：\n\n  · 排骨：300 g\n  · 白砂糖：30 g\n  · 食用油：300 ml\n  · 生抽：5 ml\n  · 蚝油：5 ml\n  · 老抽：5 ml\n  · 鸡精：2 g\n  · 姜片：2 片\n  · 芝麻：2 g\n  · 番茄酱：10 g\n  · 香醋：5 ml\n  · 五香粉：2 g\n\n以下为「糖醋排骨」的烹饪步骤（来自本地菜谱解析）：\n\n  · 排骨与姜片放入冷水中，大火加热至水沸腾、出现大量泡沫后转中火，待水持续沸腾时再转小火焯水 2–3 分钟，捞出备用。\n  · 用开水反复清洗排骨 2–3 遍，确保彻底去除血沫。\n  · 在锅中倒入足够量的食用油进行深炸（油量依据锅具大小而定，建议约 300 ml 供一般家庭使用），待油温升至约 170°C 后，下排骨炸制 3–5 分钟，直至表面略呈金黄色，捞出控油。\n  · 另取干净锅，置于小火上加热 50 ml 热水，加入白砂糖 30 g，轻轻搅拌直至糖完全溶解，并略呈淡黄色。此步骤的重点在于观察糖溶解情况，无需过分依赖颜色变化。\n  · 将炸好的排骨倒入炒制糖水的锅中，迅速翻炒 30 秒后，依次加入香醋 5 ml、生抽 5 ml、蚝油 5 ml、鸡精 2 g、番茄酱 10 g、五香粉 2 g，再次翻炒 30 秒，使调料均匀裹覆排骨，然后加入开水至刚好没过排骨。\n  · 用大火将锅中液体煮沸后，加入老抽 5 ml 进行上色，并快速收汁；若排骨块较大，可转小火焖煮 5–10 分钟以便更好地入味，切勿采用中火长时间炖煮 20 分钟，以免损伤口感。\n  · 起锅装盘，撒上芝麻 2 g，即可享用。"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [
+            "get_recipe_source",
+            "parse_recipe_content"
+          ],
+          "inferred_total": 2
+        },
+        "wall_time_ms": 75023.11220000047,
+        "user_input": "就选糖醋排骨了，我今晚就做这个，帮我找这道菜"
+      },
+      "assistant_reply": "好的呀，糖醋排骨真是个好选择，酸甜可口，特别下饭。下面给你分享一个简单的做法：\n\n### 材料\n- 排骨 500克\n- 生姜几片\n- 大葱一根（切段）\n- 白芝麻少许（装饰用）\n\n### 调料\n- 酱油 1大勺\n- 米醋或白醋 4大勺\n- 糖 3大勺\n- 料酒 1大勺\n- 水适量\n- 盐少许\n\n### 做法\n1. **准备排骨**：排骨洗净后切成小段，用开水焯一下去除血水和杂质。\n2. **腌制**：将排骨放入碗中，加入酱油、少量盐以及料酒腌制约15分钟。\n3. **炸排骨**：锅里放足够的油加热至六成热，把排骨分批放入油锅中炸至金黄色捞出沥油。\n4. **调汁**：另一个干净的锅内加入适量清水，然后加入米醋、糖、剩下的酱油和之前腌排骨时未用完的调料，大火煮沸后转小火慢慢熬制成浓稠状。\n5. **混合烹饪**：将炸好的排骨倒入锅内快速翻炒均匀，让每块排骨都裹上漂亮的糖醋汁。\n6. **装盘**：最后撒上一些白芝麻和葱花作为点缀即可。\n\n希望你做出来的糖醋排骨美味极了！如果过程中遇到什么问题或者需要调整的地方，随时可以问我哦~\n\n以下为「糖醋排骨」的用料清单（来自本地菜谱解析）：\n\n  · 排骨：300 g\n  · 白砂糖：30 g\n  · 食用油：300 ml\n  · 生抽：5 ml\n  · 蚝油：5 ml\n  · 老抽：5 ml\n  · 鸡精：2 g\n  · 姜片：2 片\n  · 芝麻：2 g\n  · 番茄酱：10 g\n  · 香醋：5 ml\n  · 五香粉：2 g\n\n以下为「糖醋排骨」的烹饪步骤（来自本地菜谱解析）：\n\n  · 排骨与姜片放入冷水中，大火加热至水沸腾、出现大量泡沫后转中火，待水持续沸腾时再转小火焯水 2–3 分钟，捞出备用。\n  · 用开水反复清洗排骨 2–3 遍，确保彻底去除血沫。\n  · 在锅中倒入足够量的食用油进行深炸（油量依据锅具大小而定，建议约 300 ml 供一般家庭使用），待油温升至约 170°C 后，下排骨炸制 3–5 分钟，直至表面略呈金黄色，捞出控油。\n  · 另取干净锅，置于小火上加热 50 ml 热水，加入白砂糖 30 g，轻轻搅拌直至糖完全溶解，并略呈淡黄色。此步骤的重点在于观察糖溶解情况，无需过分依赖颜色变化。\n  · 将炸好的排骨倒入炒制糖水的锅中，迅速翻炒 30 秒后，依次加入香醋 5 ml、生抽 5 ml、蚝油 5 ml、鸡精 2 g、番茄酱 10 g、五香粉 2 g，再次翻炒 30 秒，使调料均匀裹覆排骨，然后加入开水至刚好没过排骨。\n  · 用大火将锅中液体煮沸后，加入老抽 5 ml 进行上色，并快速收汁；若排骨块较大，可转小火焖煮 5–10 分钟以便更好地入味，切勿采用中火长时间炖煮 20 分钟，以免损伤口感。\n  · 起锅装盘，撒上芝麻 2 g，即可享用。"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 75023.11220000047,
+    "turn_count": 1
+  }
+}

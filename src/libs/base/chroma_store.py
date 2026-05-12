@@ -49,11 +49,15 @@ class ChromaStore(VectorStore):
         # 将 Chroma 的返回格式转化为项目中统一的格式
         formatted_results = []
         for i in range(len(results['ids'][0])):
+            # Chroma 的 distances：L2 / cosine 等均为「越小越相似」，与混合检索里「越大越好」的 score 相反
+            d = float(results["distances"][0][i])
+            relevance = 1.0 / (1.0 + d)
             formatted_results.append({
                 "id": results['ids'][0][i],
                 "content": results['documents'][0][i],
                 "metadata": results['metadatas'][0][i],
-                "score": results['distances'][0][i]
+                "score": relevance,
+                "distance": d,
             })
         return formatted_results
     

@@ -9,6 +9,7 @@
     ],
     "expected": {
       "primary_intent": "help",
+      "intents": ["help"],
       "needs_clarification": false,
       "key_slots": {},
       "golden_recipe_ids": [],
@@ -30,6 +31,7 @@
     ],
     "expected": {
       "primary_intent": "help",
+      "intents": ["help"],
       "needs_clarification": false,
       "key_slots": {},
       "golden_recipe_ids": [],
@@ -51,6 +53,7 @@
     ],
     "expected": {
       "primary_intent": "help",
+      "intents": ["help"],
       "needs_clarification": false,
       "key_slots": {},
       "golden_recipe_ids": [],
@@ -72,6 +75,7 @@
     ],
     "expected": {
       "primary_intent": "help",
+      "intents": ["help"],
       "needs_clarification": false,
       "key_slots": {},
       "golden_recipe_ids": [],
@@ -94,6 +98,7 @@
     ],
     "expected": {
       "primary_intent": "help",
+      "intents": ["help"],
       "needs_clarification": false,
       "key_slots": {},
       "golden_recipe_ids": [],
@@ -115,6 +120,7 @@
     ],
     "expected": {
       "primary_intent": "help",
+      "intents": ["help"],
       "needs_clarification": false,
       "key_slots": {},
       "golden_recipe_ids": [],

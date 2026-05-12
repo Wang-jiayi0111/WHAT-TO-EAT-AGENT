@@ -9,6 +9,7 @@
     ],
     "expected": {
       "primary_intent": "inventory_add",
+      "intents": ["inventory_add"],
       "needs_clarification": false,
       "key_slots": {
         "restock_items": [{ "name": "牛奶", "amount": 1, "unit": "L", "merge_mode": "add" }]
@@ -32,6 +33,7 @@
     ],
     "expected": {
       "primary_intent": "inventory_add",
+      "intents": ["inventory_add"],
       "needs_clarification": false,
       "key_slots": {
         "restock_items": [{ "name": "五花肉", "amount": 300, "unit": "g", "merge_mode": "add" }]
@@ -55,6 +57,7 @@
     ],
     "expected": {
       "primary_intent": "inventory_add",
+      "intents": ["inventory_add"],
       "needs_clarification": false,
       "key_slots": {
         "restock_items": [
@@ -77,10 +80,11 @@
     "difficulty": "medium",
     "description": "缺少数量单位时应触发澄清或追问",
     "user_turns": [
-      { "turn": 1, "input": "今天买了一袋大米帮我入库" }
+      { "turn": 1, "input": "今天买了大米帮我入库" }
     ],
     "expected": {
       "primary_intent": "inventory_add",
+      "intents": ["inventory_add", "user_clarify"],
       "needs_clarification": true,
       "key_slots": { "restock_items": [] },
       "golden_recipe_ids": [],
@@ -103,6 +107,7 @@
     ],
     "expected": {
       "primary_intent": "inventory_add",
+      "intents": ["inventory_add"],
       "needs_clarification": false,
       "key_slots": {
         "restock_items": [{ "name": "蓝莓", "amount": 125, "unit": "g", "merge_mode": "add" }]
@@ -126,6 +131,7 @@
     ],
     "expected": {
       "primary_intent": "inventory_add",
+      "intents": ["inventory_add"],
       "needs_clarification": true,
       "key_slots": { "restock_items": [{ "name": "排骨", "amount": 1000, "unit": "g", "merge_mode": "add" }] },
       "golden_recipe_ids": [],

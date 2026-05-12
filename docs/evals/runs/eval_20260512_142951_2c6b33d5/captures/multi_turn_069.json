@@ -1,0 +1,1353 @@
+{
+  "case_id": "multi_turn_069",
+  "source_file": "user_clarify.json",
+  "fixture": {
+    "case_id": "multi_turn_069",
+    "scenario_category": "multi_turn",
+    "difficulty": "medium",
+    "description": "澄清对话中补充食材约束",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "鸡肉做法我还没想好口味"
+      },
+      {
+        "turn": 2,
+        "input": "那就限定不加味精且少盐的版本里挑一道吧"
+      }
+    ],
+    "expected": {
+      "primary_intent": "user_clarify",
+      "intents": [
+        "user_clarify",
+        "recipe_search"
+      ],
+      "needs_clarification": false,
+      "key_slots": {
+        "recipe_query": "鸡肉少盐不加味精"
+      },
+      "golden_recipe_ids": [],
+      "output_contains": [
+        "盐"
+      ],
+      "output_excludes": [
+        "味精"
+      ],
+      "context_preserved": [
+        "鸡肉",
+        "少盐",
+        "不加味精"
+      ],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": [
+      "S-05"
+    ]
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:multi_turn_069",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "鸡肉做法我还没想好口味",
+      "wall_time_ms": 15102.026799999294,
+      "snapshot": {
+        "final_response": "我找到了以下几个相关菜谱（按检索相关性排序），请问您想做哪一个？\n\n  1. 姜炒鸡\n  2. 烤鸡翅\n  3. 宫保鸡丁\n  4. 口水鸡\n  5. 新疆大盘鸡\n  6. 凉拌鸡丝\n\n请回复序号数字（如 1）或菜名即可。",
+        "task_stack": [
+          "TASK_CLARIFY"
+        ],
+        "current_task": null,
+        "primary_intent": "recipe_search",
+        "intents": [
+          "recipe_search"
+        ],
+        "confidence": 0.8,
+        "needs_clarification": false,
+        "slots": {
+          "ingredients": [
+            "鸡肉"
+          ]
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "recipe_search",
+          "secondary_intents": [],
+          "intents": [
+            "recipe_search"
+          ],
+          "task_stack": [
+            "TASK_SEARCH"
+          ],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 0,
+          "slots": {
+            "ingredients": [
+              "鸡肉"
+            ]
+          },
+          "missing_slots": [],
+          "confidence": 0.8,
+          "extracted_entities": {
+            "ingredients": [
+              "鸡肉"
+            ]
+          },
+          "router_reasoning": "用户表达了想要了解鸡肉的做法，但还没有决定具体的口味。这属于一个基于食材的菜谱搜索请求。",
+          "pending_tasks": [],
+          "clarification_kind": "recipe_pick"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [
+            {
+              "title": "姜炒鸡"
+            },
+            {
+              "title": "烤鸡翅"
+            },
+            {
+              "title": "宫保鸡丁"
+            },
+            {
+              "title": "口水鸡"
+            },
+            {
+              "title": "新疆大盘鸡"
+            },
+            {
+              "title": "凉拌鸡丝"
+            }
+          ],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {
+            "ingredients": [
+              "鸡肉"
+            ]
+          },
+          "router_reasoning": "用户表达了想要了解鸡肉的做法，但还没有决定具体的口味。这属于一个基于食材的菜谱搜索请求。",
+          "pending_tasks": [],
+          "clarification_kind": "recipe_pick",
+          "recipe_candidates": [
+            "姜炒鸡",
+            "烤鸡翅",
+            "宫保鸡丁",
+            "口水鸡",
+            "新疆大盘鸡",
+            "凉拌鸡丝"
+          ],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "effective_constraint": {
+            "scope_id": "default_user",
+            "hard_exclusions": [
+              "芒果"
+            ],
+            "soft_negative_hints": [
+              "某种香料",
+              "刺多的鱼",
+              "羊肉, 膻味重的肉类"
+            ],
+            "soft_positive_hints": [
+              "酸辣"
+            ],
+            "dietary_target": "低卡/低碳水",
+            "temporal_conditions": [
+              "暂时放弃低碳水目标",
+              "想吃重庆火锅级别的辣",
+              "极清淡少油少纤维",
+              "偏好偏咸",
+              "感冒嗓子疼",
+              "肠胃不适"
+            ],
+            "summary_snippet": null
+          },
+          "slots": {
+            "ingredients": [
+              "鸡肉"
+            ]
+          },
+          "error_state": {
+            "error_code": null,
+            "recoverable": true,
+            "error_detail": null
+          }
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {
+          "error_code": null,
+          "recoverable": true,
+          "error_detail": null
+        },
+        "expert_payloads": {
+          "search_results": [
+            {
+              "id": "combined_251538",
+              "title": "姜炒鸡",
+              "score": 0.4141808500241951
+            },
+            {
+              "id": "combined_253530",
+              "title": "烤鸡翅",
+              "score": 0.4123879479164439
+            },
+            {
+              "id": "combined_481785",
+              "title": "宫保鸡丁",
+              "score": 0.4105963606441188
+            },
+            {
+              "id": "combined_93645",
+              "title": "口水鸡",
+              "score": 0.4090686900802668
+            },
+            {
+              "id": "combined_913791",
+              "title": "新疆大盘鸡",
+              "score": 0.40697075769834645
+            },
+            {
+              "id": "combined_673407",
+              "title": "凉拌鸡丝",
+              "score": 0.40039136175767764
+            },
+            {
+              "id": "combined_970585",
+              "title": "意式烤鸡",
+              "score": 0.40005624744515605
+            },
+            {
+              "id": "combined_992983",
+              "title": "凉拌鸡丝",
+              "score": 0.39952610912492353
+            },
+            {
+              "id": "combined_800781",
+              "title": "新疆大盘鸡",
+              "score": 0.3992234485100199
+            },
+            {
+              "id": "combined_908115",
+              "title": "无骨鸡爪",
+              "score": 0.39606017619812145
+            },
+            {
+              "id": "combined_467352",
+              "title": "姜葱捞鸡",
+              "score": 0.3958234738811741
+            },
+            {
+              "id": "combined_52425",
+              "title": "贵州辣子鸡",
+              "score": 0.3943233400357488
+            },
+            {
+              "id": "combined_940021",
+              "title": "口水鸡",
+              "score": 0.3926257949141608
+            },
+            {
+              "id": "combined_290648",
+              "title": "甜辣烤全翅",
+              "score": 0.39259873051159794
+            },
+            {
+              "id": "combined_657587",
+              "title": "黄焖鸡",
+              "score": 0.39220959717738557
+            }
+          ],
+          "status": "ambiguous",
+          "ambiguity_candidate_count": 6
+        },
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "鸡肉做法我还没想好口味"
+          },
+          {
+            "type": "ai",
+            "content": "我找到了以下几个相关菜谱（按检索相关性排序），请问您想做哪一个？\n\n  1. 姜炒鸡\n  2. 烤鸡翅\n  3. 宫保鸡丁\n  4. 口水鸡\n  5. 新疆大盘鸡\n  6. 凉拌鸡丝\n\n请回复序号数字（如 1）或菜名即可。"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [
+            "search_recipes"
+          ],
+          "inferred_total": 1
+        },
+        "wall_time_ms": 15102.026799999294,
+        "user_input": "鸡肉做法我还没想好口味"
+      },
+      "assistant_reply": "我找到了以下几个相关菜谱（按检索相关性排序），请问您想做哪一个？\n\n  1. 姜炒鸡\n  2. 烤鸡翅\n  3. 宫保鸡丁\n  4. 口水鸡\n  5. 新疆大盘鸡\n  6. 凉拌鸡丝\n\n请回复序号数字（如 1）或菜名即可。"
+    },
+    {
+      "turn": 2,
+      "input": "那就限定不加味精且少盐的版本里挑一道吧",
+      "wall_time_ms": 31831.92229999986,
+      "snapshot": {
+        "final_response": "以下为「姜炒鸡」的用料清单（来自本地菜谱解析）：\n\n  · 鸡：650 g\n  · 食用油：50 ml\n  · 生姜：250 g\n  · 啤酒：250 ml\n  · 生抽：20 ml\n  · 老抽：10 ml\n  · 盐：3 g\n  · 小米椒：25 g\n  · 美人辣：25 g\n  · 泡椒：50 g\n  · 大蒜：50 g\n\n以下为「姜炒鸡」的烹饪步骤（来自本地菜谱解析）：\n\n  · 鸡尽量剁成 1cm 的小块，洗净后滤干，再放生抽腌和料酒腌制 30 分钟\n  · 大先热锅到微微冒烟，放入食用油，等 5 秒\n  · 下入姜片后转中火炒 30 秒\n  · 下入鸡块翻炒 3 分钟，炒干水分，炒出鸡油\n  · 放入各种剁碎的辣椒和大蒜子，加盐和老抽继续翻炒 30 秒\n  · 倒入啤酒，中小火焖 2 分钟\n  · 大火收汁盛盘",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "recipe_search",
+        "intents": [
+          "recipe_search"
+        ],
+        "confidence": 0.8,
+        "needs_clarification": false,
+        "slots": {
+          "ingredients": [
+            "鸡肉"
+          ]
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "recipe_search",
+          "secondary_intents": [],
+          "intents": [
+            "recipe_search"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 1,
+          "slots": {
+            "ingredients": [
+              "鸡肉"
+            ]
+          },
+          "missing_slots": [],
+          "confidence": 0.8,
+          "extracted_entities": {
+            "ingredients": [
+              "鸡肉"
+            ]
+          },
+          "router_reasoning": "用户表达了想要了解鸡肉的做法，但还没有决定具体的口味。这属于一个基于食材的菜谱搜索请求。",
+          "pending_tasks": [],
+          "clarification_kind": null,
+          "clarify_error": null
+        },
+        "recipe_state": {
+          "recipe_file_ref": "F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\姜炒鸡\\姜炒鸡.md",
+          "recipe_candidates": [],
+          "selected_recipe_title": "姜炒鸡",
+          "selected_recipe_id": "F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\姜炒鸡\\姜炒鸡.md",
+          "recipe_requirements": [
+            {
+              "name": "鸡",
+              "amount": 650.0,
+              "unit": "g"
+            },
+            {
+              "name": "食用油",
+              "amount": 50.0,
+              "unit": "ml"
+            },
+            {
+              "name": "生姜",
+              "amount": 250.0,
+              "unit": "g"
+            },
+            {
+              "name": "啤酒",
+              "amount": 250.0,
+              "unit": "ml"
+            },
+            {
+              "name": "生抽",
+              "amount": 20.0,
+              "unit": "ml"
+            },
+            {
+              "name": "老抽",
+              "amount": 10.0,
+              "unit": "ml"
+            },
+            {
+              "name": "盐",
+              "amount": 3.0,
+              "unit": "g"
+            },
+            {
+              "name": "小米椒",
+              "amount": 25.0,
+              "unit": "g"
+            },
+            {
+              "name": "美人辣",
+              "amount": 25.0,
+              "unit": "g"
+            },
+            {
+              "name": "泡椒",
+              "amount": 50.0,
+              "unit": "g"
+            },
+            {
+              "name": "大蒜",
+              "amount": 50.0,
+              "unit": "g"
+            }
+          ],
+          "recipe_steps": [
+            "鸡尽量剁成 1cm 的小块，洗净后滤干，再放生抽腌和料酒腌制 30 分钟",
+            "大先热锅到微微冒烟，放入食用油，等 5 秒",
+            "下入姜片后转中火炒 30 秒",
+            "下入鸡块翻炒 3 分钟，炒干水分，炒出鸡油",
+            "放入各种剁碎的辣椒和大蒜子，加盐和老抽继续翻炒 30 秒",
+            "倒入啤酒，中小火焖 2 分钟",
+            "大火收汁盛盘"
+          ],
+          "recipe_title_locked": "姜炒鸡",
+          "recipe_parser_version": "llm_structured_v1"
+        },
+        "runtime_bundle": {
+          "extracted_entities": {
+            "ingredients": [
+              "鸡肉"
+            ]
+          },
+          "router_reasoning": "用户表达了想要了解鸡肉的做法，但还没有决定具体的口味。这属于一个基于食材的菜谱搜索请求。",
+          "pending_tasks": [],
+          "clarification_kind": null,
+          "clarify_error": null,
+          "recipe_candidates": [],
+          "selected_recipe_id": "F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\meat_dish\\姜炒鸡\\姜炒鸡.md",
+          "selected_recipe_title": "姜炒鸡",
+          "recipe_requirements": [
+            {
+              "name": "鸡",
+              "amount": 650.0,
+              "unit": "g"
+            },
+            {
+              "name": "食用油",
+              "amount": 50.0,
+              "unit": "ml"
+            },
+            {
+              "name": "生姜",
+              "amount": 250.0,
+              "unit": "g"
+            },
+            {
+              "name": "啤酒",
+              "amount": 250.0,
+              "unit": "ml"
+            },
+            {
+              "name": "生抽",
+              "amount": 20.0,
+              "unit": "ml"
+            },
+            {
+              "name": "老抽",
+              "amount": 10.0,
+              "unit": "ml"
+            },
+            {
+              "name": "盐",
+              "amount": 3.0,
+              "unit": "g"
+            },
+            {
+              "name": "小米椒",
+              "amount": 25.0,
+              "unit": "g"
+            },
+            {
+              "name": "美人辣",
+              "amount": 25.0,
+              "unit": "g"
+            },
+            {
+              "name": "泡椒",
+              "amount": 50.0,
+              "unit": "g"
+            },
+            {
+              "name": "大蒜",
+              "amount": 50.0,
+              "unit": "g"
+            }
+          ],
+          "recipe_title_locked": "姜炒鸡",
+          "recipe_parser_version": "llm_structured_v1",
+          "recipe_cook_step": [
+            "鸡尽量剁成 1cm 的小块，洗净后滤干，再放生抽腌和料酒腌制 30 分钟",
+            "大先热锅到微微冒烟，放入食用油，等 5 秒",
+            "下入姜片后转中火炒 30 秒",
+            "下入鸡块翻炒 3 分钟，炒干水分，炒出鸡油",
+            "放入各种剁碎的辣椒和大蒜子，加盐和老抽继续翻炒 30 秒",
+            "倒入啤酒，中小火焖 2 分钟",
+            "大火收汁盛盘"
+          ],
+          "inventory_snapshot": {
+            "五花肉": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "排骨": {
+              "amount": 250.0,
+              "unit": "g"
+            },
+            "牛筋": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "胡萝卜": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "苦瓜": {
+              "amount": 2.0,
+              "unit": "根"
+            },
+            "西红柿": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "豆腐": {
+              "amount": 1.0,
+              "unit": "块"
+            },
+            "饼干": {
+              "amount": 1.0,
+              "unit": "盒"
+            },
+            "鸡胸肉": {
+              "amount": 1.0,
+              "unit": "个"
+            }
+          },
+          "cached_shopping_gap": {
+            "shopping_list": [
+              {
+                "name": "鸡",
+                "amount": 650.0,
+                "unit": "g"
+              },
+              {
+                "name": "食用油",
+                "amount": 50.0,
+                "unit": "ml"
+              },
+              {
+                "name": "生姜",
+                "amount": 250.0,
+                "unit": "g"
+              },
+              {
+                "name": "啤酒",
+                "amount": 250.0,
+                "unit": "ml"
+              },
+              {
+                "name": "生抽",
+                "amount": 20.0,
+                "unit": "ml"
+              },
+              {
+                "name": "老抽",
+                "amount": 10.0,
+                "unit": "ml"
+              },
+              {
+                "name": "盐",
+                "amount": 3.0,
+                "unit": "g"
+              },
+              {
+                "name": "小米椒",
+                "amount": 25.0,
+                "unit": "g"
+              },
+              {
+                "name": "美人辣",
+                "amount": 25.0,
+                "unit": "g"
+              },
+              {
+                "name": "泡椒",
+                "amount": 50.0,
+                "unit": "g"
+              },
+              {
+                "name": "大蒜",
+                "amount": 50.0,
+                "unit": "g"
+              }
+            ],
+            "sufficient_items": [],
+            "missing_items": [
+              {
+                "name": "鸡",
+                "amount": 650.0,
+                "unit": "g"
+              },
+              {
+                "name": "食用油",
+                "amount": 50.0,
+                "unit": "ml"
+              },
+              {
+                "name": "生姜",
+                "amount": 250.0,
+                "unit": "g"
+              },
+              {
+                "name": "啤酒",
+                "amount": 250.0,
+                "unit": "ml"
+              },
+              {
+                "name": "生抽",
+                "amount": 20.0,
+                "unit": "ml"
+              },
+              {
+                "name": "老抽",
+                "amount": 10.0,
+                "unit": "ml"
+              },
+              {
+                "name": "盐",
+                "amount": 3.0,
+                "unit": "g"
+              },
+              {
+                "name": "小米椒",
+                "amount": 25.0,
+                "unit": "g"
+              },
+              {
+                "name": "美人辣",
+                "amount": 25.0,
+                "unit": "g"
+              },
+              {
+                "name": "泡椒",
+                "amount": 50.0,
+                "unit": "g"
+              },
+              {
+                "name": "大蒜",
+                "amount": 50.0,
+                "unit": "g"
+              }
+            ],
+            "pending_manual": [],
+            "computed_at": "2026-05-12T06:51:05.777687+00:00"
+          },
+          "gap_basis": {
+            "recipe_title": "姜炒鸡",
+            "r_fingerprint": "bf566317357c2b4c54205b0e",
+            "inventory_fingerprint": "aa6a5c9fdd4ec008e641e672"
+          },
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "shopping_list": [
+            {
+              "name": "鸡",
+              "amount": 650.0,
+              "unit": "g"
+            },
+            {
+              "name": "食用油",
+              "amount": 50.0,
+              "unit": "ml"
+            },
+            {
+              "name": "生姜",
+              "amount": 250.0,
+              "unit": "g"
+            },
+            {
+              "name": "啤酒",
+              "amount": 250.0,
+              "unit": "ml"
+            },
+            {
+              "name": "生抽",
+              "amount": 20.0,
+              "unit": "ml"
+            },
+            {
+              "name": "老抽",
+              "amount": 10.0,
+              "unit": "ml"
+            },
+            {
+              "name": "盐",
+              "amount": 3.0,
+              "unit": "g"
+            },
+            {
+              "name": "小米椒",
+              "amount": 25.0,
+              "unit": "g"
+            },
+            {
+              "name": "美人辣",
+              "amount": 25.0,
+              "unit": "g"
+            },
+            {
+              "name": "泡椒",
+              "amount": 50.0,
+              "unit": "g"
+            },
+            {
+              "name": "大蒜",
+              "amount": 50.0,
+              "unit": "g"
+            }
+          ],
+          "sufficient_items": [],
+          "missing_items": [
+            {
+              "name": "鸡",
+              "amount": 650.0,
+              "unit": "g"
+            },
+            {
+              "name": "食用油",
+              "amount": 50.0,
+              "unit": "ml"
+            },
+            {
+              "name": "生姜",
+              "amount": 250.0,
+              "unit": "g"
+            },
+            {
+              "name": "啤酒",
+              "amount": 250.0,
+              "unit": "ml"
+            },
+            {
+              "name": "生抽",
+              "amount": 20.0,
+              "unit": "ml"
+            },
+            {
+              "name": "老抽",
+              "amount": 10.0,
+              "unit": "ml"
+            },
+            {
+              "name": "盐",
+              "amount": 3.0,
+              "unit": "g"
+            },
+            {
+              "name": "小米椒",
+              "amount": 25.0,
+              "unit": "g"
+            },
+            {
+              "name": "美人辣",
+              "amount": 25.0,
+              "unit": "g"
+            },
+            {
+              "name": "泡椒",
+              "amount": 50.0,
+              "unit": "g"
+            },
+            {
+              "name": "大蒜",
+              "amount": 50.0,
+              "unit": "g"
+            }
+          ],
+          "gap_delivery_mode": "fresh",
+          "short_term_constraints": [
+            "口味：清淡饮食"
+          ],
+          "effective_constraint": {
+            "scope_id": "default_user",
+            "hard_exclusions": [
+              "芒果"
+            ],
+            "soft_negative_hints": [
+              "某种香料",
+              "刺多的鱼",
+              "羊肉, 膻味重的肉类"
+            ],
+            "soft_positive_hints": [
+              "酸辣"
+            ],
+            "dietary_target": "低卡/低碳水",
+            "temporal_conditions": [
+              "口味：清淡饮食",
+              "暂时放弃低碳水目标",
+              "想吃重庆火锅级别的辣",
+              "极清淡少油少纤维",
+              "偏好偏咸",
+              "感冒嗓子疼",
+              "肠胃不适"
+            ],
+            "summary_snippet": null
+          },
+          "slots": {
+            "ingredients": [
+              "鸡肉"
+            ]
+          },
+          "error_state": {
+            "error_code": null,
+            "recoverable": true,
+            "error_detail": null
+          }
+        },
+        "inventory_state": {
+          "inventory_snapshot": {
+            "五花肉": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "排骨": {
+              "amount": 250.0,
+              "unit": "g"
+            },
+            "牛筋": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "胡萝卜": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "苦瓜": {
+              "amount": 2.0,
+              "unit": "根"
+            },
+            "西红柿": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "豆腐": {
+              "amount": 1.0,
+              "unit": "块"
+            },
+            "饼干": {
+              "amount": 1.0,
+              "unit": "盒"
+            },
+            "鸡胸肉": {
+              "amount": 1.0,
+              "unit": "个"
+            }
+          },
+          "cached_shopping_gap": {
+            "shopping_list": [
+              {
+                "name": "鸡",
+                "amount": 650.0,
+                "unit": "g"
+              },
+              {
+                "name": "食用油",
+                "amount": 50.0,
+                "unit": "ml"
+              },
+              {
+                "name": "生姜",
+                "amount": 250.0,
+                "unit": "g"
+              },
+              {
+                "name": "啤酒",
+                "amount": 250.0,
+                "unit": "ml"
+              },
+              {
+                "name": "生抽",
+                "amount": 20.0,
+                "unit": "ml"
+              },
+              {
+                "name": "老抽",
+                "amount": 10.0,
+                "unit": "ml"
+              },
+              {
+                "name": "盐",
+                "amount": 3.0,
+                "unit": "g"
+              },
+              {
+                "name": "小米椒",
+                "amount": 25.0,
+                "unit": "g"
+              },
+              {
+                "name": "美人辣",
+                "amount": 25.0,
+                "unit": "g"
+              },
+              {
+                "name": "泡椒",
+                "amount": 50.0,
+                "unit": "g"
+              },
+              {
+                "name": "大蒜",
+                "amount": 50.0,
+                "unit": "g"
+              }
+            ],
+            "sufficient_items": [],
+            "missing_items": [
+              {
+                "name": "鸡",
+                "amount": 650.0,
+                "unit": "g"
+              },
+              {
+                "name": "食用油",
+                "amount": 50.0,
+                "unit": "ml"
+              },
+              {
+                "name": "生姜",
+                "amount": 250.0,
+                "unit": "g"
+              },
+              {
+                "name": "啤酒",
+                "amount": 250.0,
+                "unit": "ml"
+              },
+              {
+                "name": "生抽",
+                "amount": 20.0,
+                "unit": "ml"
+              },
+              {
+                "name": "老抽",
+                "amount": 10.0,
+                "unit": "ml"
+              },
+              {
+                "name": "盐",
+                "amount": 3.0,
+                "unit": "g"
+              },
+              {
+                "name": "小米椒",
+                "amount": 25.0,
+                "unit": "g"
+              },
+              {
+                "name": "美人辣",
+                "amount": 25.0,
+                "unit": "g"
+              },
+              {
+                "name": "泡椒",
+                "amount": 50.0,
+                "unit": "g"
+              },
+              {
+                "name": "大蒜",
+                "amount": 50.0,
+                "unit": "g"
+              }
+            ],
+            "pending_manual": [],
+            "computed_at": "2026-05-12T06:51:05.777687+00:00"
+          },
+          "gap_basis": {
+            "recipe_title": "姜炒鸡",
+            "r_fingerprint": "bf566317357c2b4c54205b0e",
+            "inventory_fingerprint": "aa6a5c9fdd4ec008e641e672"
+          },
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "gap_delivery_mode": "fresh",
+          "shopping_list": [
+            {
+              "name": "鸡",
+              "amount": 650.0,
+              "unit": "g"
+            },
+            {
+              "name": "食用油",
+              "amount": 50.0,
+              "unit": "ml"
+            },
+            {
+              "name": "生姜",
+              "amount": 250.0,
+              "unit": "g"
+            },
+            {
+              "name": "啤酒",
+              "amount": 250.0,
+              "unit": "ml"
+            },
+            {
+              "name": "生抽",
+              "amount": 20.0,
+              "unit": "ml"
+            },
+            {
+              "name": "老抽",
+              "amount": 10.0,
+              "unit": "ml"
+            },
+            {
+              "name": "盐",
+              "amount": 3.0,
+              "unit": "g"
+            },
+            {
+              "name": "小米椒",
+              "amount": 25.0,
+              "unit": "g"
+            },
+            {
+              "name": "美人辣",
+              "amount": 25.0,
+              "unit": "g"
+            },
+            {
+              "name": "泡椒",
+              "amount": 50.0,
+              "unit": "g"
+            },
+            {
+              "name": "大蒜",
+              "amount": 50.0,
+              "unit": "g"
+            }
+          ],
+          "sufficient_items": [],
+          "missing_items": [
+            {
+              "name": "鸡",
+              "amount": 650.0,
+              "unit": "g"
+            },
+            {
+              "name": "食用油",
+              "amount": 50.0,
+              "unit": "ml"
+            },
+            {
+              "name": "生姜",
+              "amount": 250.0,
+              "unit": "g"
+            },
+            {
+              "name": "啤酒",
+              "amount": 250.0,
+              "unit": "ml"
+            },
+            {
+              "name": "生抽",
+              "amount": 20.0,
+              "unit": "ml"
+            },
+            {
+              "name": "老抽",
+              "amount": 10.0,
+              "unit": "ml"
+            },
+            {
+              "name": "盐",
+              "amount": 3.0,
+              "unit": "g"
+            },
+            {
+              "name": "小米椒",
+              "amount": 25.0,
+              "unit": "g"
+            },
+            {
+              "name": "美人辣",
+              "amount": 25.0,
+              "unit": "g"
+            },
+            {
+              "name": "泡椒",
+              "amount": 50.0,
+              "unit": "g"
+            },
+            {
+              "name": "大蒜",
+              "amount": 50.0,
+              "unit": "g"
+            }
+          ]
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [
+            "五花肉",
+            "排骨",
+            "牛筋",
+            "胡萝卜",
+            "苦瓜",
+            "西红柿",
+            "豆腐",
+            "饼干",
+            "鸡胸肉"
+          ],
+          "cached_shopping_gap_present": true,
+          "gap_basis": {
+            "recipe_title": "姜炒鸡",
+            "r_fingerprint": "bf566317357c2b4c54205b0e",
+            "inventory_fingerprint": "aa6a5c9fdd4ec008e641e672"
+          },
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [
+            "口味：清淡饮食"
+          ],
+          "conversation_summary_len": 0
+        },
+        "error_state": {
+          "error_code": null,
+          "recoverable": true,
+          "error_detail": null
+        },
+        "expert_payloads": {
+          "search_results": [
+            {
+              "id": "combined_251538",
+              "title": "姜炒鸡",
+              "score": 0.4141808500241951
+            },
+            {
+              "id": "combined_253530",
+              "title": "烤鸡翅",
+              "score": 0.4123879479164439
+            },
+            {
+              "id": "combined_481785",
+              "title": "宫保鸡丁",
+              "score": 0.4105963606441188
+            },
+            {
+              "id": "combined_93645",
+              "title": "口水鸡",
+              "score": 0.4090686900802668
+            },
+            {
+              "id": "combined_913791",
+              "title": "新疆大盘鸡",
+              "score": 0.40697075769834645
+            },
+            {
+              "id": "combined_673407",
+              "title": "凉拌鸡丝",
+              "score": 0.40039136175767764
+            },
+            {
+              "id": "combined_970585",
+              "title": "意式烤鸡",
+              "score": 0.40005624744515605
+            },
+            {
+              "id": "combined_992983",
+              "title": "凉拌鸡丝",
+              "score": 0.39952610912492353
+            },
+            {
+              "id": "combined_800781",
+              "title": "新疆大盘鸡",
+              "score": 0.3992234485100199
+            },
+            {
+              "id": "combined_908115",
+              "title": "无骨鸡爪",
+              "score": 0.39606017619812145
+            },
+            {
+              "id": "combined_467352",
+              "title": "姜葱捞鸡",
+              "score": 0.3958234738811741
+            },
+            {
+              "id": "combined_52425",
+              "title": "贵州辣子鸡",
+              "score": 0.3943233400357488
+            },
+            {
+              "id": "combined_940021",
+              "title": "口水鸡",
+              "score": 0.3926257949141608
+            },
+            {
+              "id": "combined_290648",
+              "title": "甜辣烤全翅",
+              "score": 0.39259873051159794
+            },
+            {
+              "id": "combined_657587",
+              "title": "黄焖鸡",
+              "score": 0.39220959717738557
+            }
+          ],
+          "status": "success",
+          "ambiguity_candidate_count": 6,
+          "recipe_detail": {
+            "title": "姜炒鸡",
+            "ingredients": [
+              {
+                "name": "鸡",
+                "amount": 650.0,
+                "unit": "g"
+              },
+              {
+                "name": "食用油",
+                "amount": 50.0,
+                "unit": "ml"
+              },
+              {
+                "name": "生姜",
+                "amount": 250.0,
+                "unit": "g"
+              },
+              {
+                "name": "啤酒",
+                "amount": 250.0,
+                "unit": "ml"
+              },
+              {
+                "name": "生抽",
+                "amount": 20.0,
+                "unit": "ml"
+              },
+              {
+                "name": "老抽",
+                "amount": 10.0,
+                "unit": "ml"
+              },
+              {
+                "name": "盐",
+                "amount": 3.0,
+                "unit": "g"
+              },
+              {
+                "name": "小米椒",
+                "amount": 25.0,
+                "unit": "g"
+              },
+              {
+                "name": "美人辣",
+                "amount": 25.0,
+                "unit": "g"
+              },
+              {
+                "name": "泡椒",
+                "amount": 50.0,
+                "unit": "g"
+              },
+              {
+                "name": "大蒜",
+                "amount": 50.0,
+                "unit": "g"
+              }
+            ],
+            "steps": [
+              "鸡尽量剁成 1cm 的小块，洗净后滤干，再放生抽腌和料酒腌制 30 分钟",
+              "大先热锅到微微冒烟，放入食用油，等 5 秒",
+              "下入姜片后转中火炒 30 秒",
+              "下入鸡块翻炒 3 分钟，炒干水分，炒出鸡油",
+              "放入各种剁碎的辣椒和大蒜子，加盐和老抽继续翻炒 30 秒",
+              "倒入啤酒，中小火焖 2 分钟",
+              "大火收汁盛盘"
+            ]
+          }
+        },
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "鸡肉做法我还没想好口味"
+          },
+          {
+            "type": "ai",
+            "content": "我找到了以下几个相关菜谱（按检索相关性排序），请问您想做哪一个？\n\n  1. 姜炒鸡\n  2. 烤鸡翅\n  3. 宫保鸡丁\n  4. 口水鸡\n  5. 新疆大盘鸡\n  6. 凉拌鸡丝\n\n请回复序号数字（如 1）或菜名即可。"
+          },
+          {
+            "type": "human",
+            "content": "那就限定不加味精且少盐的版本里挑一道吧"
+          },
+          {
+            "type": "ai",
+            "content": "以下为「姜炒鸡」的用料清单（来自本地菜谱解析）：\n\n  · 鸡：650 g\n  · 食用油：50 ml\n  · 生姜：250 g\n  · 啤酒：250 ml\n  · 生抽：20 ml\n  · 老抽：10 ml\n  · 盐：3 g\n  · 小米椒：25 g\n  · 美人辣：25 g\n  · 泡椒：50 g\n  · 大蒜：50 g\n\n以下为「姜炒鸡」的烹饪步骤（来自本地菜谱解析）：\n\n  · 鸡尽量剁成 1cm 的小块，洗净后滤干，再放生抽腌和料酒腌制 30 分钟\n  · 大先热锅到微微冒烟，放入食用油，等 5 秒\n  · 下入姜片后转中火炒 30 秒\n  · 下入鸡块翻炒 3 分钟，炒干水分，炒出鸡油\n  · 放入各种剁碎的辣椒和大蒜子，加盐和老抽继续翻炒 30 秒\n  · 倒入啤酒，中小火焖 2 分钟\n  · 大火收汁盛盘"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [
+            "search_recipes",
+            "get_recipe_source",
+            "parse_recipe_content"
+          ],
+          "inferred_total": 3
+        },
+        "wall_time_ms": 31831.92229999986,
+        "user_input": "那就限定不加味精且少盐的版本里挑一道吧"
+      },
+      "assistant_reply": "以下为「姜炒鸡」的用料清单（来自本地菜谱解析）：\n\n  · 鸡：650 g\n  · 食用油：50 ml\n  · 生姜：250 g\n  · 啤酒：250 ml\n  · 生抽：20 ml\n  · 老抽：10 ml\n  · 盐：3 g\n  · 小米椒：25 g\n  · 美人辣：25 g\n  · 泡椒：50 g\n  · 大蒜：50 g\n\n以下为「姜炒鸡」的烹饪步骤（来自本地菜谱解析）：\n\n  · 鸡尽量剁成 1cm 的小块，洗净后滤干，再放生抽腌和料酒腌制 30 分钟\n  · 大先热锅到微微冒烟，放入食用油，等 5 秒\n  · 下入姜片后转中火炒 30 秒\n  · 下入鸡块翻炒 3 分钟，炒干水分，炒出鸡油\n  · 放入各种剁碎的辣椒和大蒜子，加盐和老抽继续翻炒 30 秒\n  · 倒入啤酒，中小火焖 2 分钟\n  · 大火收汁盛盘"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 46933.949099999154,
+    "turn_count": 2
+  }
+}

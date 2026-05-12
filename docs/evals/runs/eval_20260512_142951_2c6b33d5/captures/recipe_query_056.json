@@ -1,0 +1,752 @@
+{
+  "case_id": "recipe_query_056",
+  "source_file": "recipe_adopt.json",
+  "fixture": {
+    "case_id": "recipe_query_056",
+    "scenario_category": "recipe_query",
+    "difficulty": "easy",
+    "description": "口语确认「就它」映射 recipe_adoption",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "别挑了就选葱煎豆腐，帮我找这道菜"
+      }
+    ],
+    "expected": {
+      "primary_intent": "recipe_adopt",
+      "intents": [
+        "recipe_adopt",
+        "recipe_search"
+      ],
+      "needs_clarification": false,
+      "key_slots": {
+        "recipe_adoption": true,
+        "recipe_name": "葱煎豆腐"
+      },
+      "golden_recipe_ids": [
+        "recipe_id_葱煎豆腐"
+      ],
+      "output_contains": [
+        "葱煎豆腐"
+      ],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "auto",
+    "linked_scenarios": [
+      "S-01",
+      "S-02"
+    ]
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:recipe_query_056",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "别挑了就选葱煎豆腐，帮我找这道菜",
+      "wall_time_ms": 58884.53560000016,
+      "snapshot": {
+        "final_response": "好的，葱煎豆腐是一道非常家常又美味的菜肴。做法也挺简单的，下面给你一个基本的做法：\n\n### 材料：\n- 嫩豆腐 1块\n- 葱 2根\n- 盐 适量\n- 生抽（酱油）少许\n- 食用油 适量\n\n### 做法：\n1. **准备材料**：将豆腐切成厚约1厘米左右的片；葱洗净后切成葱花。\n2. **处理豆腐**：在平底锅中倒入足够的食用油，开中小火预热。待油温五成热时，轻轻放入切好的豆腐片，两面煎至金黄色后取出备用。\n3. **调味**：在同一锅中留少量底油，加入葱白部分爆香，然后放回煎好的豆腐，撒上适量的盐和一点点生抽调味。\n4. **出锅前**：最后撒上剩余的葱绿翻炒均匀即可出锅。\n\n这道菜简单易做，味道鲜美，非常适合家庭日常食用。希望你喜欢！如果需要调整口味或者有其他特殊需求，请随时告诉我哦~\n\n以下为「葱煎豆腐」的用料清单（来自本地菜谱解析）：\n\n  · 白豆腐：0.8 kg\n  · 青辣椒：1.5 只\n  · 葱：2 根\n  · 盐：3 g\n  · 鸡精：1.5 g\n  · 油：9 ml\n  · 水：10 ml\n\n以下为「葱煎豆腐」的烹饪步骤（来自本地菜谱解析）：\n\n  · 豆腐洗净。切约 5 mm 厚度，置于碟中。\n  · 葱洗净，除去根部，切成葱花，备用。\n  · 辣椒洗净，切开，去籽，切成 1cm * 1cm 状，备用。\n  · 热锅，加入份数 * 9ml 油。\n  · 油入锅后，使其均匀布于锅底，均匀放入豆腐，小火煎至金黄翻面。\n  · 待两面金黄，盛入碟中备用。\n  · 补油至覆盖锅底，倒入辣椒大火翻炒，并铲碾 3 分钟。\n  · 倒入豆腐，翻炒，加入盐与鸡精，中火翻炒 1 分钟后倒入 10 ML 水，大火收汁。\n  · 出锅前撒上之前计算好的葱花，起锅盛盘。",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "recipe_search",
+        "intents": [
+          "recipe_search",
+          "recipe_adopt"
+        ],
+        "confidence": 0.95,
+        "needs_clarification": false,
+        "slots": {
+          "recipe_name": "葱煎豆腐",
+          "recipe_adoption": true
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "recipe_search",
+          "secondary_intents": [
+            "recipe_adopt"
+          ],
+          "intents": [
+            "recipe_search",
+            "recipe_adopt"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 1,
+          "slots": {
+            "recipe_name": "葱煎豆腐",
+            "recipe_adoption": true
+          },
+          "missing_slots": [],
+          "confidence": 0.95,
+          "extracted_entities": {
+            "recipe_name": "葱煎豆腐"
+          },
+          "router_reasoning": "用户明确选择了葱煎豆腐这道菜，并要求搜索该菜谱。因此，这里涉及到`recipe_adopt`和`recipe_search`两个意图。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": "F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\vegetable_dish\\葱煎豆腐.md",
+          "recipe_candidates": [],
+          "selected_recipe_title": "葱煎豆腐",
+          "selected_recipe_id": "F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\vegetable_dish\\葱煎豆腐.md",
+          "recipe_requirements": [
+            {
+              "name": "白豆腐",
+              "amount": 0.8,
+              "unit": "kg"
+            },
+            {
+              "name": "青辣椒",
+              "amount": 1.5,
+              "unit": "只"
+            },
+            {
+              "name": "葱",
+              "amount": 2.0,
+              "unit": "根"
+            },
+            {
+              "name": "盐",
+              "amount": 3.0,
+              "unit": "g"
+            },
+            {
+              "name": "鸡精",
+              "amount": 1.5,
+              "unit": "g"
+            },
+            {
+              "name": "油",
+              "amount": 9.0,
+              "unit": "ml"
+            },
+            {
+              "name": "水",
+              "amount": 10.0,
+              "unit": "ml"
+            }
+          ],
+          "recipe_steps": [
+            "豆腐洗净。切约 5 mm 厚度，置于碟中。",
+            "葱洗净，除去根部，切成葱花，备用。",
+            "辣椒洗净，切开，去籽，切成 1cm * 1cm 状，备用。",
+            "热锅，加入份数 * 9ml 油。",
+            "油入锅后，使其均匀布于锅底，均匀放入豆腐，小火煎至金黄翻面。",
+            "待两面金黄，盛入碟中备用。",
+            "补油至覆盖锅底，倒入辣椒大火翻炒，并铲碾 3 分钟。",
+            "倒入豆腐，翻炒，加入盐与鸡精，中火翻炒 1 分钟后倒入 10 ML 水，大火收汁。",
+            "出锅前撒上之前计算好的葱花，起锅盛盘。"
+          ],
+          "recipe_title_locked": "葱煎豆腐",
+          "recipe_parser_version": "llm_structured_v1"
+        },
+        "runtime_bundle": {
+          "extracted_entities": {
+            "recipe_name": "葱煎豆腐"
+          },
+          "router_reasoning": "用户明确选择了葱煎豆腐这道菜，并要求搜索该菜谱。因此，这里涉及到`recipe_adopt`和`recipe_search`两个意图。",
+          "recipe_candidates": [],
+          "selected_recipe_id": "F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\vegetable_dish\\葱煎豆腐.md",
+          "selected_recipe_title": "葱煎豆腐",
+          "recipe_requirements": [
+            {
+              "name": "白豆腐",
+              "amount": 0.8,
+              "unit": "kg"
+            },
+            {
+              "name": "青辣椒",
+              "amount": 1.5,
+              "unit": "只"
+            },
+            {
+              "name": "葱",
+              "amount": 2.0,
+              "unit": "根"
+            },
+            {
+              "name": "盐",
+              "amount": 3.0,
+              "unit": "g"
+            },
+            {
+              "name": "鸡精",
+              "amount": 1.5,
+              "unit": "g"
+            },
+            {
+              "name": "油",
+              "amount": 9.0,
+              "unit": "ml"
+            },
+            {
+              "name": "水",
+              "amount": 10.0,
+              "unit": "ml"
+            }
+          ],
+          "recipe_title_locked": "葱煎豆腐",
+          "recipe_parser_version": "llm_structured_v1",
+          "recipe_cook_step": [
+            "豆腐洗净。切约 5 mm 厚度，置于碟中。",
+            "葱洗净，除去根部，切成葱花，备用。",
+            "辣椒洗净，切开，去籽，切成 1cm * 1cm 状，备用。",
+            "热锅，加入份数 * 9ml 油。",
+            "油入锅后，使其均匀布于锅底，均匀放入豆腐，小火煎至金黄翻面。",
+            "待两面金黄，盛入碟中备用。",
+            "补油至覆盖锅底，倒入辣椒大火翻炒，并铲碾 3 分钟。",
+            "倒入豆腐，翻炒，加入盐与鸡精，中火翻炒 1 分钟后倒入 10 ML 水，大火收汁。",
+            "出锅前撒上之前计算好的葱花，起锅盛盘。"
+          ],
+          "inventory_snapshot": {
+            "五花肉": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "排骨": {
+              "amount": 250.0,
+              "unit": "g"
+            },
+            "牛筋": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "胡萝卜": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "苦瓜": {
+              "amount": 2.0,
+              "unit": "根"
+            },
+            "西红柿": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "豆腐": {
+              "amount": 1.0,
+              "unit": "块"
+            },
+            "饼干": {
+              "amount": 1.0,
+              "unit": "盒"
+            },
+            "鸡胸肉": {
+              "amount": 1.0,
+              "unit": "个"
+            }
+          },
+          "cached_shopping_gap": {
+            "shopping_list": [
+              {
+                "name": "白豆腐",
+                "amount": 0.8,
+                "unit": "kg"
+              },
+              {
+                "name": "青辣椒",
+                "amount": 1.5,
+                "unit": "只"
+              },
+              {
+                "name": "葱",
+                "amount": 2.0,
+                "unit": "根"
+              },
+              {
+                "name": "盐",
+                "amount": 3.0,
+                "unit": "g"
+              },
+              {
+                "name": "鸡精",
+                "amount": 1.5,
+                "unit": "g"
+              },
+              {
+                "name": "油",
+                "amount": 9.0,
+                "unit": "ml"
+              },
+              {
+                "name": "水",
+                "amount": 10.0,
+                "unit": "ml"
+              }
+            ],
+            "sufficient_items": [],
+            "missing_items": [
+              {
+                "name": "白豆腐",
+                "amount": 0.8,
+                "unit": "kg"
+              },
+              {
+                "name": "青辣椒",
+                "amount": 1.5,
+                "unit": "只"
+              },
+              {
+                "name": "葱",
+                "amount": 2.0,
+                "unit": "根"
+              },
+              {
+                "name": "盐",
+                "amount": 3.0,
+                "unit": "g"
+              },
+              {
+                "name": "鸡精",
+                "amount": 1.5,
+                "unit": "g"
+              },
+              {
+                "name": "油",
+                "amount": 9.0,
+                "unit": "ml"
+              },
+              {
+                "name": "水",
+                "amount": 10.0,
+                "unit": "ml"
+              }
+            ],
+            "pending_manual": [],
+            "computed_at": "2026-05-12T06:42:35.121751+00:00"
+          },
+          "gap_basis": {
+            "recipe_title": "葱煎豆腐",
+            "r_fingerprint": "f9fb8c44faa7a4cd8dcb49f5",
+            "inventory_fingerprint": "aa6a5c9fdd4ec008e641e672"
+          },
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": true,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "shopping_list": [
+            {
+              "name": "白豆腐",
+              "amount": 0.8,
+              "unit": "kg"
+            },
+            {
+              "name": "青辣椒",
+              "amount": 1.5,
+              "unit": "只"
+            },
+            {
+              "name": "葱",
+              "amount": 2.0,
+              "unit": "根"
+            },
+            {
+              "name": "盐",
+              "amount": 3.0,
+              "unit": "g"
+            },
+            {
+              "name": "鸡精",
+              "amount": 1.5,
+              "unit": "g"
+            },
+            {
+              "name": "油",
+              "amount": 9.0,
+              "unit": "ml"
+            },
+            {
+              "name": "水",
+              "amount": 10.0,
+              "unit": "ml"
+            }
+          ],
+          "sufficient_items": [],
+          "missing_items": [
+            {
+              "name": "白豆腐",
+              "amount": 0.8,
+              "unit": "kg"
+            },
+            {
+              "name": "青辣椒",
+              "amount": 1.5,
+              "unit": "只"
+            },
+            {
+              "name": "葱",
+              "amount": 2.0,
+              "unit": "根"
+            },
+            {
+              "name": "盐",
+              "amount": 3.0,
+              "unit": "g"
+            },
+            {
+              "name": "鸡精",
+              "amount": 1.5,
+              "unit": "g"
+            },
+            {
+              "name": "油",
+              "amount": 9.0,
+              "unit": "ml"
+            },
+            {
+              "name": "水",
+              "amount": 10.0,
+              "unit": "ml"
+            }
+          ],
+          "gap_delivery_mode": "fresh",
+          "effective_constraint": {
+            "scope_id": "default_user",
+            "hard_exclusions": [
+              "芒果"
+            ],
+            "soft_negative_hints": [
+              "某种香料"
+            ],
+            "soft_positive_hints": [],
+            "dietary_target": null,
+            "temporal_conditions": [
+              "想吃重庆火锅级别的辣",
+              "极清淡少油少纤维",
+              "偏好偏咸",
+              "感冒嗓子疼",
+              "肠胃不适"
+            ],
+            "summary_snippet": null
+          },
+          "slots": {
+            "recipe_name": "葱煎豆腐",
+            "recipe_adoption": true
+          },
+          "error_state": {
+            "error_code": null,
+            "recoverable": true,
+            "error_detail": null
+          }
+        },
+        "inventory_state": {
+          "inventory_snapshot": {
+            "五花肉": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "排骨": {
+              "amount": 250.0,
+              "unit": "g"
+            },
+            "牛筋": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "胡萝卜": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "苦瓜": {
+              "amount": 2.0,
+              "unit": "根"
+            },
+            "西红柿": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "豆腐": {
+              "amount": 1.0,
+              "unit": "块"
+            },
+            "饼干": {
+              "amount": 1.0,
+              "unit": "盒"
+            },
+            "鸡胸肉": {
+              "amount": 1.0,
+              "unit": "个"
+            }
+          },
+          "cached_shopping_gap": {
+            "shopping_list": [
+              {
+                "name": "白豆腐",
+                "amount": 0.8,
+                "unit": "kg"
+              },
+              {
+                "name": "青辣椒",
+                "amount": 1.5,
+                "unit": "只"
+              },
+              {
+                "name": "葱",
+                "amount": 2.0,
+                "unit": "根"
+              },
+              {
+                "name": "盐",
+                "amount": 3.0,
+                "unit": "g"
+              },
+              {
+                "name": "鸡精",
+                "amount": 1.5,
+                "unit": "g"
+              },
+              {
+                "name": "油",
+                "amount": 9.0,
+                "unit": "ml"
+              },
+              {
+                "name": "水",
+                "amount": 10.0,
+                "unit": "ml"
+              }
+            ],
+            "sufficient_items": [],
+            "missing_items": [
+              {
+                "name": "白豆腐",
+                "amount": 0.8,
+                "unit": "kg"
+              },
+              {
+                "name": "青辣椒",
+                "amount": 1.5,
+                "unit": "只"
+              },
+              {
+                "name": "葱",
+                "amount": 2.0,
+                "unit": "根"
+              },
+              {
+                "name": "盐",
+                "amount": 3.0,
+                "unit": "g"
+              },
+              {
+                "name": "鸡精",
+                "amount": 1.5,
+                "unit": "g"
+              },
+              {
+                "name": "油",
+                "amount": 9.0,
+                "unit": "ml"
+              },
+              {
+                "name": "水",
+                "amount": 10.0,
+                "unit": "ml"
+              }
+            ],
+            "pending_manual": [],
+            "computed_at": "2026-05-12T06:42:35.121751+00:00"
+          },
+          "gap_basis": {
+            "recipe_title": "葱煎豆腐",
+            "r_fingerprint": "f9fb8c44faa7a4cd8dcb49f5",
+            "inventory_fingerprint": "aa6a5c9fdd4ec008e641e672"
+          },
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": true,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "gap_delivery_mode": "fresh",
+          "shopping_list": [
+            {
+              "name": "白豆腐",
+              "amount": 0.8,
+              "unit": "kg"
+            },
+            {
+              "name": "青辣椒",
+              "amount": 1.5,
+              "unit": "只"
+            },
+            {
+              "name": "葱",
+              "amount": 2.0,
+              "unit": "根"
+            },
+            {
+              "name": "盐",
+              "amount": 3.0,
+              "unit": "g"
+            },
+            {
+              "name": "鸡精",
+              "amount": 1.5,
+              "unit": "g"
+            },
+            {
+              "name": "油",
+              "amount": 9.0,
+              "unit": "ml"
+            },
+            {
+              "name": "水",
+              "amount": 10.0,
+              "unit": "ml"
+            }
+          ],
+          "sufficient_items": [],
+          "missing_items": [
+            {
+              "name": "白豆腐",
+              "amount": 0.8,
+              "unit": "kg"
+            },
+            {
+              "name": "青辣椒",
+              "amount": 1.5,
+              "unit": "只"
+            },
+            {
+              "name": "葱",
+              "amount": 2.0,
+              "unit": "根"
+            },
+            {
+              "name": "盐",
+              "amount": 3.0,
+              "unit": "g"
+            },
+            {
+              "name": "鸡精",
+              "amount": 1.5,
+              "unit": "g"
+            },
+            {
+              "name": "油",
+              "amount": 9.0,
+              "unit": "ml"
+            },
+            {
+              "name": "水",
+              "amount": 10.0,
+              "unit": "ml"
+            }
+          ]
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [
+            "五花肉",
+            "排骨",
+            "牛筋",
+            "胡萝卜",
+            "苦瓜",
+            "西红柿",
+            "豆腐",
+            "饼干",
+            "鸡胸肉"
+          ],
+          "cached_shopping_gap_present": true,
+          "gap_basis": {
+            "recipe_title": "葱煎豆腐",
+            "r_fingerprint": "f9fb8c44faa7a4cd8dcb49f5",
+            "inventory_fingerprint": "aa6a5c9fdd4ec008e641e672"
+          },
+          "recipe_use_confirmed": true
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {
+          "error_code": null,
+          "recoverable": true,
+          "error_detail": null
+        },
+        "expert_payloads": {
+          "recipe_detail": {
+            "title": "葱煎豆腐",
+            "ingredients": [
+              {
+                "name": "白豆腐",
+                "amount": 0.8,
+                "unit": "kg"
+              },
+              {
+                "name": "青辣椒",
+                "amount": 1.5,
+                "unit": "只"
+              },
+              {
+                "name": "葱",
+                "amount": 2.0,
+                "unit": "根"
+              },
+              {
+                "name": "盐",
+                "amount": 3.0,
+                "unit": "g"
+              },
+              {
+                "name": "鸡精",
+                "amount": 1.5,
+                "unit": "g"
+              },
+              {
+                "name": "油",
+                "amount": 9.0,
+                "unit": "ml"
+              },
+              {
+                "name": "水",
+                "amount": 10.0,
+                "unit": "ml"
+              }
+            ],
+            "steps": [
+              "豆腐洗净。切约 5 mm 厚度，置于碟中。",
+              "葱洗净，除去根部，切成葱花，备用。",
+              "辣椒洗净，切开，去籽，切成 1cm * 1cm 状，备用。",
+              "热锅，加入份数 * 9ml 油。",
+              "油入锅后，使其均匀布于锅底，均匀放入豆腐，小火煎至金黄翻面。",
+              "待两面金黄，盛入碟中备用。",
+              "补油至覆盖锅底，倒入辣椒大火翻炒，并铲碾 3 分钟。",
+              "倒入豆腐，翻炒，加入盐与鸡精，中火翻炒 1 分钟后倒入 10 ML 水，大火收汁。",
+              "出锅前撒上之前计算好的葱花，起锅盛盘。"
+            ]
+          },
+          "status": "success"
+        },
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "别挑了就选葱煎豆腐，帮我找这道菜"
+          },
+          {
+            "type": "ai",
+            "content": "好的，葱煎豆腐是一道非常家常又美味的菜肴。做法也挺简单的，下面给你一个基本的做法：\n\n### 材料：\n- 嫩豆腐 1块\n- 葱 2根\n- 盐 适量\n- 生抽（酱油）少许\n- 食用油 适量\n\n### 做法：\n1. **准备材料**：将豆腐切成厚约1厘米左右的片；葱洗净后切成葱花。\n2. **处理豆腐**：在平底锅中倒入足够的食用油，开中小火预热。待油温五成热时，轻轻放入切好的豆腐片，两面煎至金黄色后取出备用。\n3. **调味**：在同一锅中留少量底油，加入葱白部分爆香，然后放回煎好的豆腐，撒上适量的盐和一点点生抽调味。\n4. **出锅前**：最后撒上剩余的葱绿翻炒均匀即可出锅。\n\n这道菜简单易做，味道鲜美，非常适合家庭日常食用。希望你喜欢！如果需要调整口味或者有其他特殊需求，请随时告诉我哦~\n\n以下为「葱煎豆腐」的用料清单（来自本地菜谱解析）：\n\n  · 白豆腐：0.8 kg\n  · 青辣椒：1.5 只\n  · 葱：2 根\n  · 盐：3 g\n  · 鸡精：1.5 g\n  · 油：9 ml\n  · 水：10 ml\n\n以下为「葱煎豆腐」的烹饪步骤（来自本地菜谱解析）：\n\n  · 豆腐洗净。切约 5 mm 厚度，置于碟中。\n  · 葱洗净，除去根部，切成葱花，备用。\n  · 辣椒洗净，切开，去籽，切成 1cm * 1cm 状，备用。\n  · 热锅，加入份数 * 9ml 油。\n  · 油入锅后，使其均匀布于锅底，均匀放入豆腐，小火煎至金黄翻面。\n  · 待两面金黄，盛入碟中备用。\n  · 补油至覆盖锅底，倒入辣椒大火翻炒，并铲碾 3 分钟。\n  · 倒入豆腐，翻炒，加入盐与鸡精，中火翻炒 1 分钟后倒入 10 ML 水，大火收汁。\n  · 出锅前撒上之前计算好的葱花，起锅盛盘。"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [
+            "get_recipe_source",
+            "parse_recipe_content"
+          ],
+          "inferred_total": 2
+        },
+        "wall_time_ms": 58884.53560000016,
+        "user_input": "别挑了就选葱煎豆腐，帮我找这道菜"
+      },
+      "assistant_reply": "好的，葱煎豆腐是一道非常家常又美味的菜肴。做法也挺简单的，下面给你一个基本的做法：\n\n### 材料：\n- 嫩豆腐 1块\n- 葱 2根\n- 盐 适量\n- 生抽（酱油）少许\n- 食用油 适量\n\n### 做法：\n1. **准备材料**：将豆腐切成厚约1厘米左右的片；葱洗净后切成葱花。\n2. **处理豆腐**：在平底锅中倒入足够的食用油，开中小火预热。待油温五成热时，轻轻放入切好的豆腐片，两面煎至金黄色后取出备用。\n3. **调味**：在同一锅中留少量底油，加入葱白部分爆香，然后放回煎好的豆腐，撒上适量的盐和一点点生抽调味。\n4. **出锅前**：最后撒上剩余的葱绿翻炒均匀即可出锅。\n\n这道菜简单易做，味道鲜美，非常适合家庭日常食用。希望你喜欢！如果需要调整口味或者有其他特殊需求，请随时告诉我哦~\n\n以下为「葱煎豆腐」的用料清单（来自本地菜谱解析）：\n\n  · 白豆腐：0.8 kg\n  · 青辣椒：1.5 只\n  · 葱：2 根\n  · 盐：3 g\n  · 鸡精：1.5 g\n  · 油：9 ml\n  · 水：10 ml\n\n以下为「葱煎豆腐」的烹饪步骤（来自本地菜谱解析）：\n\n  · 豆腐洗净。切约 5 mm 厚度，置于碟中。\n  · 葱洗净，除去根部，切成葱花，备用。\n  · 辣椒洗净，切开，去籽，切成 1cm * 1cm 状，备用。\n  · 热锅，加入份数 * 9ml 油。\n  · 油入锅后，使其均匀布于锅底，均匀放入豆腐，小火煎至金黄翻面。\n  · 待两面金黄，盛入碟中备用。\n  · 补油至覆盖锅底，倒入辣椒大火翻炒，并铲碾 3 分钟。\n  · 倒入豆腐，翻炒，加入盐与鸡精，中火翻炒 1 分钟后倒入 10 ML 水，大火收汁。\n  · 出锅前撒上之前计算好的葱花，起锅盛盘。"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 58884.53560000016,
+    "turn_count": 1
+  }
+}

@@ -6,7 +6,7 @@ Generator Node - 处理两类场景：
 import copy
 import logging
 from collections import Counter
-from typing import Dict, Any, List
+from typing import Any, Dict, List
 from pathlib import Path
 from langchain_core.messages import AIMessage
 
@@ -67,6 +67,78 @@ def _emit_nfr07_memory_metrics(state: AgentState, task_stack_after: List[str]) -
         )
     except Exception:
         logger.debug("emit_memory_metrics failed", exc_info=True)
+
+
+# TASK_SUMMARIZE：追问「用料」vs「步骤」（看最后一轮用户话）
+_SUMMARY_ING_KW = (
+    "食材",
+    "用料",
+    "材料",
+    "原料",
+    "配菜",
+    "买什么",
+    "准备什么",
+    "哪些材料",
+    "要买什么",
+)
+_SUMMARY_STEP_KW = (
+    "步骤",
+    "做法",
+    "怎么做",
+    "如何做",
+    "烹调",
+    "烹饪",
+    "制作过程",
+    "教程",
+)
+
+
+def _last_user_text_for_summarize(state: AgentState) -> str:
+    for msg in reversed(state.get("messages") or []):
+        if hasattr(msg, "type") and msg.type == "human":
+            return str(getattr(msg, "content", "") or "")
+    return ""
+
+
+def _summarize_focus_from_user(text: str) -> str:
+    """ingredients | steps | both"""
+    t = (text or "").strip()
+    if not t:
+        return "both"
+    hi = any(k in t for k in _SUMMARY_ING_KW)
+    hs = any(k in t for k in _SUMMARY_STEP_KW)
+    if hi and not hs:
+        return "ingredients"
+    if hs and not hi:
+        return "steps"
+    return "both"
+
+
+def _format_recipe_requirements_lines(recipe_title: str, req: List[Dict[str, Any]]) -> str:
+    lines = [f"以下为「{recipe_title}」的用料清单（来自本地菜谱解析）：\n"]
+    for r in req:
+        if not isinstance(r, dict):
+            continue
+        name = str(r.get("name") or "").strip()
+        if not name:
+            continue
+        amt_raw = r.get("amount")
+        unit = str(r.get("unit") or "").strip()
+        amt_s = ""
+        try:
+            if amt_raw is not None and str(amt_raw).strip() != "":
+                v = float(amt_raw)
+                amt_s = str(int(v)) if v == int(v) else str(v)
+        except (TypeError, ValueError):
+            amt_s = str(amt_raw).strip()
+        if amt_s and unit:
+            lines.append(f"  · {name}：{amt_s} {unit}")
+        elif amt_s:
+            lines.append(f"  · {name}：{amt_s}")
+        else:
+            lines.append(f"  · {name}")
+    return "\n".join(lines)
+
 
 CHITCHAT_SYSTEM_PROMPT = """\
 你是一个温暖、专业的家庭膳食助手，擅长回答饮食、烹饪、营养相关的问题。
@@ -291,12 +363,12 @@ class GeneratorNode:
         sufficient = lb.get("sufficient_items", [])
 
         if not shopping_list:
-            return "好消息！按当前菜谱与库存，您家的食材已经够用，不需要额外购买。"
+            return "按当前菜谱与库存，您家的食材已经够用，不需要额外购买。"
 
         intro = "根据当前锁定菜谱与库存换算，您还需要购买以下食材：\n"
         if mode == "cache":
             intro = (
-                "按当前菜谱与库存校验，**与缓存一致**，直接使用已算好的缺口清单：\n"
+                "按当前菜谱与库存校验与缓存一致，直接使用已计算好的购物清单：\n"
             )
         elif mode == "fresh":
             intro = (
@@ -441,21 +513,50 @@ class GeneratorNode:
         return f"好的，我已记录您的饮食偏好，以后推荐菜谱时会注意。"
     
     def handle_summarize(self, state: AgentState) -> str:
-        """获取菜谱的详情后，向用户回复"""
+        """获取菜谱的详情后，向用户回复（按追问用语区分用料 / 步骤 / 两者）。"""
         lb = get_runtime_bundle(state)
         recipe_title = lb.get("selected_recipe_title", "未知菜谱")
-        step = lb.get("recipe_cook_step", [])
+        raw_step = lb.get("recipe_cook_step") or []
+        if isinstance(raw_step, list):
+            step = [str(s).strip() for s in raw_step if str(s).strip()]
+        else:
+            step = []
 
-        if not step:
+        raw_req = lb.get("recipe_requirements") or []
+        req: List[Dict[str, Any]] = (
+            [x for x in raw_req if isinstance(x, dict)] if isinstance(raw_req, list) else []
+        )
+
+        focus = _summarize_focus_from_user(_last_user_text_for_summarize(state))
+        parts: List[str] = []
+
+        if focus in ("ingredients", "both"):
+            if req:
+                parts.append(_format_recipe_requirements_lines(recipe_title, req))
+            elif focus == "ingredients":
+                return (
+                    f"已从菜谱库解析「{recipe_title}」，但未解析出结构化用料清单；"
+                    "您可以换一道菜或稍后再试。"
+                )
+
+        if focus in ("steps", "both"):
+            if step:
+                lines = [f"以下为「{recipe_title}」的烹饪步骤（来自本地菜谱解析）：\n"]
+                for s in step:
+                    lines.append(f"  · {s}")
+                parts.append("\n".join(lines))
+            elif focus == "steps":
+                return (
+                    f"已从菜谱库解析「{recipe_title}」，但未找到可用的烹饪步骤段落；"
+                    "您可以换一道菜或稍后再试。"
+                )
+
+        if not parts:
             return (
-                f"已从菜谱库解析「{recipe_title}」，但未找到可用的烹饪步骤段落；"
+                f"已从菜谱库解析「{recipe_title}」，但未找到可用的用料或步骤段落；"
                 "您可以换一道菜或稍后再试。"
             )
-        else:
-            lines = [f"以下为「{recipe_title}」的烹饪步骤（来自本地菜谱解析）：\n"]
-            for s in step:
-                lines.append(f"  · {s}")
-            return "\n".join(lines)
+        return "\n\n".join(parts)
 
 
 async def _collect_merged_generator_reply(

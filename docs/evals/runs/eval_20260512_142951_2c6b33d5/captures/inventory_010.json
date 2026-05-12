@@ -1,0 +1,257 @@
+{
+  "case_id": "inventory_010",
+  "source_file": "inventory_check.json",
+  "fixture": {
+    "case_id": "inventory_010",
+    "scenario_category": "inventory",
+    "difficulty": "medium",
+    "description": "多食材联合查询是否齐备",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "想做咖喱饭，土豆洋葱胡萝卜和鸡胸肉家里都齐吗"
+      }
+    ],
+    "expected": {
+      "primary_intent": "inventory_check",
+      "intents": [
+        "inventory_check",
+        "recipe_search"
+      ],
+      "needs_clarification": false,
+      "key_slots": {
+        "inventory_query_targets": [
+          "土豆",
+          "洋葱",
+          "胡萝卜",
+          "鸡胸肉"
+        ]
+      },
+      "golden_recipe_ids": [],
+      "output_contains": [
+        "土豆",
+        "咖喱"
+      ],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "auto",
+    "linked_scenarios": [
+      "S-03",
+      "S-04"
+    ]
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:inventory_010",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "想做咖喱饭，土豆洋葱胡萝卜和鸡胸肉家里都齐吗",
+      "wall_time_ms": 17270.28380000047,
+      "snapshot": {
+        "final_response": "您的厨房库存目前是空的，还没有添加任何食材。\n\n菜谱检索服务暂时不可用，我无法从本地菜谱库拉取结果。请稍后再试；您也可以先说想吃的口味或食材，我再给您一些不依赖检索的建议。",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "recipe_search",
+        "intents": [
+          "recipe_search",
+          "inventory_check"
+        ],
+        "confidence": 0.85,
+        "needs_clarification": false,
+        "slots": {
+          "recipe_name": "咖喱饭",
+          "ingredients": [
+            "土豆",
+            "洋葱",
+            "胡萝卜",
+            "鸡胸肉"
+          ],
+          "inventory_query_targets": [
+            "土豆",
+            "洋葱",
+            "胡萝卜",
+            "鸡胸肉"
+          ]
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "recipe_search",
+          "secondary_intents": [
+            "inventory_check"
+          ],
+          "intents": [
+            "recipe_search",
+            "inventory_check"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 1,
+          "slots": {
+            "recipe_name": "咖喱饭",
+            "ingredients": [
+              "土豆",
+              "洋葱",
+              "胡萝卜",
+              "鸡胸肉"
+            ],
+            "inventory_query_targets": [
+              "土豆",
+              "洋葱",
+              "胡萝卜",
+              "鸡胸肉"
+            ]
+          },
+          "missing_slots": [],
+          "confidence": 0.85,
+          "extracted_entities": {
+            "recipe_name": "咖喱饭",
+            "ingredients": [
+              "土豆",
+              "洋葱",
+              "胡萝卜",
+              "鸡胸肉"
+            ]
+          },
+          "router_reasoning": "用户想做咖喱饭，并询问家里是否有土豆、洋葱、胡萝卜和鸡胸肉，涉及菜谱搜索与库存查询。",
+          "degraded_reply": "菜谱检索服务暂时不可用，我无法从本地菜谱库拉取结果。请稍后再试；您也可以先说想吃的口味或食材，我再给您一些不依赖检索的建议。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {
+            "recipe_name": "咖喱饭",
+            "ingredients": [
+              "土豆",
+              "洋葱",
+              "胡萝卜",
+              "鸡胸肉"
+            ]
+          },
+          "router_reasoning": "用户想做咖喱饭，并询问家里是否有土豆、洋葱、胡萝卜和鸡胸肉，涉及菜谱搜索与库存查询。",
+          "degraded_reply": "菜谱检索服务暂时不可用，我无法从本地菜谱库拉取结果。请稍后再试；您也可以先说想吃的口味或食材，我再给您一些不依赖检索的建议。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "effective_constraint": {
+            "scope_id": "default_user",
+            "hard_exclusions": [
+              "花生",
+              "糖尿病->低糖",
+              "胃溃疡->避免辛辣",
+              "他汀类药物->避免西柚"
+            ],
+            "soft_negative_hints": [
+              "辣椒",
+              "刺多的鱼",
+              "羊肉, 膻味重的肉类"
+            ],
+            "soft_positive_hints": [],
+            "dietary_target": "减脂",
+            "temporal_conditions": [
+              "想吃重庆火锅级别的辣",
+              "极清淡少油少纤维",
+              "偏好偏咸",
+              "感冒嗓子疼",
+              "肠胃不适"
+            ],
+            "summary_snippet": null
+          },
+          "slots": {
+            "recipe_name": "咖喱饭",
+            "ingredients": [
+              "土豆",
+              "洋葱",
+              "胡萝卜",
+              "鸡胸肉"
+            ],
+            "inventory_query_targets": [
+              "土豆",
+              "洋葱",
+              "胡萝卜",
+              "鸡胸肉"
+            ]
+          },
+          "error_state": {
+            "error_code": "recoverable_error",
+            "recoverable": true,
+            "error_detail": "no such column: 低糖"
+          }
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {
+          "error_code": "recoverable_error",
+          "recoverable": true,
+          "error_detail": "no such column: 低糖"
+        },
+        "expert_payloads": {
+          "error": "no such column: 低糖",
+          "status": "recoverable_error"
+        },
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "想做咖喱饭，土豆洋葱胡萝卜和鸡胸肉家里都齐吗"
+          },
+          {
+            "type": "ai",
+            "content": "您的厨房库存目前是空的，还没有添加任何食材。\n\n菜谱检索服务暂时不可用，我无法从本地菜谱库拉取结果。请稍后再试；您也可以先说想吃的口味或食材，我再给您一些不依赖检索的建议。"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [],
+          "inferred_total": 0
+        },
+        "wall_time_ms": 17270.28380000047,
+        "user_input": "想做咖喱饭，土豆洋葱胡萝卜和鸡胸肉家里都齐吗"
+      },
+      "assistant_reply": "您的厨房库存目前是空的，还没有添加任何食材。\n\n菜谱检索服务暂时不可用，我无法从本地菜谱库拉取结果。请稍后再试；您也可以先说想吃的口味或食材，我再给您一些不依赖检索的建议。"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 17270.28380000047,
+    "turn_count": 1
+  }
+}

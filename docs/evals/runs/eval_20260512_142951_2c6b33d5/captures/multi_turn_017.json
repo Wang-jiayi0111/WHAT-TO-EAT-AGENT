@@ -1,0 +1,518 @@
+{
+  "case_id": "multi_turn_017",
+  "source_file": "inventory_add.json",
+  "fixture": {
+    "case_id": "multi_turn_017",
+    "scenario_category": "multi_turn",
+    "difficulty": "hard",
+    "description": "前轮只说食材后轮补充数量完成补货意图",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "刚才盒马下单了一盒蓝莓"
+      },
+      {
+        "turn": 2,
+        "input": "那一盒是125克你帮我记进库存吧"
+      }
+    ],
+    "expected": {
+      "primary_intent": "inventory_add",
+      "intents": [
+        "inventory_add"
+      ],
+      "needs_clarification": false,
+      "key_slots": {
+        "restock_items": [
+          {
+            "name": "蓝莓",
+            "amount": 125,
+            "unit": "g",
+            "merge_mode": "add"
+          }
+        ]
+      },
+      "golden_recipe_ids": [],
+      "output_contains": [
+        "蓝莓"
+      ],
+      "output_excludes": [],
+      "context_preserved": [
+        "蓝莓",
+        "盒马下单"
+      ],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": [
+      "S-05"
+    ]
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:multi_turn_017",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "刚才盒马下单了一盒蓝莓",
+      "wall_time_ms": 6776.506599999266,
+      "snapshot": {
+        "final_response": "没能从您的话里确定买了哪些食材、各多少量（需带单位）。请再说具体一点，例如「买了鸡蛋 12 个」。",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "inventory_add",
+        "intents": [
+          "inventory_add"
+        ],
+        "confidence": 0.95,
+        "needs_clarification": false,
+        "slots": {
+          "restock_items": [
+            "{name: \"蓝莓\", amount: 1, unit: \"盒\"}"
+          ]
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "inventory_add",
+          "secondary_intents": [],
+          "intents": [
+            "inventory_add"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 1,
+          "slots": {
+            "restock_items": [
+              "{name: \"蓝莓\", amount: 1, unit: \"盒\"}"
+            ]
+          },
+          "missing_slots": [],
+          "confidence": 0.95,
+          "extracted_entities": {},
+          "router_reasoning": "用户提到从盒马购买了一盒蓝莓，属于库存添加行为。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {},
+          "router_reasoning": "用户提到从盒马购买了一盒蓝莓，属于库存添加行为。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {
+            "五花肉": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "排骨": {
+              "amount": 250.0,
+              "unit": "g"
+            },
+            "牛筋": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "胡萝卜": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "苦瓜": {
+              "amount": 2.0,
+              "unit": "根"
+            },
+            "西红柿": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "豆腐": {
+              "amount": 1.0,
+              "unit": "块"
+            },
+            "饼干": {
+              "amount": 1.0,
+              "unit": "盒"
+            },
+            "鸡胸肉": {
+              "amount": 1.0,
+              "unit": "个"
+            }
+          },
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": {
+            "items": [],
+            "unresolved": [
+              "{name: \"蓝莓\", amount: 1, unit: \"盒\"}"
+            ],
+            "source": "utterance"
+          },
+          "add_status": "failed",
+          "add_failed_items": [],
+          "add_succeeded_items": [],
+          "slots": {
+            "restock_items": [
+              "{name: \"蓝莓\", amount: 1, unit: \"盒\"}"
+            ]
+          },
+          "error_state": {
+            "error_code": "INVENTORY_ADD_UNPARSED",
+            "recoverable": true,
+            "error_detail": "补货意图下食材/数量/单位无法稳定解析"
+          }
+        },
+        "inventory_state": {
+          "inventory_snapshot": {
+            "五花肉": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "排骨": {
+              "amount": 250.0,
+              "unit": "g"
+            },
+            "牛筋": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "胡萝卜": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "苦瓜": {
+              "amount": 2.0,
+              "unit": "根"
+            },
+            "西红柿": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "豆腐": {
+              "amount": 1.0,
+              "unit": "块"
+            },
+            "饼干": {
+              "amount": 1.0,
+              "unit": "盒"
+            },
+            "鸡胸肉": {
+              "amount": 1.0,
+              "unit": "个"
+            }
+          },
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": {
+            "items": [],
+            "unresolved": [
+              "{name: \"蓝莓\", amount: 1, unit: \"盒\"}"
+            ],
+            "source": "utterance"
+          },
+          "add_status": "failed",
+          "add_failed_items": [],
+          "add_succeeded_items": []
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [
+            "五花肉",
+            "排骨",
+            "牛筋",
+            "胡萝卜",
+            "苦瓜",
+            "西红柿",
+            "豆腐",
+            "饼干",
+            "鸡胸肉"
+          ],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {
+          "error_code": "INVENTORY_ADD_UNPARSED",
+          "recoverable": true,
+          "error_detail": "补货意图下食材/数量/单位无法稳定解析"
+        },
+        "expert_payloads": {},
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "刚才盒马下单了一盒蓝莓"
+          },
+          {
+            "type": "ai",
+            "content": "没能从您的话里确定买了哪些食材、各多少量（需带单位）。请再说具体一点，例如「买了鸡蛋 12 个」。"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [],
+          "inferred_total": 0
+        },
+        "wall_time_ms": 6776.506599999266,
+        "user_input": "刚才盒马下单了一盒蓝莓"
+      },
+      "assistant_reply": "没能从您的话里确定买了哪些食材、各多少量（需带单位）。请再说具体一点，例如「买了鸡蛋 12 个」。"
+    },
+    {
+      "turn": 2,
+      "input": "那一盒是125克你帮我记进库存吧",
+      "wall_time_ms": 8001.102500000343,
+      "snapshot": {
+        "final_response": "没能从您的话里确定买了哪些食材、各多少量（需带单位）。请再说具体一点，例如「买了鸡蛋 12 个」。",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "inventory_add",
+        "intents": [
+          "inventory_add"
+        ],
+        "confidence": 0.95,
+        "needs_clarification": false,
+        "slots": {
+          "restock_items": [
+            "{\"name\": \"蓝莓\", \"amount\": 125, \"unit\": \"克\"}"
+          ]
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "inventory_add",
+          "secondary_intents": [],
+          "intents": [
+            "inventory_add"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 2,
+          "slots": {
+            "restock_items": [
+              "{\"name\": \"蓝莓\", \"amount\": 125, \"unit\": \"克\"}"
+            ]
+          },
+          "missing_slots": [],
+          "confidence": 0.95,
+          "extracted_entities": {},
+          "router_reasoning": "用户确认了之前提到的一盒蓝莓的重量，并要求将其记入库存。这属于 inventory_add 意图，且提供了具体的补货信息。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {},
+          "router_reasoning": "用户确认了之前提到的一盒蓝莓的重量，并要求将其记入库存。这属于 inventory_add 意图，且提供了具体的补货信息。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {
+            "五花肉": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "排骨": {
+              "amount": 250.0,
+              "unit": "g"
+            },
+            "牛筋": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "胡萝卜": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "苦瓜": {
+              "amount": 2.0,
+              "unit": "根"
+            },
+            "西红柿": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "豆腐": {
+              "amount": 1.0,
+              "unit": "块"
+            },
+            "饼干": {
+              "amount": 1.0,
+              "unit": "盒"
+            },
+            "鸡胸肉": {
+              "amount": 1.0,
+              "unit": "个"
+            }
+          },
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": {
+            "items": [],
+            "unresolved": [
+              "{\"name\": \"蓝莓\", \"amount\": 125, \"unit\": \"克\"}"
+            ],
+            "source": "utterance"
+          },
+          "add_status": "failed",
+          "add_failed_items": [],
+          "add_succeeded_items": [],
+          "slots": {
+            "restock_items": [
+              "{\"name\": \"蓝莓\", \"amount\": 125, \"unit\": \"克\"}"
+            ]
+          },
+          "error_state": {
+            "error_code": "INVENTORY_ADD_UNPARSED",
+            "recoverable": true,
+            "error_detail": "补货意图下食材/数量/单位无法稳定解析"
+          }
+        },
+        "inventory_state": {
+          "inventory_snapshot": {
+            "五花肉": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "排骨": {
+              "amount": 250.0,
+              "unit": "g"
+            },
+            "牛筋": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "胡萝卜": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "苦瓜": {
+              "amount": 2.0,
+              "unit": "根"
+            },
+            "西红柿": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "豆腐": {
+              "amount": 1.0,
+              "unit": "块"
+            },
+            "饼干": {
+              "amount": 1.0,
+              "unit": "盒"
+            },
+            "鸡胸肉": {
+              "amount": 1.0,
+              "unit": "个"
+            }
+          },
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": {
+            "items": [],
+            "unresolved": [
+              "{\"name\": \"蓝莓\", \"amount\": 125, \"unit\": \"克\"}"
+            ],
+            "source": "utterance"
+          },
+          "add_status": "failed",
+          "add_failed_items": [],
+          "add_succeeded_items": []
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [
+            "五花肉",
+            "排骨",
+            "牛筋",
+            "胡萝卜",
+            "苦瓜",
+            "西红柿",
+            "豆腐",
+            "饼干",
+            "鸡胸肉"
+          ],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {
+          "error_code": "INVENTORY_ADD_UNPARSED",
+          "recoverable": true,
+          "error_detail": "补货意图下食材/数量/单位无法稳定解析"
+        },
+        "expert_payloads": {},
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "刚才盒马下单了一盒蓝莓"
+          },
+          {
+            "type": "ai",
+            "content": "没能从您的话里确定买了哪些食材、各多少量（需带单位）。请再说具体一点，例如「买了鸡蛋 12 个」。"
+          },
+          {
+            "type": "human",
+            "content": "那一盒是125克你帮我记进库存吧"
+          },
+          {
+            "type": "ai",
+            "content": "没能从您的话里确定买了哪些食材、各多少量（需带单位）。请再说具体一点，例如「买了鸡蛋 12 个」。"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [],
+          "inferred_total": 0
+        },
+        "wall_time_ms": 8001.102500000343,
+        "user_input": "那一盒是125克你帮我记进库存吧"
+      },
+      "assistant_reply": "没能从您的话里确定买了哪些食材、各多少量（需带单位）。请再说具体一点，例如「买了鸡蛋 12 个」。"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 14777.609099999609,
+    "turn_count": 2
+  }
+}

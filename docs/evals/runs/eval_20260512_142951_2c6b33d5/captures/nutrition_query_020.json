@@ -1,0 +1,163 @@
+{
+  "case_id": "nutrition_query_020",
+  "source_file": "dietary_advice.json",
+  "fixture": {
+    "case_id": "nutrition_query_020",
+    "scenario_category": "nutrition_query",
+    "difficulty": "easy",
+    "description": "食材与症状关联的膳食建议",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "感冒了嗓子疼饮食上要注意什么能吃点啥缓解"
+      }
+    ],
+    "expected": {
+      "primary_intent": "dietary_advice",
+      "intents": [
+        "dietary_advice",
+        "recipe_search"
+      ],
+      "needs_clarification": false,
+      "key_slots": {
+        "diet_topic": "感冒咽痛饮食",
+        "ingredients": []
+      },
+      "golden_recipe_ids": [],
+      "output_contains": [
+        "清淡"
+      ],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": [
+      "S-02"
+    ]
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:nutrition_query_020",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "感冒了嗓子疼饮食上要注意什么能吃点啥缓解",
+      "wall_time_ms": 21905.3686999996,
+      "snapshot": {
+        "final_response": "感冒嗓子疼的时候，饮食上可以注意以下几点来帮助缓解不适：\n\n1. **多喝水**：保持充足的水分可以帮助稀释喉咙中的分泌物，减轻疼痛感。温开水、淡盐水或是蜂蜜柠檬水都是不错的选择。\n2. **温和易吞咽的食物**：选择软烂、容易吞咽的食物，比如粥、蒸蛋等，避免辛辣刺激性食物和过硬的食物刺激已经发炎的喉咙。\n3. **富含维生素C的食物**：适量增加含维C丰富的水果（如猕猴桃、橙子）或蔬菜（如西兰花），有助于增强免疫力。\n4. **温暖湿润的食物**：喝些温暖但不烫口的汤类，如鸡汤，不仅能补充营养，还能通过蒸汽作用舒缓喉咙。\n\n记得避免冷饮和过于甜腻的食物哦！如果症状持续不见好转，请及时就医，并遵循医生指导进行治疗。希望您早日康复！",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "dietary_advice",
+        "intents": [
+          "dietary_advice"
+        ],
+        "confidence": 0.95,
+        "needs_clarification": false,
+        "slots": {
+          "diet_topic": "感冒 嗓子疼"
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "dietary_advice",
+          "secondary_intents": [],
+          "intents": [
+            "dietary_advice"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 1,
+          "slots": {
+            "diet_topic": "感冒 嗓子疼"
+          },
+          "missing_slots": [],
+          "confidence": 0.95,
+          "extracted_entities": {},
+          "router_reasoning": "用户询问在感冒嗓子疼的情况下，饮食上需要注意的事项以及可以吃什么来缓解症状。这属于营养健康类问答，不需要检索具体菜谱。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {},
+          "router_reasoning": "用户询问在感冒嗓子疼的情况下，饮食上需要注意的事项以及可以吃什么来缓解症状。这属于营养健康类问答，不需要检索具体菜谱。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "short_term_constraints": [
+            "短期：感冒/呼吸道不适"
+          ],
+          "slots": {
+            "diet_topic": "感冒 嗓子疼"
+          },
+          "error_state": {}
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [
+            "短期：感冒/呼吸道不适"
+          ],
+          "conversation_summary_len": 0
+        },
+        "error_state": {},
+        "expert_payloads": {},
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "感冒了嗓子疼饮食上要注意什么能吃点啥缓解"
+          },
+          {
+            "type": "ai",
+            "content": "感冒嗓子疼的时候，饮食上可以注意以下几点来帮助缓解不适：\n\n1. **多喝水**：保持充足的水分可以帮助稀释喉咙中的分泌物，减轻疼痛感。温开水、淡盐水或是蜂蜜柠檬水都是不错的选择。\n2. **温和易吞咽的食物**：选择软烂、容易吞咽的食物，比如粥、蒸蛋等，避免辛辣刺激性食物和过硬的食物刺激已经发炎的喉咙。\n3. **富含维生素C的食物**：适量增加含维C丰富的水果（如猕猴桃、橙子）或蔬菜（如西兰花），有助于增强免疫力。\n4. **温暖湿润的食物**：喝些温暖但不烫口的汤类，如鸡汤，不仅能补充营养，还能通过蒸汽作用舒缓喉咙。\n\n记得避免冷饮和过于甜腻的食物哦！如果症状持续不见好转，请及时就医，并遵循医生指导进行治疗。希望您早日康复！"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [],
+          "inferred_total": 0
+        },
+        "wall_time_ms": 21905.3686999996,
+        "user_input": "感冒了嗓子疼饮食上要注意什么能吃点啥缓解"
+      },
+      "assistant_reply": "感冒嗓子疼的时候，饮食上可以注意以下几点来帮助缓解不适：\n\n1. **多喝水**：保持充足的水分可以帮助稀释喉咙中的分泌物，减轻疼痛感。温开水、淡盐水或是蜂蜜柠檬水都是不错的选择。\n2. **温和易吞咽的食物**：选择软烂、容易吞咽的食物，比如粥、蒸蛋等，避免辛辣刺激性食物和过硬的食物刺激已经发炎的喉咙。\n3. **富含维生素C的食物**：适量增加含维C丰富的水果（如猕猴桃、橙子）或蔬菜（如西兰花），有助于增强免疫力。\n4. **温暖湿润的食物**：喝些温暖但不烫口的汤类，如鸡汤，不仅能补充营养，还能通过蒸汽作用舒缓喉咙。\n\n记得避免冷饮和过于甜腻的食物哦！如果症状持续不见好转，请及时就医，并遵循医生指导进行治疗。希望您早日康复！"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 21905.3686999996,
+    "turn_count": 1
+  }
+}

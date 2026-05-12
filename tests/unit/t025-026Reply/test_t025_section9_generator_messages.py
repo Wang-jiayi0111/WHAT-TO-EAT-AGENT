@@ -14,6 +14,7 @@ from __future__ import annotations
 from unittest.mock import AsyncMock, patch
 
 import pytest
+from langchain_core.messages import HumanMessage
 
 from src.agent.core.state import empty_agent_slices
 from src.agent.core.state_sync import runtime_bundle_to_slice_patches
@@ -150,6 +151,42 @@ def test_t025_handle_summarize_explains_local_source() -> None:
     }
     body = gen.handle_summarize(st)
     assert "测试菜" in body and "本地菜谱解析" in body
+
+
+def test_t025_handle_summarize_ingredients_when_user_asks_what_to_buy() -> None:
+    """问「需要什么食材」时应输出用料而非烹饪步骤。"""
+    gen = GeneratorNode()
+    lb = make_logistics_buffer(
+        selected_recipe_title="蛋糕",
+        recipe_requirements=[{"name": "面粉", "amount": 200.0, "unit": "g"}],
+        recipe_cook_step=["打蛋", "烘烤"],
+    )
+    st = {
+        **empty_agent_slices(),
+        **runtime_bundle_to_slice_patches(lb),
+        "messages": [HumanMessage(content="需要什么食材")],
+    }
+    body = gen.handle_summarize(st)
+    assert "用料清单" in body and "面粉" in body and "200" in body
+    assert "烹饪步骤" not in body
+
+
+def test_t025_handle_summarize_steps_when_user_asks_how_to_cook() -> None:
+    """追问做法时应输出步骤而非用料。"""
+    gen = GeneratorNode()
+    lb = make_logistics_buffer(
+        selected_recipe_title="蛋糕",
+        recipe_requirements=[{"name": "面粉", "amount": 200.0, "unit": "g"}],
+        recipe_cook_step=["打蛋", "烘烤"],
+    )
+    st = {
+        **empty_agent_slices(),
+        **runtime_bundle_to_slice_patches(lb),
+        "messages": [HumanMessage(content="具体怎么做")],
+    }
+    body = gen.handle_summarize(st)
+    assert "烹饪步骤" in body and "打蛋" in body
+    assert "用料清单" not in body
 
 
 @pytest.mark.asyncio

@@ -9,6 +9,7 @@
     ],
     "expected": {
       "primary_intent": "general_chat",
+      "intents": ["general_chat"],
       "needs_clarification": false,
       "key_slots": {},
       "golden_recipe_ids": [],
@@ -30,6 +31,7 @@
     ],
     "expected": {
       "primary_intent": "general_chat",
+      "intents": ["general_chat"],
       "needs_clarification": false,
       "key_slots": {},
       "golden_recipe_ids": [],
@@ -47,10 +49,11 @@
     "difficulty": "medium",
     "description": "聊天口吻但夹杂轻微膳食话题边界",
     "user_turns": [
-      { "turn": 1, "input": "我朋友都说我做饭太咸但我吃着刚好这算口味重吗聊聊呗" }
+      { "turn": 1, "input": "我朋友都说我做饭太咸，但我吃着刚好，这算口味重吗？" }
     ],
     "expected": {
       "primary_intent": "general_chat",
+      "intents": ["general_chat", "dietary_advice"],
       "needs_clarification": false,
       "key_slots": {},
       "golden_recipe_ids": [],
@@ -73,6 +76,7 @@
     ],
     "expected": {
       "primary_intent": "general_chat",
+      "intents": ["general_chat", "dietary_advice"],
       "needs_clarification": false,
       "key_slots": {},
       "golden_recipe_ids": [],
@@ -94,6 +98,7 @@
     ],
     "expected": {
       "primary_intent": "general_chat",
+      "intents": ["general_chat"],
       "needs_clarification": false,
       "key_slots": {},
       "golden_recipe_ids": [],
@@ -115,6 +120,7 @@
     ],
     "expected": {
       "primary_intent": "general_chat",
+      "intents": ["general_chat", "user_clarify"],
       "needs_clarification": true,
       "key_slots": {},
       "golden_recipe_ids": [],

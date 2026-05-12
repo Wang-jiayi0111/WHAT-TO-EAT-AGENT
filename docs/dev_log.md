@@ -1492,3 +1492,87 @@
 后续：**T-043**  
 
 ---
+
+## [DEV-039] T-043 E2E 单用例链路树与测评总报告（§5.5～§6 / NFR-11）
+
+**类型**：`功能开发`  
+**编号**：T-043  
+**对应规格**：**NFR-11**；SRS §10.4；规格 **§10.5～10.6**；开发计划 **§5.5、§6**  
+**里程碑**：M7  
+**状态**：`已完成`  
+**日期**：2026-05-10  
+
+### 做了什么
+
+- **`eval/e2e_reports.py`**：由 **`captures/*.json`** 与 T-042 **`scores.json`** 中逐条 `cases[]` 生成 **§5.5 业务链路树**（意图 / 槽位 / 检索 / 过滤排序标 **—（未实现）** / 末轮回复）；单用例 Markdown 含 **期望 vs 实际表**、**§5.1～5.4 分项与 overall**；总报告含 **§5.0～5.4 汇总**、失败索引、单报告路径表、可选与字典序上一 run 的 **mean_overall** 对比。  
+- **`eval/score_run.py`**：写出 `scores.json` 后 **默认调用 T-043**；**`--no-t043`** 跳过；**`--no-agent-eval-main`** 不覆盖 **`docs/agent_eval_report.md`**（仍写 run 内 `e2e_summary` 与 `docs/evals/e2e_summary_<run_id>.md`）。  
+- **`python -m eval.e2e_reports`**：仅凭已有 **`scores.json`** 重生成报告；支持 **`--docs-root`**。  
+- **`manifest.json`**：每条 `entries[]` 增补 **`scenario_category`、`case_report_md`、`scores_json`**；顶层 **`t043`** 索引根路径。  
+- **`eval/README.md`**：补充 T-043 产出说明与 CLI。  
+- **`tests/unit/test_t043_e2e_reports.py`**：`docs_root` 隔离落盘、链路树关键字、错误用例渲染。  
+
+### 变更文件
+
+| 文件 | 类型 | 说明 |
+|------|------|------|
+| `eval/e2e_reports.py` | 新增 | T-043 渲染与落盘 |
+| `eval/score_run.py` | 修改 | 默认触发 T-043 + 新参数 |
+| `eval/README.md` | 修改 | 文档 |
+| `docs/开发计划.md` | 修改 | T-043 状态 |
+
+### 规格对齐要点
+
+- [§5.5] 树状 **✓ / ✗ / —** 语义；未独立暴露的排序步骤标 **未实现**。  
+- [§6] 总报告路径：**`docs/agent_eval_report.md`**（默认覆盖，NFR-11 固定入口）+ **`docs/evals/e2e_summary_<run_id>.md`** + **`runs/<run_id>/e2e_summary.md`**；单用例 **`docs/evals/cases/<run_id>/<case_id>.md`**。  
+
+### 规格偏差（若有）
+
+- **槽位行**仅按 `fixture.expected.key_slots` 的 **键** 对 `snapshot.slots` 做字面匹配；若路由把菜名落在 `ingredients` 等键，树中可能标 **✗** 但意图仍正确（诊断向，不替代 T-031 槽位单测）。  
+
+### 关联
+
+前置：T-042 ✓  
+
+---
+
+## [DEV-041] 检索金标：召回（OR）与 Top-1 准确率分项（T-042 / §5.1）
+
+**类型**：`功能开发`  
+**编号**：T-042 增补  
+**对应规格**：开发计划 §5.1 检索「召回率」「排名」  
+**状态**：`已完成`  
+**日期**：2026-05-11  
+
+### 做了什么
+
+- **`eval/scoring.py`**：`golden_recipe_ids` 驱动 **`retrieval_recall`**（多金标 **OR** 任一命中）、**`retrieval_accuracy_top1`**（首条候选 Hit@1）、保留 **`golden_rank`** / **MRR**；检索 aggregate 改为 **0.4×召回 + 0.3×Top1 + 0.3×名次分**；`recall_hit_at_k` 与 `retrieval_recall` 分数一致（兼容旧字段）。  
+- **`eval/README.md`**、`scores_report.md` 汇总说明；**`tests/unit/test_scoring_layers.py`** 补充 OR / Top1 用例。  
+
+### 关联
+
+前置：T-042 ✓  
+
+---
+
+## [DEV-042] E2E 清单操作：`e2e_seed` + `shopping_list_assert` 严格校验
+
+**类型**：`功能开发`  
+**编号**：T-041 / T-042 增补  
+**对应规格**：§7.3～7.4 缺口缓存与 overlay；§12.2 `list_action`  
+**状态**：`已完成`  
+**日期**：2026-05-11  
+
+### 做了什么
+
+- **`eval/state_seed.py`**：`merge_e2e_seed_into_input_state`，首轮合并 `recipe_state` / `inventory_state` 等。  
+- **`eval/runner.py`**：每用例 **仅第一轮** 注入 `e2e_seed`。  
+- **`eval/state_capture.py`**：快照增加完整 **`inventory_state`**（供打分读 overlay/gap）。  
+- **`eval/scoring.py`**：`score_shopping_list_ops_layer`；含 `shopping_list_assert` 时用 **`DEFAULT_WEIGHTS_WITH_SHOPPING_LIST`**；支持 **`strict`** 封顶；`score_capture_payload` 输出 **`hard_fail_shopping_list_ops`**。  
+- **`eval/cases/shopping_list.json`**：六条用例全部补充 **`e2e_seed`** 与 **`shopping_list_assert`**。  
+- **`tests/unit/test_scoring_layers.py`**：overlay / 缺快照失败用例。  
+
+### 关联
+
+前置：T-041、T-042 ✓  
+
+---

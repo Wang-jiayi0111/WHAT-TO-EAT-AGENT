@@ -159,6 +159,100 @@ async def test_researcher_node_high_confidence_sets_parser_version_and_requireme
 
 
 @pytest.mark.asyncio
+async def test_researcher_node_explicit_recipe_name_bypasses_score_gap(tmp_path: Path):
+    """用户已填 recipe_name 且命中检索 title 时，不因 top1/top2 分差小而走歧义。"""
+    md = tmp_path / "a.md"
+    md.write_text("# A\n", encoding="utf-8")
+    ing = Ingredient(name="x", amount=1.0, unit="个")
+    structured = StructuredRecipe(title="A", ingredients=[ing], steps=["s"])
+
+    mock_rr = MagicMock()
+    mock_rr.search_recipes = AsyncMock(
+        return_value={
+            "recipes": [
+                {"title": "A", "score": 0.20, "id": "a.md"},
+                {"title": "B", "score": 0.19, "id": "b.md"},
+            ]
+        }
+    )
+    mock_rr.get_recipe_source = AsyncMock(return_value=str(md))
+    mock_rr.parse_recipe_content = AsyncMock(return_value=structured)
+
+    lb = make_logistics_buffer(extracted_entities={"recipe_name": "A"})
+    state = make_minimal_agent_state(logistics_buffer=lb)
+    state["messages"] = [HumanMessage("找 A")]
+    state["intents"] = ["recipe_search"]
+
+    mock_settings = MagicMock()
+    mock_settings.get_retrieval_top2_relative_gap.return_value = 0.15
+    mock_settings.get_recipe_parser_version.return_value = Settings().get_recipe_parser_version()
+
+    with (
+        patch("src.agent.nodes.researcher.build_effective_constraint", return_value=_fake_effective_c()),
+        patch(
+            "src.agent.nodes.researcher.augment_search_query",
+            side_effect=lambda q, c, s: q,
+        ),
+        patch("src.agent.nodes.researcher.RecipeResearcher", return_value=mock_rr),
+        patch("src.agent.nodes.researcher.Settings", return_value=mock_settings),
+    ):
+        out = await researcher_node(state)
+
+    assert out["expert_payloads"].get("status") == "success"
+    rb = get_runtime_bundle(out)
+    assert rb.get("recipe_title_locked") == "A"
+    assert not rb.get("recipe_candidates")
+
+
+@pytest.mark.asyncio
+async def test_researcher_node_recipe_adopt_plus_message_contains_top_title_bypasses_gap(
+    tmp_path: Path,
+):
+    """同轮 recipe_adopt + 用户话中含 top1 全名时，跳过分差歧义。"""
+    md = tmp_path / "tofu.md"
+    md.write_text("# 葱煎豆腐\n", encoding="utf-8")
+    ing = Ingredient(name="豆腐", amount=1.0, unit="块")
+    structured = StructuredRecipe(title="葱煎豆腐", ingredients=[ing], steps=["煎"])
+
+    mock_rr = MagicMock()
+    mock_rr.search_recipes = AsyncMock(
+        return_value={
+            "recipes": [
+                {"title": "葱煎豆腐", "score": 0.48, "id": "1"},
+                {"title": "凉拌豆腐", "score": 0.44, "id": "2"},
+            ]
+        }
+    )
+    mock_rr.get_recipe_source = AsyncMock(return_value=str(md))
+    mock_rr.parse_recipe_content = AsyncMock(return_value=structured)
+
+    lb = make_logistics_buffer(extracted_entities={})
+    state = make_minimal_agent_state(logistics_buffer=lb)
+    state["messages"] = [HumanMessage("别挑了就选葱煎豆腐，帮我找这道菜")]
+    state["intents"] = ["recipe_search", "recipe_adopt"]
+
+    mock_settings = MagicMock()
+    mock_settings.get_retrieval_top2_relative_gap.return_value = 0.15
+    mock_settings.get_recipe_parser_version.return_value = Settings().get_recipe_parser_version()
+
+    with (
+        patch("src.agent.nodes.researcher.build_effective_constraint", return_value=_fake_effective_c()),
+        patch(
+            "src.agent.nodes.researcher.augment_search_query",
+            side_effect=lambda q, c, s: q,
+        ),
+        patch("src.agent.nodes.researcher.RecipeResearcher", return_value=mock_rr),
+        patch("src.agent.nodes.researcher.Settings", return_value=mock_settings),
+    ):
+        out = await researcher_node(state)
+
+    assert out["expert_payloads"].get("status") == "success"
+    rb = get_runtime_bundle(out)
+    assert rb.get("recipe_title_locked") == "葱煎豆腐"
+    assert not rb.get("recipe_candidates")
+
+
+@pytest.mark.asyncio
 async def test_researcher_node_low_confidence_ambiguous_branch():
     mock_rr = MagicMock()
     mock_rr.search_recipes = AsyncMock(

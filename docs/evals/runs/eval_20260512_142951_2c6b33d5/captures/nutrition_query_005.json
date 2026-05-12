@@ -1,0 +1,320 @@
+{
+  "case_id": "nutrition_query_005",
+  "source_file": "recipe_search.json",
+  "fixture": {
+    "case_id": "nutrition_query_005",
+    "scenario_category": "nutrition_query",
+    "difficulty": "easy",
+    "description": "营养目标驱动的菜谱推荐检索用语",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "减脂期午餐想吃点饱腹又低脂的菜谱，有什么推荐"
+      }
+    ],
+    "expected": {
+      "primary_intent": "recipe_search",
+      "intents": [
+        "recipe_search",
+        "dietary_advice"
+      ],
+      "needs_clarification": false,
+      "key_slots": {
+        "recipe_query": "减脂午餐低脂饱腹"
+      },
+      "golden_recipe_ids": [
+        "recipe_id_麻辣减脂荞麦面",
+        "recipe_id_瘦肉土豆片",
+        "recipe_id_凉拌鸡丝",
+        "recipe_id_上汤娃娃菜"
+      ],
+      "output_contains": [
+        "低脂",
+        "热量"
+      ],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": [
+      "S-02"
+    ]
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:nutrition_query_005",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "减脂期午餐想吃点饱腹又低脂的菜谱，有什么推荐",
+      "wall_time_ms": 19036.70300000158,
+      "snapshot": {
+        "final_response": "我找到了以下几个相关菜谱（按检索相关性排序），请问您想做哪一个？\n\n  1. 麻辣减脂荞麦面\n  2. 凉皮\n  3. 上汤娃娃菜\n  4. 瘦肉土豆片\n  5. 凉拌鸡丝\n  6. 紫菜蛋花汤\n\n请回复序号数字（如 1）或菜名即可。",
+        "task_stack": [
+          "TASK_CLARIFY"
+        ],
+        "current_task": null,
+        "primary_intent": "recipe_search",
+        "intents": [
+          "recipe_search",
+          "dietary_advice"
+        ],
+        "confidence": 0.9,
+        "needs_clarification": false,
+        "slots": {
+          "diet_topic": "减脂",
+          "recipe_query": "饱腹且低脂的午餐"
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "recipe_search",
+          "secondary_intents": [
+            "dietary_advice"
+          ],
+          "intents": [
+            "recipe_search",
+            "dietary_advice"
+          ],
+          "task_stack": [
+            "TASK_SEARCH",
+            "TASK_DIRECT_REPLY"
+          ],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 0,
+          "slots": {
+            "diet_topic": "减脂",
+            "recipe_query": "饱腹且低脂的午餐"
+          },
+          "missing_slots": [],
+          "confidence": 0.9,
+          "extracted_entities": {},
+          "router_reasoning": "用户在减脂期间寻找午餐菜谱，需要既饱腹又低脂的推荐。这属于dietary_advice与recipe_search的结合。",
+          "pending_tasks": [
+            "TASK_DIRECT_REPLY"
+          ],
+          "clarification_kind": "recipe_pick"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [
+            {
+              "title": "麻辣减脂荞麦面"
+            },
+            {
+              "title": "凉皮"
+            },
+            {
+              "title": "上汤娃娃菜"
+            },
+            {
+              "title": "瘦肉土豆片"
+            },
+            {
+              "title": "凉拌鸡丝"
+            },
+            {
+              "title": "紫菜蛋花汤"
+            }
+          ],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {},
+          "router_reasoning": "用户在减脂期间寻找午餐菜谱，需要既饱腹又低脂的推荐。这属于dietary_advice与recipe_search的结合。",
+          "pending_tasks": [
+            "TASK_DIRECT_REPLY"
+          ],
+          "clarification_kind": "recipe_pick",
+          "recipe_candidates": [
+            "麻辣减脂荞麦面",
+            "凉皮",
+            "上汤娃娃菜",
+            "瘦肉土豆片",
+            "凉拌鸡丝",
+            "紫菜蛋花汤"
+          ],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "effective_constraint": {
+            "scope_id": "default_user",
+            "hard_exclusions": [
+              "芒果"
+            ],
+            "soft_negative_hints": [
+              "某种香料",
+              "刺多的鱼"
+            ],
+            "soft_positive_hints": [],
+            "dietary_target": "低卡/低碳水",
+            "temporal_conditions": [
+              "暂时放弃低碳水目标",
+              "想吃重庆火锅级别的辣",
+              "极清淡少油少纤维",
+              "偏好偏咸",
+              "感冒嗓子疼",
+              "肠胃不适"
+            ],
+            "summary_snippet": null
+          },
+          "slots": {
+            "diet_topic": "减脂",
+            "recipe_query": "饱腹且低脂的午餐"
+          },
+          "error_state": {
+            "error_code": null,
+            "recoverable": true,
+            "error_detail": null
+          }
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {
+          "error_code": null,
+          "recoverable": true,
+          "error_detail": null
+        },
+        "expert_payloads": {
+          "search_results": [
+            {
+              "id": "combined_281652",
+              "title": "麻辣减脂荞麦面",
+              "score": 0.39765266762016205
+            },
+            {
+              "id": "combined_469714",
+              "title": "凉皮",
+              "score": 0.3907147756977933
+            },
+            {
+              "id": "combined_494709",
+              "title": "上汤娃娃菜",
+              "score": 0.38657322238975994
+            },
+            {
+              "id": "combined_333858",
+              "title": "瘦肉土豆片",
+              "score": 0.3818004478463317
+            },
+            {
+              "id": "combined_865498",
+              "title": "凉拌鸡丝",
+              "score": 0.3770345119270354
+            },
+            {
+              "id": "combined_948354",
+              "title": "紫菜蛋花汤",
+              "score": 0.3759781969452545
+            },
+            {
+              "id": "combined_86616",
+              "title": "水油焖蔬菜",
+              "score": 0.3756127572171771
+            },
+            {
+              "id": "combined_262589",
+              "title": "凉粉",
+              "score": 0.37413130333155714
+            },
+            {
+              "id": "combined_955260",
+              "title": "扬州炒饭",
+              "score": 0.3738090958522363
+            },
+            {
+              "id": "combined_335766",
+              "title": "清炒花菜",
+              "score": 0.3735460212321691
+            },
+            {
+              "id": "combined_948168",
+              "title": "炒青菜",
+              "score": 0.37327851146942803
+            },
+            {
+              "id": "combined_194573",
+              "title": "辣椒炒肉",
+              "score": 0.37263562946510737
+            },
+            {
+              "id": "combined_729665",
+              "title": "蚝油生菜",
+              "score": 0.37129004644772706
+            },
+            {
+              "id": "combined_939824",
+              "title": "麻辣减脂荞麦面",
+              "score": 0.3703823342021175
+            },
+            {
+              "id": "combined_65088",
+              "title": "葱煎豆腐",
+              "score": 0.36840048571936745
+            }
+          ],
+          "status": "ambiguous",
+          "ambiguity_candidate_count": 6
+        },
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "减脂期午餐想吃点饱腹又低脂的菜谱，有什么推荐"
+          },
+          {
+            "type": "ai",
+            "content": "我找到了以下几个相关菜谱（按检索相关性排序），请问您想做哪一个？\n\n  1. 麻辣减脂荞麦面\n  2. 凉皮\n  3. 上汤娃娃菜\n  4. 瘦肉土豆片\n  5. 凉拌鸡丝\n  6. 紫菜蛋花汤\n\n请回复序号数字（如 1）或菜名即可。"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [
+            "search_recipes"
+          ],
+          "inferred_total": 1
+        },
+        "wall_time_ms": 19036.70300000158,
+        "user_input": "减脂期午餐想吃点饱腹又低脂的菜谱，有什么推荐"
+      },
+      "assistant_reply": "我找到了以下几个相关菜谱（按检索相关性排序），请问您想做哪一个？\n\n  1. 麻辣减脂荞麦面\n  2. 凉皮\n  3. 上汤娃娃菜\n  4. 瘦肉土豆片\n  5. 凉拌鸡丝\n  6. 紫菜蛋花汤\n\n请回复序号数字（如 1）或菜名即可。"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 19036.70300000158,
+    "turn_count": 1
+  }
+}

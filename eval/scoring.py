@@ -5,6 +5,12 @@ T-042：按开发计划 §5.1～5.4 从 E2E 采集 JSON 计算分层指标与 §
 - **效率层**：仅输出原始量（耗时、token、mcp 次数），**不参与**加权总分。
 - **幻觉 / 忌口 / 澄清话术 / 回复整体**：默认由 **LLM** 评判（`eval/scoring_llm.py`，单一 prompt：`src/agent/prompts/eval_judge_quality.md`）；可用 `--no-llm` 回退启发式幻觉。
 - NDCG@k：fixture 未提供分级相关性标注时记为 **N/A**（§5.1）。
+- **`golden_recipe_ids`（检索）**：
+  - **召回（recall）**：候选列表中是否出现**任一**金标（OR）；子项 `recall_hit_at_k` / `retrieval_recall` 同源。
+  - **准确率（Top-1 accuracy）**：排序**第一条**候选（标题优先，否则首条 id）是否与**任一**金标语干匹配（Hit@1）。
+  - 层总分：`0.4×召回 + 0.3×Top1准确率 + 0.3×名次分`（名次分=`1/best_rank`）。
+- **清单操作（§7）**：若 `expected.shopping_list_assert` 含约束，则计算 **`shopping_list_ops`** 层（比对末轮 **`inventory_state`**：`shopping_list_overlay`、`cached_shopping_gap`）；并与检索/生成/对话 **四档加权**（见 `DEFAULT_WEIGHTS_WITH_SHOPPING_LIST`）；可设 **`strict: true`** 不满分时总分封顶。
+- **多意图（对话层）**：可选 **`expected.intents`**（字符串列表）。与末轮快照 **`intents`** 比对：**顺序无关**；**实际可多可少**，按 **子集召回** 计分——每个期望标签在 `intents` 中至少出现一次即记 1 分，再对去重后的期望列表取平均。若同时声明 **`primary_intent`**，则 **主意图匹配** 与 **多意图召回** 各占一半后平均为对话层 `intent_match` 总分（仅声明其一则只该项生效；均未声明则意图子项记 1.0）。
 """
 from __future__ import annotations
 
@@ -20,6 +26,19 @@ DEFAULT_WEIGHTS = {
     "generation": 0.325,
     "dialogue": 0.325,
 }
+
+# 当用例含 `expected.shopping_list_assert` 时，增加「清单操作」一层（与 R+I+gap 严格对齐）
+DEFAULT_WEIGHTS_WITH_SHOPPING_LIST = {
+    "retrieval": 0.28,
+    "generation": 0.27,
+    "dialogue": 0.25,
+    "shopping_list_ops": 0.20,
+}
+
+# 检索层内部：召回 / Top-1 准确率 / 名次分（与 §5.1 表格对齐，三者之和为 1）
+RETRIEVAL_AGG_WEIGHT_RECALL = 0.4
+RETRIEVAL_AGG_WEIGHT_TOP1_ACCURACY = 0.3
+RETRIEVAL_AGG_WEIGHT_RANK = 0.3
 
 
 def _na(value: Optional[float] = None) -> Dict[str, Any]:
@@ -106,6 +125,28 @@ def _match_golden_to_rank(
     return False, None
 
 
+def _top1_matches_any_golden(
+    titles: Sequence[str], ids: Sequence[str], goldens: Sequence[str]
+) -> bool:
+    """检索 Top-1 准确率：首条候选标题（若无则首条 id）是否匹配任一 `golden_recipe_ids` 词干。"""
+    if not goldens:
+        return False
+    probes: List[str] = []
+    if titles:
+        probes.append(str(titles[0]))
+    if ids:
+        probes.append(str(ids[0]))
+    for raw in probes:
+        pl = str(raw).lower().replace("\\", "/")
+        for gid in goldens:
+            stem = stem_from_golden_id(str(gid)).strip().lower()
+            if not stem:
+                continue
+            if stem in pl or pl in stem:
+                return True
+    return False
+
+
 def score_retrieval_layer(
     expected: Mapping[str, Any],
     turns: Sequence[Mapping[str, Any]],
@@ -121,6 +162,8 @@ def score_retrieval_layer(
             "hard_fail": False,
             "submetrics": {
                 "recall_hit_at_k": _na(),
+                "retrieval_recall": _na(),
+                "retrieval_accuracy_top1": _na(),
                 "golden_rank": _na(),
                 "mrr": _na(),
                 "ndcg_at_k": _na(),
@@ -128,36 +171,57 @@ def score_retrieval_layer(
             },
         }
 
-    hits = 0
+    matched_count = 0
     ranks: List[int] = []
     first_hit_reciprocal = 0.0
     for gid in goldens:
         stem = stem_from_golden_id(gid)
         hit, rank = _match_golden_to_rank(stem, titles, ids)
         if hit and rank is not None:
-            hits += 1
+            matched_count += 1
             ranks.append(rank)
             if first_hit_reciprocal == 0.0:
                 first_hit_reciprocal = 1.0 / float(rank)
 
-    recall = hits / len(goldens) if goldens else 0.0
-    # 单用例 MRR：首个金标命中的倒数（§5.1）
+    # 召回：多金标 OR——任一出现在候选中即视为召回成功（§5.1 Hit@k）
+    any_hit = matched_count >= 1
+    recall_score = 1.0 if any_hit else 0.0
+    # Top-1 准确率：首条候选是否为金标之一
+    top1_acc = 1.0 if _top1_matches_any_golden(titles, ids, goldens) else 0.0
+    # 单用例 MRR：按金标列表顺序首个命中的倒数（§5.1）
     mrr = first_hit_reciprocal if goldens else 0.0
     best_rank = min(ranks) if ranks else None
-
-    hit_at_k = 1.0 if recall >= 1.0 else recall
     rank_score = 1.0 / float(best_rank) if best_rank else 0.0
 
-    # 子项：召回与排名各半（实现可文档化）
-    aggregate = 0.5 * hit_at_k + 0.5 * (rank_score if best_rank else 0.0)
-    hard_fail = bool(retrieval_must_hit and goldens and hits == 0)
+    aggregate = (
+        RETRIEVAL_AGG_WEIGHT_RECALL * recall_score
+        + RETRIEVAL_AGG_WEIGHT_TOP1_ACCURACY * top1_acc
+        + RETRIEVAL_AGG_WEIGHT_RANK * rank_score
+    )
+    hard_fail = bool(retrieval_must_hit and goldens and not any_hit)
 
     return {
         "layer": "retrieval",
         "aggregate_score": aggregate,
         "hard_fail": hard_fail,
         "submetrics": {
-            "recall_hit_at_k": _ok(hit_at_k, hits=hits, total=len(goldens)),
+            "recall_hit_at_k": _ok(
+                recall_score,
+                matched_golden_count=matched_count,
+                golden_variant_count=len(goldens),
+                semantics="OR_any_golden",
+            ),
+            "retrieval_recall": _ok(
+                recall_score,
+                matched_golden_count=matched_count,
+                golden_variant_count=len(goldens),
+                semantics="OR_any_golden",
+            ),
+            "retrieval_accuracy_top1": _ok(
+                top1_acc,
+                top1_title_sample=titles[0] if titles else None,
+                top1_id_sample=ids[0] if ids else None,
+            ),
             "golden_rank": _ok(
                 rank_score,
                 best_rank_1based=best_rank,
@@ -294,6 +358,74 @@ def score_generation_layer(
     }
 
 
+def _snapshot_intents_list(last_snap: Mapping[str, Any]) -> List[str]:
+    """末轮快照中的意图列表（顶层或 control_state）。"""
+    raw = last_snap.get("intents")
+    if not raw and isinstance(last_snap.get("control_state"), dict):
+        raw = (last_snap.get("control_state") or {}).get("intents")
+    if not isinstance(raw, list):
+        return []
+    out: List[str] = []
+    for x in raw:
+        s = str(x).strip()
+        if s:
+            out.append(s)
+    return out
+
+
+def _expected_intents_unique(expected: Mapping[str, Any]) -> List[str]:
+    raw = expected.get("intents")
+    if not isinstance(raw, list):
+        return []
+    return list(dict.fromkeys(str(x).strip() for x in raw if str(x).strip()))
+
+
+def compute_intent_alignment_score(
+    expected: Mapping[str, Any], last_snap: Mapping[str, Any]
+) -> Tuple[float, Dict[str, Any]]:
+    """
+    对话层意图对齐分 ∈ [0,1]。
+
+    - 若声明 ``expected.primary_intent``：主意图须与 ``last_snap.primary_intent`` 全等，贡献一项 0/1。
+    - 若声明非空 ``expected.intents``：对去重后的每个期望标签，须在 ``last_snap.intents``（顺序无关）中出现；
+      子集召回 = 命中数 / 期望去重个数；实际 ``intents`` 可含额外标签。
+    - 两项均声明时取算术平均；仅一项声明时该项即总分；均未声明则总分 1.0（不约束意图）。
+    """
+    act_pi = str(last_snap.get("primary_intent") or "").strip()
+    exp_pi = str(expected.get("primary_intent") or "").strip()
+    exp_ints = _expected_intents_unique(expected)
+    act_ints = _snapshot_intents_list(last_snap)
+    act_set = set(act_ints)
+
+    parts: List[float] = []
+    detail: Dict[str, Any] = {
+        "expected_primary": exp_pi or None,
+        "actual_primary": act_pi or None,
+        "expected_intents": exp_ints,
+        "actual_intents": act_ints,
+    }
+
+    if exp_pi:
+        pm = 1.0 if exp_pi == act_pi else 0.0
+        parts.append(pm)
+        detail["primary_match"] = pm
+
+    if exp_ints:
+        hits = sum(1 for e in exp_ints if e in act_set)
+        recall = hits / len(exp_ints)
+        parts.append(recall)
+        detail["intents_subset_recall"] = recall
+        detail["intents_hits"] = hits
+        detail["intents_expected_n"] = len(exp_ints)
+
+    if not parts:
+        detail["mode"] = "unconstrained"
+        return 1.0, detail
+
+    detail["mode"] = "constrained"
+    return sum(parts) / float(len(parts)), detail
+
+
 def score_dialogue_layer(
     expected: Mapping[str, Any],
     turns: Sequence[Mapping[str, Any]],
@@ -301,9 +433,7 @@ def score_dialogue_layer(
     llm_bundle: Optional[Mapping[str, Any]] = None,
 ) -> Dict[str, Any]:
     last_snap = (turns[-1].get("snapshot") or {}) if turns else {}
-    exp_pi = str(expected.get("primary_intent") or "").strip()
-    act_pi = str(last_snap.get("primary_intent") or "").strip()
-    intent_ok = 1.0 if exp_pi == act_pi else 0.0
+    intent_ok, intent_detail = compute_intent_alignment_score(expected, last_snap)
 
     exp_clar = bool(expected.get("needs_clarification"))
     act_clar = bool(last_snap.get("needs_clarification"))
@@ -372,8 +502,23 @@ def score_dialogue_layer(
         sub_diet = _na()
         sub_clar = _ok(clar_ok_rule)
 
+    intent_extras = {
+        k: intent_detail[k]
+        for k in (
+            "expected_primary",
+            "actual_primary",
+            "primary_match",
+            "expected_intents",
+            "actual_intents",
+            "intents_subset_recall",
+            "intents_hits",
+            "intents_expected_n",
+            "mode",
+        )
+        if k in intent_detail
+    }
     sub_out: Dict[str, Any] = {
-        "intent_match": _ok(intent_ok, expected=exp_pi, actual=act_pi),
+        "intent_match": _ok(intent_ok, **intent_extras),
         "dietary_taboo_llm": sub_diet if llm_ok else _na(),
         "clarification_quality_llm": sub_clar if llm_ok else _na(),
         "clarification_alignment_rule": _ok(clar_ok_rule),
@@ -437,11 +582,155 @@ def score_efficiency_layer(turns: Sequence[Mapping[str, Any]]) -> Dict[str, Any]
     }
 
 
+def _name_fuzzy_match(target: str, candidate: str) -> bool:
+    t, c = target.strip().lower(), candidate.strip().lower()
+    return bool(t and c and (t in c or c in t))
+
+
+def _overlay_remove_keys(overlay: Any) -> List[str]:
+    keys: List[str] = []
+    if not isinstance(overlay, list):
+        return keys
+    for op in overlay:
+        if not isinstance(op, dict):
+            continue
+        if op.get("op") == "remove" or op.get("remove") is not None:
+            k = op.get("key") or op.get("name") or op.get("ingredient") or op.get("remove")
+            if k is not None and str(k).strip():
+                keys.append(str(k).strip())
+    return keys
+
+
+def _gap_row_names(rows: Any) -> List[str]:
+    out: List[str] = []
+    if not isinstance(rows, list):
+        return out
+    for row in rows:
+        if isinstance(row, dict) and row.get("name"):
+            out.append(str(row["name"]).strip())
+    return out
+
+
+def score_shopping_list_ops_layer(
+    expected: Mapping[str, Any],
+    turns: Sequence[Mapping[str, Any]],
+) -> Dict[str, Any]:
+    """
+    基于末轮 `inventory_state` 校验清单操作（§7.3～7.4）。
+    需在 fixture.expected 中配置 `shopping_list_assert`；采集须含完整 `inventory_state`（T-041 快照）。
+    """
+    spec_raw = expected.get("shopping_list_assert")
+    if not isinstance(spec_raw, dict):
+        return {
+            "layer": "shopping_list_ops",
+            "aggregate_score": None,
+            "submetrics": {"note": "未配置 shopping_list_assert，本层不参与总分"},
+        }
+
+    spec = {k: v for k, v in spec_raw.items() if k != "strict"}
+    strict = bool(spec_raw.get("strict"))
+
+    constraint_keys = (
+        "overlay_remove_keys_contain",
+        "gap_shopping_names_contain",
+        "gap_missing_names_contain",
+        "gap_cache_present",
+        "overlay_ops_min",
+    )
+    if not any(k in spec for k in constraint_keys):
+        return {
+            "layer": "shopping_list_ops",
+            "aggregate_score": None,
+            "submetrics": {"note": "shopping_list_assert 为空约束，本层不参与总分"},
+        }
+
+    if not turns:
+        return {
+            "layer": "shopping_list_ops",
+            "aggregate_score": 0.0,
+            "hard_fail": strict,
+            "submetrics": {"error": "无 turns"},
+        }
+
+    snap = turns[-1].get("snapshot") or {}
+    inv = snap.get("inventory_state")
+    if not isinstance(inv, dict):
+        return {
+            "layer": "shopping_list_ops",
+            "aggregate_score": 0.0,
+            "hard_fail": strict,
+            "submetrics": {
+                "error": "末轮 snapshot 缺少 inventory_state；请使用新版 state_capture 并重跑 E2E",
+            },
+        }
+
+    overlay = inv.get("shopping_list_overlay") or []
+    gap = inv.get("cached_shopping_gap") or {}
+    gap_sl_names = _gap_row_names(gap.get("shopping_list"))
+    miss_names = _gap_row_names(gap.get("missing_items"))
+    merged_gap_names = list({*gap_sl_names, *miss_names})
+    remove_keys = _overlay_remove_keys(overlay)
+
+    checks: List[Tuple[str, float]] = []
+
+    want_rm = list(spec.get("overlay_remove_keys_contain") or [])
+    for w in want_rm:
+        ok = any(_name_fuzzy_match(str(w), k) for k in remove_keys)
+        checks.append((f"overlay_remove⊇{w}", 1.0 if ok else 0.0))
+
+    want_gap = list(spec.get("gap_shopping_names_contain") or [])
+    for w in want_gap:
+        ok = any(_name_fuzzy_match(str(w), n) for n in merged_gap_names + gap_sl_names)
+        checks.append((f"gap_name⊇{w}", 1.0 if ok else 0.0))
+
+    want_miss = list(spec.get("gap_missing_names_contain") or [])
+    for w in want_miss:
+        ok = any(_name_fuzzy_match(str(w), n) for n in miss_names)
+        checks.append((f"gap_missing⊇{w}", 1.0 if ok else 0.0))
+
+    if "gap_cache_present" in spec:
+        present = bool(gap) and isinstance(gap, dict)
+        want = bool(spec["gap_cache_present"])
+        checks.append(
+            ("gap_cache_present", 1.0 if present == want else 0.0),
+        )
+
+    if "overlay_ops_min" in spec:
+        try:
+            m = int(spec["overlay_ops_min"])
+        except (TypeError, ValueError):
+            m = 0
+        checks.append(("overlay_ops_min", 1.0 if len(overlay) >= m else 0.0))
+
+    if not checks:
+        return {
+            "layer": "shopping_list_ops",
+            "aggregate_score": None,
+            "submetrics": {"note": "无可用约束项"},
+        }
+
+    agg = sum(s for _, s in checks) / float(len(checks))
+    return {
+        "layer": "shopping_list_ops",
+        "aggregate_score": round(agg, 6),
+        "hard_fail": bool(strict and agg < 1.0),
+        "submetrics": {
+            "checks": [{"name": n, "score": s} for n, s in checks],
+            "overlay_remove_keys_observed": remove_keys,
+            "gap_shopping_names_observed": gap_sl_names,
+            "gap_missing_names_observed": miss_names,
+            "overlay_len_observed": len(overlay) if isinstance(overlay, list) else 0,
+            "strict": strict,
+        },
+    }
+
+
 def overall_score(
     layers: Mapping[str, Mapping[str, Any]],
     weights: Mapping[str, float] = DEFAULT_WEIGHTS,
     *,
     hard_fail_retrieval: bool = False,
+    hard_fail_shopping_list_ops: bool = False,
 ) -> Tuple[float, Dict[str, Any]]:
     wsum = 0.0
     acc = 0.0
@@ -459,6 +748,8 @@ def overall_score(
         return 0.0, detail
     raw = acc / wsum
     if hard_fail_retrieval:
+        raw = min(raw, 0.35)
+    if hard_fail_shopping_list_ops:
         raw = min(raw, 0.35)
     return raw, detail
 
@@ -493,21 +784,33 @@ def score_capture_payload(
     g_layer = score_generation_layer(expected, turns, llm_bundle=llm_bundle)
     d_layer = score_dialogue_layer(expected, turns, llm_bundle=llm_bundle)
     e_layer = score_efficiency_layer(turns)
+    sl_layer = score_shopping_list_ops_layer(expected, turns)
 
     layers = {
         "retrieval": r_layer,
         "generation": g_layer,
         "dialogue": d_layer,
+        "shopping_list_ops": sl_layer,
         "efficiency": e_layer,
     }
+    w_apply = (
+        dict(DEFAULT_WEIGHTS_WITH_SHOPPING_LIST)
+        if sl_layer.get("aggregate_score") is not None
+        else dict(weights)
+    )
+    score_layers = {
+        "retrieval": r_layer,
+        "generation": g_layer,
+        "dialogue": d_layer,
+    }
+    if sl_layer.get("aggregate_score") is not None:
+        score_layers["shopping_list_ops"] = sl_layer
+    hard_shop = bool(sl_layer.get("hard_fail"))
     ov, wdetail = overall_score(
-        {
-            "retrieval": r_layer,
-            "generation": g_layer,
-            "dialogue": d_layer,
-        },
-        weights,
+        score_layers,
+        w_apply,
         hard_fail_retrieval=bool(r_layer.get("hard_fail") and retrieval_must_hit),
+        hard_fail_shopping_list_ops=hard_shop,
     )
 
     out: Dict[str, Any] = {
@@ -515,10 +818,11 @@ def score_capture_payload(
         "source_file": payload.get("source_file"),
         "status": "ok",
         "overall_score": round(ov, 6),
-        "weights_applied": dict(weights),
+        "weights_applied": w_apply,
         "weight_detail": wdetail,
         "layers": layers,
         "hard_fail_retrieval": bool(r_layer.get("hard_fail")),
+        "hard_fail_shopping_list_ops": hard_shop,
     }
     if llm_bundle is not None:
         out["llm_judge"] = llm_bundle
@@ -599,9 +903,22 @@ def render_scores_markdown(report: Mapping[str, Any]) -> str:
     if mmr is not None:
         lines.append(f"- **平均检索 MRR**：{mmr}")
     w = report.get("weights") or {}
-    lines.extend(
+    sl_any = any(
+        (c.get("layers") or {}).get("shopping_list_ops", {}).get("aggregate_score")
+        is not None
+        for c in (report.get("cases") or [])
+    )
+    sum_lines = [
+        f"- **加权权重**（效率层仅观测，不计分）：检索 {w.get('retrieval', '—')} · 生成 {w.get('generation', '—')} · 对话 {w.get('dialogue', '—')}",
+        "- **检索层 aggregate**（单用例）：**0.4×召回 + 0.3×Top1准确率 + 0.3×名次分**；分项见 `scores.json` → `layers.retrieval.submetrics`。",
+        "- **清单操作层**：若用例含 `shopping_list_assert` 且可计分，则 **`layers.shopping_list_ops`** 参与总分（权重见该条 **`weights_applied`**）。",
+    ]
+    if sl_any:
+        sum_lines.append(
+            "- **说明**：本 run 中至少一条用例启用了 **四分权重**（含 `shopping_list_ops`）；顶层 `weights` 仍为 CLI 默认三分档，请以各条 `cases[].weights_applied` 为准。"
+        )
+    sum_lines.extend(
         [
-            f"- **加权权重**（效率层仅观测，不计分）：检索 {w.get('retrieval', '—')} · 生成 {w.get('generation', '—')} · 对话 {w.get('dialogue', '—')}",
             "",
             "## 逐用例得分",
             "",
@@ -609,6 +926,7 @@ def render_scores_markdown(report: Mapping[str, Any]) -> str:
             "|---------|------|---------|------|------|------|----------|",
         ]
     )
+    lines.extend(sum_lines)
     for c in report.get("cases") or []:
         cid = str(c.get("case_id") or "—")
         st = str(c.get("status") or "—")

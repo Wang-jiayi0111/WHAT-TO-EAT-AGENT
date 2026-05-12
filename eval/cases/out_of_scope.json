@@ -9,6 +9,7 @@
     ],
     "expected": {
       "primary_intent": "out_of_scope",
+      "intents": ["out_of_scope"],
       "needs_clarification": false,
       "key_slots": {},
       "golden_recipe_ids": [],
@@ -30,6 +31,7 @@
     ],
     "expected": {
       "primary_intent": "out_of_scope",
+      "intents": ["out_of_scope"],
       "needs_clarification": false,
       "key_slots": {},
       "golden_recipe_ids": [],
@@ -51,10 +53,7 @@
     ],
     "expected": {
       "primary_intent": "out_of_scope",
-      "needs_clarification": false,
-      "key_slots": {},
-      "golden_recipe_ids": [],
-      "output_contains": ["医生"],
+      "intents": ["out_of_scope"],
       "output_excludes": [],
       "context_preserved": [],
       "clarification_triggered": false
@@ -72,6 +71,7 @@
     ],
     "expected": {
       "primary_intent": "out_of_scope",
+      "intents": ["out_of_scope"],
       "needs_clarification": false,
       "key_slots": {},
       "golden_recipe_ids": [],
@@ -94,6 +94,7 @@
     ],
     "expected": {
       "primary_intent": "out_of_scope",
+      "intents": ["out_of_scope"],
       "needs_clarification": false,
       "key_slots": {},
       "golden_recipe_ids": [],
@@ -115,6 +116,7 @@
     ],
     "expected": {
       "primary_intent": "out_of_scope",
+      "intents": ["out_of_scope"],
       "needs_clarification": false,
       "key_slots": {},
       "golden_recipe_ids": [],

@@ -1,0 +1,160 @@
+{
+  "case_id": "edge_case_024",
+  "source_file": "dietary_advice.json",
+  "fixture": {
+    "case_id": "edge_case_024",
+    "scenario_category": "edge_case",
+    "difficulty": "hard",
+    "description": "医嘱药物与西柚相互作用的营养安全问答",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "我吃他汀类降脂药，听说不能吃西柚是真的吗具体机制是啥"
+      }
+    ],
+    "expected": {
+      "primary_intent": "dietary_advice",
+      "intents": [
+        "dietary_advice"
+      ],
+      "needs_clarification": false,
+      "key_slots": {
+        "diet_topic": "他汀与西柚相互作用"
+      },
+      "golden_recipe_ids": [],
+      "output_contains": [
+        "西柚",
+        "药物"
+      ],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": []
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:edge_case_024",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "我吃他汀类降脂药，听说不能吃西柚是真的吗具体机制是啥",
+      "wall_time_ms": 25588.189300000522,
+      "snapshot": {
+        "final_response": "确实，服用他汀类降脂药物期间应避免食用西柚。这是因为西柚（包括其果汁）中含有的某些成分能够抑制人体内一种叫做CYP3A4的酶，这种酶负责代谢多种药物，包括大部分的他汀类药物。当CYP3A4被抑制时，会导致他汀类药物在体内的浓度升高，从而增加出现副作用的风险，比如肌肉疼痛或更严重的横纹肌溶解症等。\n\n因此，在您使用他汀类药物治疗期间，请尽量避免食用西柚及其制品。如果有关于饮食调整的具体疑问或者需要更多个性化建议的话，最好咨询您的医生或药师哦！记得遵循医嘱，确保安全有效地管理健康。",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "dietary_advice",
+        "intents": [
+          "dietary_advice"
+        ],
+        "confidence": 0.95,
+        "needs_clarification": false,
+        "slots": {
+          "diet_topic": "他汀类降脂药与西柚的相互作用"
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "dietary_advice",
+          "secondary_intents": [],
+          "intents": [
+            "dietary_advice"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 1,
+          "slots": {
+            "diet_topic": "他汀类降脂药与西柚的相互作用"
+          },
+          "missing_slots": [],
+          "confidence": 0.95,
+          "extracted_entities": {},
+          "router_reasoning": "用户询问关于他汀类降脂药与西柚之间的相互作用，这属于营养健康类问答，不需要检索菜谱。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {},
+          "router_reasoning": "用户询问关于他汀类降脂药与西柚之间的相互作用，这属于营养健康类问答，不需要检索菜谱。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "short_term_constraints": [
+            "医嘱/自我约束：忌口需遵守"
+          ],
+          "slots": {
+            "diet_topic": "他汀类降脂药与西柚的相互作用"
+          },
+          "error_state": {}
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [
+            "医嘱/自我约束：忌口需遵守"
+          ],
+          "conversation_summary_len": 0
+        },
+        "error_state": {},
+        "expert_payloads": {},
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "我吃他汀类降脂药，听说不能吃西柚是真的吗具体机制是啥"
+          },
+          {
+            "type": "ai",
+            "content": "确实，服用他汀类降脂药物期间应避免食用西柚。这是因为西柚（包括其果汁）中含有的某些成分能够抑制人体内一种叫做CYP3A4的酶，这种酶负责代谢多种药物，包括大部分的他汀类药物。当CYP3A4被抑制时，会导致他汀类药物在体内的浓度升高，从而增加出现副作用的风险，比如肌肉疼痛或更严重的横纹肌溶解症等。\n\n因此，在您使用他汀类药物治疗期间，请尽量避免食用西柚及其制品。如果有关于饮食调整的具体疑问或者需要更多个性化建议的话，最好咨询您的医生或药师哦！记得遵循医嘱，确保安全有效地管理健康。"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [],
+          "inferred_total": 0
+        },
+        "wall_time_ms": 25588.189300000522,
+        "user_input": "我吃他汀类降脂药，听说不能吃西柚是真的吗具体机制是啥"
+      },
+      "assistant_reply": "确实，服用他汀类降脂药物期间应避免食用西柚。这是因为西柚（包括其果汁）中含有的某些成分能够抑制人体内一种叫做CYP3A4的酶，这种酶负责代谢多种药物，包括大部分的他汀类药物。当CYP3A4被抑制时，会导致他汀类药物在体内的浓度升高，从而增加出现副作用的风险，比如肌肉疼痛或更严重的横纹肌溶解症等。\n\n因此，在您使用他汀类药物治疗期间，请尽量避免食用西柚及其制品。如果有关于饮食调整的具体疑问或者需要更多个性化建议的话，最好咨询您的医生或药师哦！记得遵循医嘱，确保安全有效地管理健康。"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 25588.189300000522,
+    "turn_count": 1
+  }
+}

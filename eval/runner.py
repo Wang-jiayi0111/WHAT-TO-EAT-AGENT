@@ -29,6 +29,7 @@ from src.libs.base.settings import Settings  # noqa: E402
 from src.observability.runtime_context import bind_invocation_session  # noqa: E402
 
 from .state_capture import build_e2e_snapshot  # noqa: E402
+from .state_seed import merge_e2e_seed_into_input_state  # noqa: E402
 
 logger = logging.getLogger(__name__)
 
@@ -78,6 +79,8 @@ async def _invoke_one_turn(
     user_message: str,
     thread_id: str,
     user_id: str,
+    *,
+    e2e_seed: Optional[Dict[str, Any]] = None,
 ) -> Tuple[Dict[str, Any], float]:
     config = {"configurable": {"thread_id": thread_id}}
     try:
@@ -96,6 +99,8 @@ async def _invoke_one_turn(
         "active_user_id": user_id,
         "conversation_summary": conv_summary,
     }
+    if e2e_seed:
+        input_state = merge_e2e_seed_into_input_state(input_state, e2e_seed)
 
     t0 = time.perf_counter()
     with bind_invocation_session(thread_id):
@@ -124,9 +129,12 @@ async def run_single_case(
 ) -> Dict[str, Any]:
     turns_out: List[Dict[str, Any]] = []
     total_ms = 0.0
-    for ut in case.get("user_turns") or []:
+    for turn_idx, ut in enumerate(case.get("user_turns") or []):
         inp = ut.get("input", "")
-        snap, wms = await _invoke_one_turn(agent, str(inp), thread_id, user_id)
+        seed = case.get("e2e_seed") if turn_idx == 0 else None
+        snap, wms = await _invoke_one_turn(
+            agent, str(inp), thread_id, user_id, e2e_seed=seed
+        )
         total_ms += wms
         turns_out.append(
             {
@@ -150,6 +158,7 @@ async def run_single_case(
 async def run_suite(
     *,
     cases_dir: Optional[Path] = None,
+    case_files: Optional[List[Path]] = None,
     run_id: Optional[str] = None,
     case_filter: Optional[str] = None,
     fail_fast: bool = False,
@@ -170,7 +179,8 @@ async def run_suite(
     result = RunResult(run_id=rid)
 
     abort_suite = False
-    for fp in load_case_files(cases_dir):
+    file_iter = case_files if case_files else load_case_files(cases_dir)
+    for fp in file_iter:
         if abort_suite:
             break
         for case in load_cases_from_file(fp):

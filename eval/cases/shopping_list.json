@@ -3,19 +3,52 @@
     "case_id": "shopping_list_025",
     "scenario_category": "shopping_list",
     "difficulty": "easy",
-    "description": "显式索要购物清单（默认 show）",
+    "description": "显式索要购物清单（默认 show）；首轮注入 R+I+gap 缓存",
+    "e2e_seed": {
+      "recipe_state": {
+        "recipe_title_locked": "青椒肉丝",
+        "recipe_requirements": [
+          { "name": "青椒", "amount": 200, "unit": "g" },
+          { "name": "猪肉", "amount": 300, "unit": "g" }
+        ]
+      },
+      "inventory_state": {
+        "inventory_snapshot": {
+          "猪肉": { "amount": 100, "unit": "g" }
+        },
+        "cached_shopping_gap": {
+          "shopping_list": [
+            { "name": "青椒", "amount": 200, "unit": "g" },
+            { "name": "猪肉", "amount": 200, "unit": "g" }
+          ],
+          "sufficient_items": [],
+          "missing_items": [
+            { "name": "青椒", "amount": 200, "unit": "g" }
+          ],
+          "pending_manual": [],
+          "computed_at": "2026-05-11T00:00:00Z"
+        },
+        "gap_basis": { "recipe_title": "青椒肉丝" },
+        "shopping_list_overlay": []
+      }
+    },
     "user_turns": [
-      { "turn": 1, "input": "根据当前这道菜还差哪些食材把购物清单列给我" }
+      { "turn": 1, "input": "想做糖醋鲤鱼，还差哪些食材把购物清单列给我" }
     ],
     "expected": {
       "primary_intent": "shopping_list",
+      "intents": ["shopping_list", "recipe_search"],
       "needs_clarification": false,
       "key_slots": { "list_action": "show" },
-      "golden_recipe_ids": [],
+      "golden_recipe_ids": ["recipe_id_糖醋鲤鱼"],
       "output_contains": ["清单", "买"],
       "output_excludes": [],
       "context_preserved": [],
-      "clarification_triggered": false
+      "clarification_triggered": false,
+      "shopping_list_assert": {
+        "gap_cache_present": true,
+        "gap_shopping_names_contain": ["青椒"]
+      }
     },
     "eval_method": "auto",
     "linked_scenarios": ["S-08"]
@@ -25,18 +58,47 @@
     "scenario_category": "shopping_list",
     "difficulty": "easy",
     "description": "口语化「买啥」映射清单意图",
+    "e2e_seed": {
+      "recipe_state": {
+        "recipe_title_locked": "周末待客套餐",
+        "recipe_requirements": [
+          { "name": "排骨", "amount": 500, "unit": "g" }
+        ]
+      },
+      "inventory_state": {
+        "inventory_snapshot": {},
+        "cached_shopping_gap": {
+          "shopping_list": [
+            { "name": "排骨", "amount": 500, "unit": "g" }
+          ],
+          "sufficient_items": [],
+          "missing_items": [
+            { "name": "排骨", "amount": 500, "unit": "g" }
+          ],
+          "pending_manual": [],
+          "computed_at": "2026-05-11T00:00:00Z"
+        },
+        "gap_basis": { "recipe_title": "周末待客套餐" },
+        "shopping_list_overlay": []
+      }
+    },
     "user_turns": [
       { "turn": 1, "input": "周末请客这顿饭我还缺啥要我下班顺便买回来" }
     ],
     "expected": {
       "primary_intent": "shopping_list",
+      "intents": ["shopping_list"],
       "needs_clarification": false,
       "key_slots": { "list_action": "show" },
       "golden_recipe_ids": [],
       "output_contains": ["缺"],
       "output_excludes": [],
       "context_preserved": [],
-      "clarification_triggered": false
+      "clarification_triggered": false,
+      "shopping_list_assert": {
+        "gap_cache_present": true,
+        "gap_missing_names_contain": ["排骨"]
+      }
     },
     "eval_method": "llm_judge",
     "linked_scenarios": ["S-08"]
@@ -46,18 +108,46 @@
     "scenario_category": "shopping_list",
     "difficulty": "medium",
     "description": "按菜谱重算缺口 refresh_gap",
+    "e2e_seed": {
+      "recipe_state": {
+        "recipe_title_locked": "占位旧菜",
+        "recipe_requirements": [
+          { "name": "土豆", "amount": 2, "unit": "个" }
+        ]
+      },
+      "inventory_state": {
+        "inventory_snapshot": {},
+        "cached_shopping_gap": {
+          "shopping_list": [
+            { "name": "土豆", "amount": 2, "unit": "个" }
+          ],
+          "sufficient_items": [],
+          "missing_items": [
+            { "name": "土豆", "amount": 2, "unit": "个" }
+          ],
+          "pending_manual": [],
+          "computed_at": "2026-05-11T00:00:00Z"
+        },
+        "gap_basis": { "recipe_title": "占位旧菜" },
+        "shopping_list_overlay": []
+      }
+    },
     "user_turns": [
       { "turn": 1, "input": "我改做糖醋里脊了，按新菜谱重新算一遍要买什么" }
     ],
     "expected": {
       "primary_intent": "shopping_list",
+      "intents": ["shopping_list", "recipe_search"],
       "needs_clarification": false,
       "key_slots": { "list_action": "refresh_gap" },
-      "golden_recipe_ids": [],
+      "golden_recipe_ids": ["recipe_id_糖醋里脊"],
       "output_contains": ["糖醋里脊"],
       "output_excludes": [],
       "context_preserved": [],
-      "clarification_triggered": false
+      "clarification_triggered": false,
+      "shopping_list_assert": {
+        "gap_cache_present": true
+      }
     },
     "eval_method": "llm_judge",
     "linked_scenarios": ["S-08"]
@@ -67,18 +157,50 @@
     "scenario_category": "shopping_list",
     "difficulty": "medium",
     "description": "编辑清单覆盖层 edit_overlay",
+    "e2e_seed": {
+      "recipe_state": {
+        "recipe_title_locked": "地三鲜",
+        "recipe_requirements": [
+          { "name": "青椒", "amount": 100, "unit": "g" },
+          { "name": "茄子", "amount": 200, "unit": "g" }
+        ]
+      },
+      "inventory_state": {
+        "inventory_snapshot": {},
+        "cached_shopping_gap": {
+          "shopping_list": [
+            { "name": "青椒", "amount": 100, "unit": "g" },
+            { "name": "茄子", "amount": 200, "unit": "g" }
+          ],
+          "sufficient_items": [],
+          "missing_items": [
+            { "name": "青椒", "amount": 100, "unit": "g" },
+            { "name": "茄子", "amount": 200, "unit": "g" }
+          ],
+          "pending_manual": [],
+          "computed_at": "2026-05-11T00:00:00Z"
+        },
+        "gap_basis": { "recipe_title": "地三鲜" },
+        "shopping_list_overlay": []
+      }
+    },
     "user_turns": [
       { "turn": 1, "input": "购物清单里帮我把青椒勾掉我家里有，别的保留" }
     ],
     "expected": {
       "primary_intent": "shopping_list",
+      "intents": ["shopping_list"],
       "needs_clarification": false,
       "key_slots": { "list_action": "edit_overlay" },
       "golden_recipe_ids": [],
       "output_contains": ["青椒"],
       "output_excludes": [],
       "context_preserved": [],
-      "clarification_triggered": false
+      "clarification_triggered": false,
+      "shopping_list_assert": {
+        "overlay_remove_keys_contain": ["青椒"],
+        "overlay_ops_min": 1
+      }
     },
     "eval_method": "llm_judge",
     "linked_scenarios": ["S-08"]
@@ -87,20 +209,52 @@
     "case_id": "multi_turn_029",
     "scenario_category": "multi_turn",
     "difficulty": "hard",
-    "description": "先问缺啥再买啥的多轮清单诉求",
+    "description": "先问缺啥再买啥的多轮清单诉求（首轮即注入水煮鱼缺口）",
+    "e2e_seed": {
+      "recipe_state": {
+        "recipe_title_locked": "水煮鱼",
+        "recipe_requirements": [
+          { "name": "草鱼", "amount": 1, "unit": "条" },
+          { "name": "豆芽", "amount": 200, "unit": "g" }
+        ]
+      },
+      "inventory_state": {
+        "inventory_snapshot": {},
+        "cached_shopping_gap": {
+          "shopping_list": [
+            { "name": "草鱼", "amount": 1, "unit": "条" },
+            { "name": "豆芽", "amount": 200, "unit": "g" }
+          ],
+          "sufficient_items": [],
+          "missing_items": [
+            { "name": "草鱼", "amount": 1, "unit": "条" },
+            { "name": "豆芽", "amount": 200, "unit": "g" }
+          ],
+          "pending_manual": [],
+          "computed_at": "2026-05-11T00:00:00Z"
+        },
+        "gap_basis": { "recipe_title": "水煮鱼" },
+        "shopping_list_overlay": []
+      }
+    },
     "user_turns": [
-      { "turn": 1, "input": "今晚锁定做水煮鱼" },
+      { "turn": 1, "input": "今晚做水煮鱼" },
       { "turn": 2, "input": "告诉我除了底料和鱼以外还需要采购哪些配料一并列购物单" }
     ],
     "expected": {
       "primary_intent": "shopping_list",
+      "intents": ["shopping_list", "recipe_search"],
       "needs_clarification": false,
       "key_slots": { "list_action": "show" },
-      "golden_recipe_ids": [],
+      "golden_recipe_ids": ["recipe_id_水煮鱼"],
       "output_contains": ["水煮鱼"],
       "output_excludes": [],
       "context_preserved": ["水煮鱼", "晚餐计划"],
-      "clarification_triggered": false
+      "clarification_triggered": false,
+      "shopping_list_assert": {
+        "gap_cache_present": true,
+        "gap_shopping_names_contain": ["豆芽"]
+      }
     },
     "eval_method": "llm_judge",
     "linked_scenarios": ["S-05", "S-08"]
@@ -110,18 +264,50 @@
     "scenario_category": "edge_case",
     "difficulty": "hard",
     "description": "从缺口标记已买 mark_bought",
+    "e2e_seed": {
+      "recipe_state": {
+        "recipe_title_locked": "葱油拌面",
+        "recipe_requirements": [
+          { "name": "香葱", "amount": 50, "unit": "g" },
+          { "name": "面条", "amount": 200, "unit": "g" }
+        ]
+      },
+      "inventory_state": {
+        "inventory_snapshot": {},
+        "cached_shopping_gap": {
+          "shopping_list": [
+            { "name": "香葱", "amount": 50, "unit": "g" },
+            { "name": "面条", "amount": 200, "unit": "g" }
+          ],
+          "sufficient_items": [],
+          "missing_items": [
+            { "name": "香葱", "amount": 50, "unit": "g" },
+            { "name": "面条", "amount": 200, "unit": "g" }
+          ],
+          "pending_manual": [],
+          "computed_at": "2026-05-11T00:00:00Z"
+        },
+        "gap_basis": { "recipe_title": "葱油拌面" },
+        "shopping_list_overlay": []
+      }
+    },
     "user_turns": [
       { "turn": 1, "input": "清单里缺的香葱我已经在楼下便利店买好了帮我勾掉" }
     ],
     "expected": {
       "primary_intent": "shopping_list",
+      "intents": ["shopping_list"],
       "needs_clarification": false,
       "key_slots": { "list_action": "mark_bought" },
       "golden_recipe_ids": [],
       "output_contains": ["香葱"],
       "output_excludes": [],
       "context_preserved": [],
-      "clarification_triggered": false
+      "clarification_triggered": false,
+      "shopping_list_assert": {
+        "overlay_remove_keys_contain": ["香葱"],
+        "overlay_ops_min": 1
+      }
     },
     "eval_method": "llm_judge",
     "linked_scenarios": []

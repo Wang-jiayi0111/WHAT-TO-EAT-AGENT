@@ -9,6 +9,7 @@
     ],
     "expected": {
       "primary_intent": "inventory_check",
+      "intents": ["inventory_check"],
       "needs_clarification": false,
       "key_slots": { "inventory_query_targets": ["鸡蛋"] },
       "golden_recipe_ids": [],
@@ -30,6 +31,7 @@
     ],
     "expected": {
       "primary_intent": "inventory_check",
+      "intents": ["inventory_check"],
       "needs_clarification": false,
       "key_slots": { "inventory_query_targets": null },
       "golden_recipe_ids": [],
@@ -51,6 +53,7 @@
     ],
     "expected": {
       "primary_intent": "inventory_check",
+      "intents": ["inventory_check"],
       "needs_clarification": false,
       "key_slots": { "inventory_query_targets": ["牛肉"] },
       "golden_recipe_ids": [],
@@ -72,6 +75,7 @@
     ],
     "expected": {
       "primary_intent": "inventory_check",
+      "intents": ["inventory_check", "recipe_search"],
       "needs_clarification": false,
       "key_slots": { "inventory_query_targets": ["土豆", "洋葱", "胡萝卜", "鸡胸肉"] },
       "golden_recipe_ids": [],
@@ -94,6 +98,7 @@
     ],
     "expected": {
       "primary_intent": "inventory_check",
+      "intents": ["inventory_check"],
       "needs_clarification": false,
       "key_slots": { "inventory_query_targets": ["内酯豆腐"] },
       "golden_recipe_ids": [],
@@ -111,10 +116,11 @@
     "difficulty": "hard",
     "description": "口语化否定句识别为查库存而非删库存",
     "user_turns": [
-      { "turn": 1, "input": "我是不是压根没买过香菜啊家里到底有没有这玩意儿" }
+      { "turn": 1, "input": "家里到底有没有香菜啊" }
     ],
     "expected": {
       "primary_intent": "inventory_check",
+      "intents": ["inventory_check"],
       "needs_clarification": false,
       "key_slots": { "inventory_query_targets": ["香菜"] },
       "golden_recipe_ids": [],

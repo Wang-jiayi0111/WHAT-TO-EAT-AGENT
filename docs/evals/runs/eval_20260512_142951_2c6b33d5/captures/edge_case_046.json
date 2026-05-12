@@ -1,0 +1,153 @@
+{
+  "case_id": "edge_case_046",
+  "source_file": "help.json",
+  "fixture": {
+    "case_id": "edge_case_046",
+    "scenario_category": "edge_case",
+    "difficulty": "medium",
+    "description": "检索失败场景下询问如何更好地描述需求（帮助意图，不作为菜谱检索金标对齐）",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "为啥我每次搜菜谱都说找不到能不能告诉我怎么描述更容易搜到"
+      }
+    ],
+    "expected": {
+      "primary_intent": "help",
+      "intents": [
+        "help"
+      ],
+      "needs_clarification": false,
+      "key_slots": {},
+      "golden_recipe_ids": [],
+      "output_contains": [
+        "食材",
+        "菜名"
+      ],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": []
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:edge_case_046",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "为啥我每次搜菜谱都说找不到能不能告诉我怎么描述更容易搜到",
+      "wall_time_ms": 19360.53119999997,
+      "snapshot": {
+        "final_response": "您好！搜索菜谱时，可以尝试以下小技巧，帮助您更快找到心仪的食谱：\n\n1. **使用具体食材名**：比如想要做“鸡肉”，您可以直接输入“鸡胸肉”或“鸡腿肉”等更具体的食材。\n2. **加上烹饪方法**：如果知道想用哪种方式来烹饪（如炒、炖、蒸），可以在搜索词里加上。例如：“清蒸鱼的做法”。\n3. **考虑口味偏好**：如果您对味道有特别偏爱（酸甜、麻辣等），也可以在关键词中体现出来，比如“酸辣土豆丝的做法”。\n4. **利用菜系分类**：有时候按照地方特色或者菜系来搜也会很有帮助，比如说“川菜宫保鸡丁”。\n5. **检查拼写错误**：确保输入的文字没有错别字哦，有时候小小的拼写差异会导致搜索结果大不同。\n\n希望这些建议能够帮到您！如果还有其他关于健康饮食方面的问题，欢迎随时提问~",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "dietary_advice",
+        "intents": [
+          "dietary_advice"
+        ],
+        "confidence": 0.9,
+        "needs_clarification": false,
+        "slots": {
+          "diet_topic": "搜索技巧"
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "dietary_advice",
+          "secondary_intents": [],
+          "intents": [
+            "dietary_advice"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 1,
+          "slots": {
+            "diet_topic": "搜索技巧"
+          },
+          "missing_slots": [],
+          "confidence": 0.9,
+          "extracted_entities": {},
+          "router_reasoning": "用户表达了对搜索菜谱时经常找不到结果的困惑，并希望获得如何更好地描述搜索条件的建议。这属于 dietary_advice 类别，因为用户寻求的是关于如何更有效地使用系统的建议。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {},
+          "router_reasoning": "用户表达了对搜索菜谱时经常找不到结果的困惑，并希望获得如何更好地描述搜索条件的建议。这属于 dietary_advice 类别，因为用户寻求的是关于如何更有效地使用系统的建议。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "slots": {
+            "diet_topic": "搜索技巧"
+          },
+          "error_state": {}
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {},
+        "expert_payloads": {},
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "为啥我每次搜菜谱都说找不到能不能告诉我怎么描述更容易搜到"
+          },
+          {
+            "type": "ai",
+            "content": "您好！搜索菜谱时，可以尝试以下小技巧，帮助您更快找到心仪的食谱：\n\n1. **使用具体食材名**：比如想要做“鸡肉”，您可以直接输入“鸡胸肉”或“鸡腿肉”等更具体的食材。\n2. **加上烹饪方法**：如果知道想用哪种方式来烹饪（如炒、炖、蒸），可以在搜索词里加上。例如：“清蒸鱼的做法”。\n3. **考虑口味偏好**：如果您对味道有特别偏爱（酸甜、麻辣等），也可以在关键词中体现出来，比如“酸辣土豆丝的做法”。\n4. **利用菜系分类**：有时候按照地方特色或者菜系来搜也会很有帮助，比如说“川菜宫保鸡丁”。\n5. **检查拼写错误**：确保输入的文字没有错别字哦，有时候小小的拼写差异会导致搜索结果大不同。\n\n希望这些建议能够帮到您！如果还有其他关于健康饮食方面的问题，欢迎随时提问~"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [],
+          "inferred_total": 0
+        },
+        "wall_time_ms": 19360.53119999997,
+        "user_input": "为啥我每次搜菜谱都说找不到能不能告诉我怎么描述更容易搜到"
+      },
+      "assistant_reply": "您好！搜索菜谱时，可以尝试以下小技巧，帮助您更快找到心仪的食谱：\n\n1. **使用具体食材名**：比如想要做“鸡肉”，您可以直接输入“鸡胸肉”或“鸡腿肉”等更具体的食材。\n2. **加上烹饪方法**：如果知道想用哪种方式来烹饪（如炒、炖、蒸），可以在搜索词里加上。例如：“清蒸鱼的做法”。\n3. **考虑口味偏好**：如果您对味道有特别偏爱（酸甜、麻辣等），也可以在关键词中体现出来，比如“酸辣土豆丝的做法”。\n4. **利用菜系分类**：有时候按照地方特色或者菜系来搜也会很有帮助，比如说“川菜宫保鸡丁”。\n5. **检查拼写错误**：确保输入的文字没有错别字哦，有时候小小的拼写差异会导致搜索结果大不同。\n\n希望这些建议能够帮到您！如果还有其他关于健康饮食方面的问题，欢迎随时提问~"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 19360.53119999997,
+    "turn_count": 1
+  }
+}

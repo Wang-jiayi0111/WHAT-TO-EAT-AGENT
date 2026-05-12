@@ -1,0 +1,156 @@
+{
+  "case_id": "nutrition_query_039",
+  "source_file": "general_chat.json",
+  "fixture": {
+    "case_id": "nutrition_query_039",
+    "scenario_category": "nutrition_query",
+    "difficulty": "medium",
+    "description": "聊天口吻但夹杂轻微膳食话题边界",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "我朋友都说我做饭太咸，但我吃着刚好，这算口味重吗？"
+      }
+    ],
+    "expected": {
+      "primary_intent": "general_chat",
+      "intents": [
+        "general_chat",
+        "dietary_advice"
+      ],
+      "needs_clarification": false,
+      "key_slots": {},
+      "golden_recipe_ids": [],
+      "output_contains": [
+        "盐",
+        "口味"
+      ],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": [
+      "S-02"
+    ]
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:nutrition_query_039",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "我朋友都说我做饭太咸，但我吃着刚好，这算口味重吗？",
+      "wall_time_ms": 24050.293799999054,
+      "snapshot": {
+        "final_response": "这可能意味着你的口味偏重一些哦。其实，减少盐分摄入对健康很有好处，可以帮助降低高血压的风险。你可以试着逐渐减少做菜时放的盐量，或者用其他调味品来替代，比如醋、柠檬汁或者是香草等自然香料，这样既能保证食物美味，又能更加健康。记得多听听朋友的意见，一起享受更健康的美食吧！如果需要的话，也可以尝试咨询一下营养师，获取更多关于健康饮食的建议。",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "dietary_advice",
+        "intents": [
+          "dietary_advice"
+        ],
+        "confidence": 0.85,
+        "needs_clarification": false,
+        "slots": {
+          "diet_topic": "口味偏好"
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "dietary_advice",
+          "secondary_intents": [],
+          "intents": [
+            "dietary_advice"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 1,
+          "slots": {
+            "diet_topic": "口味偏好"
+          },
+          "missing_slots": [],
+          "confidence": 0.85,
+          "extracted_entities": {},
+          "router_reasoning": "用户询问关于口味的问题，属于营养健康类的咨询，但没有明确提到要搜索具体的菜谱或进行其他操作。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {},
+          "router_reasoning": "用户询问关于口味的问题，属于营养健康类的咨询，但没有明确提到要搜索具体的菜谱或进行其他操作。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "slots": {
+            "diet_topic": "口味偏好"
+          },
+          "error_state": {}
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {},
+        "expert_payloads": {},
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "我朋友都说我做饭太咸，但我吃着刚好，这算口味重吗？"
+          },
+          {
+            "type": "ai",
+            "content": "这可能意味着你的口味偏重一些哦。其实，减少盐分摄入对健康很有好处，可以帮助降低高血压的风险。你可以试着逐渐减少做菜时放的盐量，或者用其他调味品来替代，比如醋、柠檬汁或者是香草等自然香料，这样既能保证食物美味，又能更加健康。记得多听听朋友的意见，一起享受更健康的美食吧！如果需要的话，也可以尝试咨询一下营养师，获取更多关于健康饮食的建议。"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [],
+          "inferred_total": 0
+        },
+        "wall_time_ms": 24050.293799999054,
+        "user_input": "我朋友都说我做饭太咸，但我吃着刚好，这算口味重吗？"
+      },
+      "assistant_reply": "这可能意味着你的口味偏重一些哦。其实，减少盐分摄入对健康很有好处，可以帮助降低高血压的风险。你可以试着逐渐减少做菜时放的盐量，或者用其他调味品来替代，比如醋、柠檬汁或者是香草等自然香料，这样既能保证食物美味，又能更加健康。记得多听听朋友的意见，一起享受更健康的美食吧！如果需要的话，也可以尝试咨询一下营养师，获取更多关于健康饮食的建议。"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 24050.293799999054,
+    "turn_count": 1
+  }
+}

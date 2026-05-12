@@ -1,0 +1,275 @@
+{
+  "case_id": "multi_turn_040",
+  "source_file": "general_chat.json",
+  "fixture": {
+    "case_id": "multi_turn_040",
+    "scenario_category": "multi_turn",
+    "difficulty": "medium",
+    "description": "多轮闲聊延续同一话题不求菜谱",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "我儿子最近挑食我都愁死了"
+      },
+      {
+        "turn": 2,
+        "input": "你说我是不是太焦虑了这种事常见吗"
+      }
+    ],
+    "expected": {
+      "primary_intent": "general_chat",
+      "intents": [
+        "general_chat",
+        "dietary_advice"
+      ],
+      "needs_clarification": false,
+      "key_slots": {},
+      "golden_recipe_ids": [],
+      "output_contains": [
+        "挑食"
+      ],
+      "output_excludes": [],
+      "context_preserved": [
+        "孩子挑食",
+        "焦虑"
+      ],
+      "clarification_triggered": false
+    },
+    "eval_method": "human",
+    "linked_scenarios": [
+      "S-05"
+    ]
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:multi_turn_040",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "我儿子最近挑食我都愁死了",
+      "wall_time_ms": 26984.826099998827,
+      "snapshot": {
+        "final_response": "挑食是很多小朋友都会经历的一个阶段，确实会让家长感到头疼。不过别担心，我们可以尝试一些方法来帮助改善这个问题：\n\n1. **多样化食物**：尝试变换不同的食材和烹饪方式，让餐桌上的食物看起来更有趣、颜色更丰富。\n2. **参与感**：让孩子参与到买菜、洗菜甚至简单的烹饪过程中来，增加他们对食物的兴趣。\n3. **榜样作用**：家长自己也要表现出享受各种健康食品的样子，孩子们往往会模仿大人的行为。\n4. **创造故事**：为某些食物编个小故事或游戏，比如“超级英雄的力量来自吃掉所有的蔬菜”，这样可以激发孩子的好奇心和兴趣。\n5. **定时定量**：保持规律的饮食习惯，避免过多零食干扰正餐。\n\n记得要有耐心哦，改变可能需要一段时间。同时也要注意观察孩子的身体状况，如果长时间拒绝进食或者有其他异常表现的话，建议咨询医生或营养师的专业意见。希望这些建议对你有所帮助！",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "dietary_advice",
+        "intents": [
+          "dietary_advice"
+        ],
+        "confidence": 0.75,
+        "needs_clarification": false,
+        "slots": {
+          "diet_topic": "儿童挑食"
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "dietary_advice",
+          "secondary_intents": [],
+          "intents": [
+            "dietary_advice"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 1,
+          "slots": {
+            "diet_topic": "儿童挑食"
+          },
+          "missing_slots": [],
+          "confidence": 0.75,
+          "extracted_entities": {},
+          "router_reasoning": "用户表达了对孩子挑食的担忧，但没有明确提及具体的膳食需求或行动。考虑到背景信息和用户的困扰，可以推测用户可能需要一些关于如何处理孩子挑食问题的建议。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {},
+          "router_reasoning": "用户表达了对孩子挑食的担忧，但没有明确提及具体的膳食需求或行动。考虑到背景信息和用户的困扰，可以推测用户可能需要一些关于如何处理孩子挑食问题的建议。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "slots": {
+            "diet_topic": "儿童挑食"
+          },
+          "error_state": {}
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {},
+        "expert_payloads": {},
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "我儿子最近挑食我都愁死了"
+          },
+          {
+            "type": "ai",
+            "content": "挑食是很多小朋友都会经历的一个阶段，确实会让家长感到头疼。不过别担心，我们可以尝试一些方法来帮助改善这个问题：\n\n1. **多样化食物**：尝试变换不同的食材和烹饪方式，让餐桌上的食物看起来更有趣、颜色更丰富。\n2. **参与感**：让孩子参与到买菜、洗菜甚至简单的烹饪过程中来，增加他们对食物的兴趣。\n3. **榜样作用**：家长自己也要表现出享受各种健康食品的样子，孩子们往往会模仿大人的行为。\n4. **创造故事**：为某些食物编个小故事或游戏，比如“超级英雄的力量来自吃掉所有的蔬菜”，这样可以激发孩子的好奇心和兴趣。\n5. **定时定量**：保持规律的饮食习惯，避免过多零食干扰正餐。\n\n记得要有耐心哦，改变可能需要一段时间。同时也要注意观察孩子的身体状况，如果长时间拒绝进食或者有其他异常表现的话，建议咨询医生或营养师的专业意见。希望这些建议对你有所帮助！"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [],
+          "inferred_total": 0
+        },
+        "wall_time_ms": 26984.826099998827,
+        "user_input": "我儿子最近挑食我都愁死了"
+      },
+      "assistant_reply": "挑食是很多小朋友都会经历的一个阶段，确实会让家长感到头疼。不过别担心，我们可以尝试一些方法来帮助改善这个问题：\n\n1. **多样化食物**：尝试变换不同的食材和烹饪方式，让餐桌上的食物看起来更有趣、颜色更丰富。\n2. **参与感**：让孩子参与到买菜、洗菜甚至简单的烹饪过程中来，增加他们对食物的兴趣。\n3. **榜样作用**：家长自己也要表现出享受各种健康食品的样子，孩子们往往会模仿大人的行为。\n4. **创造故事**：为某些食物编个小故事或游戏，比如“超级英雄的力量来自吃掉所有的蔬菜”，这样可以激发孩子的好奇心和兴趣。\n5. **定时定量**：保持规律的饮食习惯，避免过多零食干扰正餐。\n\n记得要有耐心哦，改变可能需要一段时间。同时也要注意观察孩子的身体状况，如果长时间拒绝进食或者有其他异常表现的话，建议咨询医生或营养师的专业意见。希望这些建议对你有所帮助！"
+    },
+    {
+      "turn": 2,
+      "input": "你说我是不是太焦虑了这种事常见吗",
+      "wall_time_ms": 18276.252400000885,
+      "snapshot": {
+        "final_response": "你的心情我完全理解，很多家长都会因为孩子的挑食问题感到焦虑。其实，挑食在儿童中是非常常见的现象，尤其是在2到6岁之间。这个阶段的孩子开始有了自己的喜好和选择，有时候会拒绝尝试新食物或者只吃自己喜欢的食物。\n\n你可以试着放松一些，给自己和孩子一点时间。同时，上面提到的方法可以慢慢尝试，逐渐引导孩子接受更多种类的食物。记住，每个孩子的成长节奏都不一样，耐心和积极的态度非常重要。\n\n如果你觉得需要更多的支持，也可以和其他家长交流经验，或者咨询专业的营养师或儿科医生，他们能给你更具体的建议和支持。别太担心，一步步来，你会看到改善的！",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "general_chat",
+        "intents": [
+          "general_chat"
+        ],
+        "confidence": 0.8,
+        "needs_clarification": false,
+        "slots": {},
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "general_chat",
+          "secondary_intents": [],
+          "intents": [
+            "general_chat"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 2,
+          "slots": {},
+          "missing_slots": [],
+          "confidence": 0.8,
+          "extracted_entities": {},
+          "router_reasoning": "用户表达了对孩子挑食问题的担忧，并询问这种情况是否常见。这属于一般性的聊天内容，没有明确的任务意图。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {},
+          "router_reasoning": "用户表达了对孩子挑食问题的担忧，并询问这种情况是否常见。这属于一般性的聊天内容，没有明确的任务意图。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "error_state": {}
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {},
+        "expert_payloads": {},
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "我儿子最近挑食我都愁死了"
+          },
+          {
+            "type": "ai",
+            "content": "挑食是很多小朋友都会经历的一个阶段，确实会让家长感到头疼。不过别担心，我们可以尝试一些方法来帮助改善这个问题：\n\n1. **多样化食物**：尝试变换不同的食材和烹饪方式，让餐桌上的食物看起来更有趣、颜色更丰富。\n2. **参与感**：让孩子参与到买菜、洗菜甚至简单的烹饪过程中来，增加他们对食物的兴趣。\n3. **榜样作用**：家长自己也要表现出享受各种健康食品的样子，孩子们往往会模仿大人的行为。\n4. **创造故事**：为某些食物编个小故事或游戏，比如“超级英雄的力量来自吃掉所有的蔬菜”，这样可以激发孩子的好奇心和兴趣。\n5. **定时定量**：保持规律的饮食习惯，避免过多零食干扰正餐。\n\n记得要有耐心哦，改变可能需要一段时间。同时也要注意观察孩子的身体状况，如果长时间拒绝进食或者有其他异常表现的话，建议咨询医生或营养师的专业意见。希望这些建议对你有所帮助！"
+          },
+          {
+            "type": "human",
+            "content": "你说我是不是太焦虑了这种事常见吗"
+          },
+          {
+            "type": "ai",
+            "content": "你的心情我完全理解，很多家长都会因为孩子的挑食问题感到焦虑。其实，挑食在儿童中是非常常见的现象，尤其是在2到6岁之间。这个阶段的孩子开始有了自己的喜好和选择，有时候会拒绝尝试新食物或者只吃自己喜欢的食物。\n\n你可以试着放松一些，给自己和孩子一点时间。同时，上面提到的方法可以慢慢尝试，逐渐引导孩子接受更多种类的食物。记住，每个孩子的成长节奏都不一样，耐心和积极的态度非常重要。\n\n如果你觉得需要更多的支持，也可以和其他家长交流经验，或者咨询专业的营养师或儿科医生，他们能给你更具体的建议和支持。别太担心，一步步来，你会看到改善的！"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [],
+          "inferred_total": 0
+        },
+        "wall_time_ms": 18276.252400000885,
+        "user_input": "你说我是不是太焦虑了这种事常见吗"
+      },
+      "assistant_reply": "你的心情我完全理解，很多家长都会因为孩子的挑食问题感到焦虑。其实，挑食在儿童中是非常常见的现象，尤其是在2到6岁之间。这个阶段的孩子开始有了自己的喜好和选择，有时候会拒绝尝试新食物或者只吃自己喜欢的食物。\n\n你可以试着放松一些，给自己和孩子一点时间。同时，上面提到的方法可以慢慢尝试，逐渐引导孩子接受更多种类的食物。记住，每个孩子的成长节奏都不一样，耐心和积极的态度非常重要。\n\n如果你觉得需要更多的支持，也可以和其他家长交流经验，或者咨询专业的营养师或儿科医生，他们能给你更具体的建议和支持。别太担心，一步步来，你会看到改善的！"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 45261.07849999971,
+    "turn_count": 2
+  }
+}

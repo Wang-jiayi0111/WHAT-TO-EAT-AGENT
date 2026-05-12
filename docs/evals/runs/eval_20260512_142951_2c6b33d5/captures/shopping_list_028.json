@@ -1,0 +1,453 @@
+{
+  "case_id": "shopping_list_028",
+  "source_file": "shopping_list.json",
+  "fixture": {
+    "case_id": "shopping_list_028",
+    "scenario_category": "shopping_list",
+    "difficulty": "medium",
+    "description": "编辑清单覆盖层 edit_overlay",
+    "e2e_seed": {
+      "recipe_state": {
+        "recipe_title_locked": "地三鲜",
+        "recipe_requirements": [
+          {
+            "name": "青椒",
+            "amount": 100,
+            "unit": "g"
+          },
+          {
+            "name": "茄子",
+            "amount": 200,
+            "unit": "g"
+          }
+        ]
+      },
+      "inventory_state": {
+        "inventory_snapshot": {},
+        "cached_shopping_gap": {
+          "shopping_list": [
+            {
+              "name": "青椒",
+              "amount": 100,
+              "unit": "g"
+            },
+            {
+              "name": "茄子",
+              "amount": 200,
+              "unit": "g"
+            }
+          ],
+          "sufficient_items": [],
+          "missing_items": [
+            {
+              "name": "青椒",
+              "amount": 100,
+              "unit": "g"
+            },
+            {
+              "name": "茄子",
+              "amount": 200,
+              "unit": "g"
+            }
+          ],
+          "pending_manual": [],
+          "computed_at": "2026-05-11T00:00:00Z"
+        },
+        "gap_basis": {
+          "recipe_title": "地三鲜"
+        },
+        "shopping_list_overlay": []
+      }
+    },
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "购物清单里帮我把青椒勾掉我家里有，别的保留"
+      }
+    ],
+    "expected": {
+      "primary_intent": "shopping_list",
+      "intents": [
+        "shopping_list"
+      ],
+      "needs_clarification": false,
+      "key_slots": {
+        "list_action": "edit_overlay"
+      },
+      "golden_recipe_ids": [],
+      "output_contains": [
+        "青椒"
+      ],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false,
+      "shopping_list_assert": {
+        "overlay_remove_keys_contain": [
+          "青椒"
+        ],
+        "overlay_ops_min": 1
+      }
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": [
+      "S-08"
+    ]
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:shopping_list_028",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "购物清单里帮我把青椒勾掉我家里有，别的保留",
+      "wall_time_ms": 14042.014499998913,
+      "snapshot": {
+        "final_response": "已按**最新库存**与菜谱用料重新计算缺口，待购清单如下：\n\n  · 青椒：100.0 g\n  · 茄子：200.0 g",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "shopping_list",
+        "intents": [
+          "shopping_list"
+        ],
+        "confidence": 0.9,
+        "needs_clarification": false,
+        "slots": {
+          "list_action": "edit_overlay",
+          "mark_bought_items": [
+            "青椒"
+          ]
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "shopping_list",
+          "secondary_intents": [],
+          "intents": [
+            "shopping_list"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 1,
+          "slots": {
+            "list_action": "edit_overlay",
+            "mark_bought_items": [
+              "青椒"
+            ]
+          },
+          "missing_slots": [],
+          "confidence": 0.9,
+          "extracted_entities": {},
+          "router_reasoning": "用户要求从购物清单中移除青椒，因为家里已经有这种食材。这属于对购物清单的修改操作。"
+        },
+        "recipe_state": {
+          "recipe_title_locked": "地三鲜",
+          "recipe_requirements": [
+            {
+              "name": "青椒",
+              "amount": 100,
+              "unit": "g"
+            },
+            {
+              "name": "茄子",
+              "amount": 200,
+              "unit": "g"
+            }
+          ],
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_steps": [],
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {},
+          "router_reasoning": "用户要求从购物清单中移除青椒，因为家里已经有这种食材。这属于对购物清单的修改操作。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [
+            {
+              "name": "青椒",
+              "amount": 100,
+              "unit": "g"
+            },
+            {
+              "name": "茄子",
+              "amount": 200,
+              "unit": "g"
+            }
+          ],
+          "recipe_title_locked": "地三鲜",
+          "recipe_cook_step": null,
+          "inventory_snapshot": {
+            "五花肉": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "排骨": {
+              "amount": 250.0,
+              "unit": "g"
+            },
+            "牛筋": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "胡萝卜": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "苦瓜": {
+              "amount": 2.0,
+              "unit": "根"
+            },
+            "西红柿": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "豆腐": {
+              "amount": 1.0,
+              "unit": "块"
+            },
+            "饼干": {
+              "amount": 1.0,
+              "unit": "盒"
+            },
+            "鸡胸肉": {
+              "amount": 1.0,
+              "unit": "个"
+            }
+          },
+          "cached_shopping_gap": {
+            "shopping_list": [
+              {
+                "name": "青椒",
+                "amount": 100.0,
+                "unit": "g"
+              },
+              {
+                "name": "茄子",
+                "amount": 200.0,
+                "unit": "g"
+              }
+            ],
+            "sufficient_items": [],
+            "missing_items": [
+              {
+                "name": "青椒",
+                "amount": 100.0,
+                "unit": "g"
+              },
+              {
+                "name": "茄子",
+                "amount": 200.0,
+                "unit": "g"
+              }
+            ],
+            "pending_manual": [],
+            "computed_at": "2026-05-12T06:48:12.314648+00:00"
+          },
+          "gap_basis": {
+            "recipe_title": "地三鲜",
+            "r_fingerprint": "d9ee55da845e49402ff672b1",
+            "inventory_fingerprint": "aa6a5c9fdd4ec008e641e672"
+          },
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "shopping_list": [
+            {
+              "name": "青椒",
+              "amount": 100.0,
+              "unit": "g"
+            },
+            {
+              "name": "茄子",
+              "amount": 200.0,
+              "unit": "g"
+            }
+          ],
+          "sufficient_items": [],
+          "missing_items": [
+            {
+              "name": "青椒",
+              "amount": 100.0,
+              "unit": "g"
+            },
+            {
+              "name": "茄子",
+              "amount": 200.0,
+              "unit": "g"
+            }
+          ],
+          "gap_delivery_mode": "fresh",
+          "slots": {
+            "list_action": "edit_overlay",
+            "mark_bought_items": [
+              "青椒"
+            ]
+          },
+          "error_state": {}
+        },
+        "inventory_state": {
+          "inventory_snapshot": {
+            "五花肉": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "排骨": {
+              "amount": 250.0,
+              "unit": "g"
+            },
+            "牛筋": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "胡萝卜": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "苦瓜": {
+              "amount": 2.0,
+              "unit": "根"
+            },
+            "西红柿": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "豆腐": {
+              "amount": 1.0,
+              "unit": "块"
+            },
+            "饼干": {
+              "amount": 1.0,
+              "unit": "盒"
+            },
+            "鸡胸肉": {
+              "amount": 1.0,
+              "unit": "个"
+            }
+          },
+          "cached_shopping_gap": {
+            "shopping_list": [
+              {
+                "name": "青椒",
+                "amount": 100.0,
+                "unit": "g"
+              },
+              {
+                "name": "茄子",
+                "amount": 200.0,
+                "unit": "g"
+              }
+            ],
+            "sufficient_items": [],
+            "missing_items": [
+              {
+                "name": "青椒",
+                "amount": 100.0,
+                "unit": "g"
+              },
+              {
+                "name": "茄子",
+                "amount": 200.0,
+                "unit": "g"
+              }
+            ],
+            "pending_manual": [],
+            "computed_at": "2026-05-12T06:48:12.314648+00:00"
+          },
+          "gap_basis": {
+            "recipe_title": "地三鲜",
+            "r_fingerprint": "d9ee55da845e49402ff672b1",
+            "inventory_fingerprint": "aa6a5c9fdd4ec008e641e672"
+          },
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "gap_delivery_mode": "fresh",
+          "shopping_list": [
+            {
+              "name": "青椒",
+              "amount": 100.0,
+              "unit": "g"
+            },
+            {
+              "name": "茄子",
+              "amount": 200.0,
+              "unit": "g"
+            }
+          ],
+          "sufficient_items": [],
+          "missing_items": [
+            {
+              "name": "青椒",
+              "amount": 100.0,
+              "unit": "g"
+            },
+            {
+              "name": "茄子",
+              "amount": 200.0,
+              "unit": "g"
+            }
+          ]
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [
+            "五花肉",
+            "排骨",
+            "牛筋",
+            "胡萝卜",
+            "苦瓜",
+            "西红柿",
+            "豆腐",
+            "饼干",
+            "鸡胸肉"
+          ],
+          "cached_shopping_gap_present": true,
+          "gap_basis": {
+            "recipe_title": "地三鲜",
+            "r_fingerprint": "d9ee55da845e49402ff672b1",
+            "inventory_fingerprint": "aa6a5c9fdd4ec008e641e672"
+          },
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {},
+        "expert_payloads": {},
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "购物清单里帮我把青椒勾掉我家里有，别的保留"
+          },
+          {
+            "type": "ai",
+            "content": "已按**最新库存**与菜谱用料重新计算缺口，待购清单如下：\n\n  · 青椒：100.0 g\n  · 茄子：200.0 g"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [
+            "get_recipe_source",
+            "parse_recipe_content"
+          ],
+          "inferred_total": 2
+        },
+        "wall_time_ms": 14042.014499998913,
+        "user_input": "购物清单里帮我把青椒勾掉我家里有，别的保留"
+      },
+      "assistant_reply": "已按**最新库存**与菜谱用料重新计算缺口，待购清单如下：\n\n  · 青椒：100.0 g\n  · 茄子：200.0 g"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 14042.014499998913,
+    "turn_count": 1
+  }
+}

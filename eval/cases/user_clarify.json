@@ -9,6 +9,7 @@
     ],
     "expected": {
       "primary_intent": "user_clarify",
+      "intents": ["user_clarify"],
       "needs_clarification": false,
       "key_slots": { "recipe_name": "酸辣" },
       "golden_recipe_ids": [],
@@ -30,6 +31,7 @@
     ],
     "expected": {
       "primary_intent": "user_clarify",
+      "intents": ["user_clarify"],
       "needs_clarification": false,
       "key_slots": {},
       "golden_recipe_ids": [],
@@ -52,6 +54,7 @@
     ],
     "expected": {
       "primary_intent": "user_clarify",
+      "intents": ["user_clarify", "recipe_search"],
       "needs_clarification": false,
       "key_slots": { "recipe_query": "鸡肉少盐不加味精" },
       "golden_recipe_ids": [],
@@ -67,22 +70,24 @@
     "case_id": "recipe_query_070",
     "scenario_category": "recipe_query",
     "difficulty": "medium",
-    "description": "否定式澄清排除某一候选",
+    "description": "多轮：首轮宽泛家常菜诉求，次轮补充口味偏好（澄清续答）",
     "user_turns": [
-      { "turn": 1, "input": "不要带茄子食材的那几道菜里剩下的随便给我一个就行" }
+      { "turn": 1, "input": "想吃红烧肉一类家常菜，我还没想好偏甜还是偏咸" },
+      { "turn": 2, "input": "那就家常红烧偏咸鲜口吧，不要太甜" }
     ],
     "expected": {
       "primary_intent": "user_clarify",
+      "intents": ["user_clarify", "recipe_search"],
       "needs_clarification": false,
-      "key_slots": { "ingredients": ["茄子"] },
-      "golden_recipe_ids": ["recipe_id_糖醋里脊"],
-      "output_contains": ["糖醋里脊"],
-      "output_excludes": ["茄子"],
-      "context_preserved": [],
+      "key_slots": { "recipe_query": "红烧咸鲜不太甜" },
+      "golden_recipe_ids": ["recipe_id_简易红烧肉"],
+      "output_contains": ["红烧", "咸"],
+      "output_excludes": [],
+      "context_preserved": ["红烧", "不要太甜"],
       "clarification_triggered": false
     },
     "eval_method": "llm_judge",
-    "linked_scenarios": ["S-01", "S-02"]
+    "linked_scenarios": ["S-01", "S-02", "S-05"]
   },
   {
     "case_id": "edge_case_071",
@@ -94,6 +99,7 @@
     ],
     "expected": {
       "primary_intent": "user_clarify",
+      "intents": ["user_clarify"],
       "needs_clarification": true,
       "key_slots": {},
       "golden_recipe_ids": [],
@@ -115,6 +121,7 @@
     ],
     "expected": {
       "primary_intent": "user_clarify",
+      "intents": ["user_clarify", "profile_sync"],
       "needs_clarification": false,
       "key_slots": { "recipe_query": "江浙清淡" },
       "golden_recipe_ids": [],

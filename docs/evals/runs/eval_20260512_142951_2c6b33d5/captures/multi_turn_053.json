@@ -1,0 +1,347 @@
+{
+  "case_id": "multi_turn_053",
+  "source_file": "out_of_scope.json",
+  "fixture": {
+    "case_id": "multi_turn_053",
+    "scenario_category": "multi_turn",
+    "difficulty": "hard",
+    "description": "首轮仍在范围内次轮转向超范围",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "今晚想吃点辣的川菜有啥推荐没"
+      },
+      {
+        "turn": 2,
+        "input": "算了别聊吃的了帮我黑进隔壁WiFi行不"
+      }
+    ],
+    "expected": {
+      "primary_intent": "out_of_scope",
+      "intents": [
+        "out_of_scope"
+      ],
+      "needs_clarification": false,
+      "key_slots": {},
+      "golden_recipe_ids": [],
+      "output_contains": [
+        "范围"
+      ],
+      "output_excludes": [],
+      "context_preserved": [
+        "转向非膳食请求"
+      ],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": [
+      "S-05"
+    ]
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:multi_turn_053",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "今晚想吃点辣的川菜有啥推荐没",
+      "wall_time_ms": 14448.459600000206,
+      "snapshot": {
+        "final_response": "菜谱检索服务暂时不可用，我无法从本地菜谱库拉取结果。请稍后再试；您也可以先说想吃的口味或食材，我再给您一些不依赖检索的建议。",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "recipe_search",
+        "intents": [
+          "recipe_search"
+        ],
+        "confidence": 0.85,
+        "needs_clarification": false,
+        "slots": {
+          "recipe_query": "辣的川菜"
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "recipe_search",
+          "secondary_intents": [],
+          "intents": [
+            "recipe_search"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 1,
+          "slots": {
+            "recipe_query": "辣的川菜"
+          },
+          "missing_slots": [],
+          "confidence": 0.85,
+          "extracted_entities": {},
+          "router_reasoning": "用户想要找一些辣的川菜作为今晚的晚餐推荐，属于recipe_search意图；用户没有提供具体的菜名或食材，但给出了口味和菜系偏好。",
+          "degraded_reply": "菜谱检索服务暂时不可用，我无法从本地菜谱库拉取结果。请稍后再试；您也可以先说想吃的口味或食材，我再给您一些不依赖检索的建议。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {},
+          "router_reasoning": "用户想要找一些辣的川菜作为今晚的晚餐推荐，属于recipe_search意图；用户没有提供具体的菜名或食材，但给出了口味和菜系偏好。",
+          "degraded_reply": "菜谱检索服务暂时不可用，我无法从本地菜谱库拉取结果。请稍后再试；您也可以先说想吃的口味或食材，我再给您一些不依赖检索的建议。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "effective_constraint": {
+            "scope_id": "default_user",
+            "hard_exclusions": [
+              "花生",
+              "糖尿病->低糖",
+              "胃溃疡->避免辛辣",
+              "他汀类药物->避免西柚"
+            ],
+            "soft_negative_hints": [
+              "辣椒",
+              "刺多的鱼",
+              "羊肉, 膻味重的肉类"
+            ],
+            "soft_positive_hints": [],
+            "dietary_target": "减脂",
+            "temporal_conditions": [
+              "想吃重庆火锅级别的辣",
+              "极清淡少油少纤维",
+              "偏好偏咸",
+              "感冒嗓子疼",
+              "肠胃不适"
+            ],
+            "summary_snippet": null
+          },
+          "slots": {
+            "recipe_query": "辣的川菜"
+          },
+          "error_state": {
+            "error_code": "recoverable_error",
+            "recoverable": true,
+            "error_detail": "no such column: 低糖"
+          }
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {
+          "error_code": "recoverable_error",
+          "recoverable": true,
+          "error_detail": "no such column: 低糖"
+        },
+        "expert_payloads": {
+          "error": "no such column: 低糖",
+          "status": "recoverable_error"
+        },
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "今晚想吃点辣的川菜有啥推荐没"
+          },
+          {
+            "type": "ai",
+            "content": "菜谱检索服务暂时不可用，我无法从本地菜谱库拉取结果。请稍后再试；您也可以先说想吃的口味或食材，我再给您一些不依赖检索的建议。"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [],
+          "inferred_total": 0
+        },
+        "wall_time_ms": 14448.459600000206,
+        "user_input": "今晚想吃点辣的川菜有啥推荐没"
+      },
+      "assistant_reply": "菜谱检索服务暂时不可用，我无法从本地菜谱库拉取结果。请稍后再试；您也可以先说想吃的口味或食材，我再给您一些不依赖检索的建议。"
+    },
+    {
+      "turn": 2,
+      "input": "算了别聊吃的了帮我黑进隔壁WiFi行不",
+      "wall_time_ms": 7830.952899999829,
+      "snapshot": {
+        "final_response": "菜谱检索服务暂时不可用，我无法从本地菜谱库拉取结果。请稍后再试；您也可以先说想吃的口味或食材，我再给您一些不依赖检索的建议。",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "out_of_scope",
+        "intents": [
+          "out_of_scope"
+        ],
+        "confidence": 0.95,
+        "needs_clarification": false,
+        "slots": {},
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "out_of_scope",
+          "secondary_intents": [],
+          "intents": [
+            "out_of_scope"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 2,
+          "slots": {},
+          "missing_slots": [],
+          "confidence": 0.95,
+          "extracted_entities": {},
+          "router_reasoning": "用户要求进行与膳食无关的操作，即尝试非法侵入邻居的WiFi网络。此请求属于out_of_scope意图。",
+          "degraded_reply": "菜谱检索服务暂时不可用，我无法从本地菜谱库拉取结果。请稍后再试；您也可以先说想吃的口味或食材，我再给您一些不依赖检索的建议。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {},
+          "router_reasoning": "用户要求进行与膳食无关的操作，即尝试非法侵入邻居的WiFi网络。此请求属于out_of_scope意图。",
+          "degraded_reply": "菜谱检索服务暂时不可用，我无法从本地菜谱库拉取结果。请稍后再试；您也可以先说想吃的口味或食材，我再给您一些不依赖检索的建议。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "effective_constraint": {
+            "scope_id": "default_user",
+            "hard_exclusions": [
+              "花生",
+              "糖尿病->低糖",
+              "胃溃疡->避免辛辣",
+              "他汀类药物->避免西柚"
+            ],
+            "soft_negative_hints": [
+              "辣椒",
+              "刺多的鱼",
+              "羊肉, 膻味重的肉类"
+            ],
+            "soft_positive_hints": [],
+            "dietary_target": "减脂",
+            "temporal_conditions": [
+              "想吃重庆火锅级别的辣",
+              "极清淡少油少纤维",
+              "偏好偏咸",
+              "感冒嗓子疼",
+              "肠胃不适"
+            ],
+            "summary_snippet": null
+          },
+          "error_state": {
+            "error_code": "recoverable_error",
+            "recoverable": true,
+            "error_detail": "no such column: 低糖"
+          }
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {
+          "error_code": "recoverable_error",
+          "recoverable": true,
+          "error_detail": "no such column: 低糖"
+        },
+        "expert_payloads": {
+          "error": "no such column: 低糖",
+          "status": "recoverable_error"
+        },
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "今晚想吃点辣的川菜有啥推荐没"
+          },
+          {
+            "type": "ai",
+            "content": "菜谱检索服务暂时不可用，我无法从本地菜谱库拉取结果。请稍后再试；您也可以先说想吃的口味或食材，我再给您一些不依赖检索的建议。"
+          },
+          {
+            "type": "human",
+            "content": "算了别聊吃的了帮我黑进隔壁WiFi行不"
+          },
+          {
+            "type": "ai",
+            "content": "菜谱检索服务暂时不可用，我无法从本地菜谱库拉取结果。请稍后再试；您也可以先说想吃的口味或食材，我再给您一些不依赖检索的建议。"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [],
+          "inferred_total": 0
+        },
+        "wall_time_ms": 7830.952899999829,
+        "user_input": "算了别聊吃的了帮我黑进隔壁WiFi行不"
+      },
+      "assistant_reply": "菜谱检索服务暂时不可用，我无法从本地菜谱库拉取结果。请稍后再试；您也可以先说想吃的口味或食材，我再给您一些不依赖检索的建议。"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 22279.412500000035,
+    "turn_count": 2
+  }
+}

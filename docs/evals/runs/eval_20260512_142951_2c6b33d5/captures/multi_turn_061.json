@@ -1,0 +1,340 @@
+{
+  "case_id": "multi_turn_061",
+  "source_file": "profile_sync.json",
+  "fixture": {
+    "case_id": "multi_turn_061",
+    "scenario_category": "multi_turn",
+    "difficulty": "easy",
+    "description": "显式长期忌口写入画像",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "请记住我以后做饭都不要放芹菜我对芹菜过敏"
+      },
+      {
+        "turn": 2,
+        "input": "另外大豆制品也尽量少吃帮我一起记下来"
+      }
+    ],
+    "expected": {
+      "primary_intent": "profile_sync",
+      "intents": [
+        "profile_sync"
+      ],
+      "needs_clarification": false,
+      "key_slots": {
+        "profile_fragments": [
+          "芹菜过敏",
+          "少吃大豆制品"
+        ],
+        "profile_explicit": true
+      },
+      "golden_recipe_ids": [],
+      "output_contains": [
+        "记住",
+        "芹菜"
+      ],
+      "output_excludes": [],
+      "context_preserved": [
+        "芹菜过敏",
+        "大豆制品控制"
+      ],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": [
+      "S-05"
+    ]
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:multi_turn_061",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "请记住我以后做饭都不要放芹菜我对芹菜过敏",
+      "wall_time_ms": 7739.761900000303,
+      "snapshot": {
+        "final_response": "好的，我已记录您的饮食偏好，以后推荐菜谱时会注意。",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "profile_sync",
+        "intents": [
+          "profile_sync"
+        ],
+        "confidence": 0.98,
+        "needs_clarification": false,
+        "slots": {
+          "profile_fragments": [
+            "不要放芹菜",
+            "我对芹菜过敏"
+          ],
+          "target_member": "default_user"
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "profile_sync",
+          "secondary_intents": [],
+          "intents": [
+            "profile_sync"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 1,
+          "slots": {
+            "profile_fragments": [
+              "不要放芹菜",
+              "我对芹菜过敏"
+            ],
+            "target_member": "default_user"
+          },
+          "missing_slots": [],
+          "confidence": 0.98,
+          "extracted_entities": {
+            "preferences": [
+              "不要放芹菜",
+              "我对芹菜过敏"
+            ]
+          },
+          "router_reasoning": "用户要求记住其对芹菜的过敏信息，属于更新个人偏好或健康档案的行为，即 profile_sync；明确表达了对芹菜的忌口和过敏情况。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {
+            "preferences": [
+              "不要放芹菜",
+              "我对芹菜过敏"
+            ]
+          },
+          "router_reasoning": "用户要求记住其对芹菜的过敏信息，属于更新个人偏好或健康档案的行为，即 profile_sync；明确表达了对芹菜的忌口和过敏情况。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "short_term_constraints": [
+            "安全：过敏相关表述需结合画像核对"
+          ],
+          "slots": {
+            "profile_fragments": [
+              "不要放芹菜",
+              "我对芹菜过敏"
+            ],
+            "target_member": "default_user"
+          },
+          "error_state": {}
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [
+            "安全：过敏相关表述需结合画像核对"
+          ],
+          "conversation_summary_len": 0
+        },
+        "error_state": {},
+        "expert_payloads": {},
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "请记住我以后做饭都不要放芹菜我对芹菜过敏"
+          },
+          {
+            "type": "ai",
+            "content": "好的，我已记录您的饮食偏好，以后推荐菜谱时会注意。"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [],
+          "inferred_total": 0
+        },
+        "wall_time_ms": 7739.761900000303,
+        "user_input": "请记住我以后做饭都不要放芹菜我对芹菜过敏"
+      },
+      "assistant_reply": "好的，我已记录您的饮食偏好，以后推荐菜谱时会注意。"
+    },
+    {
+      "turn": 2,
+      "input": "另外大豆制品也尽量少吃帮我一起记下来",
+      "wall_time_ms": 6048.2140999993135,
+      "snapshot": {
+        "final_response": "好的，我已记录您的饮食偏好，以后推荐菜谱时会注意。",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "profile_sync",
+        "intents": [
+          "profile_sync"
+        ],
+        "confidence": 0.98,
+        "needs_clarification": false,
+        "slots": {
+          "profile_fragments": [
+            "尽量少吃大豆制品"
+          ],
+          "target_member": "default_user",
+          "profile_explicit": true
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "profile_sync",
+          "secondary_intents": [],
+          "intents": [
+            "profile_sync"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 2,
+          "slots": {
+            "profile_fragments": [
+              "尽量少吃大豆制品"
+            ],
+            "target_member": "default_user",
+            "profile_explicit": true
+          },
+          "missing_slots": [],
+          "confidence": 0.98,
+          "extracted_entities": {
+            "preferences": [
+              "尽量少吃大豆制品"
+            ]
+          },
+          "router_reasoning": "用户希望更新饮食偏好，指明了对大豆制品的限制，并要求记录下来。这属于profile_sync意图。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {
+            "preferences": [
+              "尽量少吃大豆制品"
+            ]
+          },
+          "router_reasoning": "用户希望更新饮食偏好，指明了对大豆制品的限制，并要求记录下来。这属于profile_sync意图。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "short_term_constraints": [
+            "安全：过敏相关表述需结合画像核对"
+          ],
+          "slots": {
+            "profile_fragments": [
+              "尽量少吃大豆制品"
+            ],
+            "target_member": "default_user",
+            "profile_explicit": true
+          },
+          "error_state": {}
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [
+            "安全：过敏相关表述需结合画像核对"
+          ],
+          "conversation_summary_len": 0
+        },
+        "error_state": {},
+        "expert_payloads": {},
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "请记住我以后做饭都不要放芹菜我对芹菜过敏"
+          },
+          {
+            "type": "ai",
+            "content": "好的，我已记录您的饮食偏好，以后推荐菜谱时会注意。"
+          },
+          {
+            "type": "human",
+            "content": "另外大豆制品也尽量少吃帮我一起记下来"
+          },
+          {
+            "type": "ai",
+            "content": "好的，我已记录您的饮食偏好，以后推荐菜谱时会注意。"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [],
+          "inferred_total": 0
+        },
+        "wall_time_ms": 6048.2140999993135,
+        "user_input": "另外大豆制品也尽量少吃帮我一起记下来"
+      },
+      "assistant_reply": "好的，我已记录您的饮食偏好，以后推荐菜谱时会注意。"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 13787.975999999617,
+    "turn_count": 2
+  }
+}

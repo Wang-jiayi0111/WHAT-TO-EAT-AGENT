@@ -1,0 +1,845 @@
+{
+  "case_id": "multi_turn_059",
+  "source_file": "recipe_adopt.json",
+  "fixture": {
+    "case_id": "multi_turn_059",
+    "scenario_category": "multi_turn",
+    "difficulty": "hard",
+    "description": "比较后轮拍板采纳指定序号候选",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "这几道面食我都看了碳水有点高还在纠结"
+      },
+      {
+        "turn": 2,
+        "input": "我想通了，今晚主食就用葱油拌面，帮我找这道菜"
+      }
+    ],
+    "expected": {
+      "primary_intent": "recipe_adopt",
+      "intents": [
+        "recipe_adopt",
+        "recipe_search"
+      ],
+      "needs_clarification": false,
+      "key_slots": {
+        "recipe_adoption": true,
+        "recipe_name": "葱油拌面"
+      },
+      "golden_recipe_ids": [
+        "recipe_id_葱油拌面"
+      ],
+      "output_contains": [
+        "葱油拌面"
+      ],
+      "output_excludes": [],
+      "context_preserved": [
+        "面食候选",
+        "碳水顾虑"
+      ],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": [
+      "S-05"
+    ]
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:multi_turn_059",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "这几道面食我都看了碳水有点高还在纠结",
+      "wall_time_ms": 18677.89769999945,
+      "snapshot": {
+        "final_response": "没关系的！如果你在寻找碳水化合物含量较低的面食选择，可以考虑一些替代性的食材，比如用蔬菜面条（如西葫芦面条或胡萝卜面条）来代替传统的面粉面条。另外，也可以尝试全麦或者杂粮制作的面食，这样不仅能够降低碳水化合物的比例，还能增加膳食纤维哦。如果需要具体的低卡面食做法或者其他健康饮食建议，随时告诉我呀！",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "recipe_search",
+        "intents": [
+          "recipe_search",
+          "dietary_advice"
+        ],
+        "confidence": 0.75,
+        "needs_clarification": true,
+        "slots": {
+          "diet_topic": "低碳水"
+        },
+        "missing_slots": [
+          "recipe_search_anchor"
+        ],
+        "control_state": {
+          "primary_intent": "recipe_search",
+          "secondary_intents": [
+            "dietary_advice"
+          ],
+          "intents": [
+            "recipe_search",
+            "dietary_advice"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": true,
+          "loop_guard_count": 1,
+          "slots": {
+            "diet_topic": "低碳水"
+          },
+          "missing_slots": [
+            "recipe_search_anchor"
+          ],
+          "confidence": 0.75,
+          "extracted_entities": {
+            "diet_topic": "低碳水"
+          },
+          "router_reasoning": "用户在查看几道面食后，觉得碳水化合物含量较高，并且还在纠结是否要做。这表明用户可能需要一些关于这些面食的营养建议或者想要找到其他低碳水化合物的替代品。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {
+            "diet_topic": "低碳水"
+          },
+          "router_reasoning": "用户在查看几道面食后，觉得碳水化合物含量较高，并且还在纠结是否要做。这表明用户可能需要一些关于这些面食的营养建议或者想要找到其他低碳水化合物的替代品。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "slots": {
+            "diet_topic": "低碳水"
+          },
+          "error_state": {}
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {},
+        "expert_payloads": {},
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "这几道面食我都看了碳水有点高还在纠结"
+          },
+          {
+            "type": "ai",
+            "content": "抱歉，我没有找到合适的菜谱，请换个关键词再试试？"
+          },
+          {
+            "type": "ai",
+            "content": "没关系的！如果你在寻找碳水化合物含量较低的面食选择，可以考虑一些替代性的食材，比如用蔬菜面条（如西葫芦面条或胡萝卜面条）来代替传统的面粉面条。另外，也可以尝试全麦或者杂粮制作的面食，这样不仅能够降低碳水化合物的比例，还能增加膳食纤维哦。如果需要具体的低卡面食做法或者其他健康饮食建议，随时告诉我呀！"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [],
+          "inferred_total": 0
+        },
+        "wall_time_ms": 18677.89769999945,
+        "user_input": "这几道面食我都看了碳水有点高还在纠结"
+      },
+      "assistant_reply": "没关系的！如果你在寻找碳水化合物含量较低的面食选择，可以考虑一些替代性的食材，比如用蔬菜面条（如西葫芦面条或胡萝卜面条）来代替传统的面粉面条。另外，也可以尝试全麦或者杂粮制作的面食，这样不仅能够降低碳水化合物的比例，还能增加膳食纤维哦。如果需要具体的低卡面食做法或者其他健康饮食建议，随时告诉我呀！"
+    },
+    {
+      "turn": 2,
+      "input": "我想通了，今晚主食就用葱油拌面，帮我找这道菜",
+      "wall_time_ms": 42683.85070000113,
+      "snapshot": {
+        "final_response": "以下为「葱油拌面」的用料清单（来自本地菜谱解析）：\n\n  · 干面条：80 g\n  · 小葱：100 g\n  · 食用油：100 ml\n  · 生抽：60 ml\n  · 老抽：20 ml\n  · 白糖：15 g\n\n以下为「葱油拌面」的烹饪步骤（来自本地菜谱解析）：\n\n  · 将小葱洗净，切成长段（约5-7cm）。葱白和葱绿可以分开。\n  · 锅中加入100ml食用油，中火烧热。先放入葱白段，煸炒至微黄。\n  · 加入葱绿段，转小火，继续煸炒。\n  · 保持小火，耐心煸炒约15-20分钟，直至葱段变得焦黄酥脆。\n  · 将焦黄的葱段捞出（葱油保留在锅中）。\n  · 在锅中的葱油中，加入60ml生抽，20ml老抽，15g白糖。小火加热并搅拌，约1分钟，至糖溶解，酱汁混合均匀。立即关火。将制作好的葱油酱汁倒入容器中，放凉后密封保存。\n  · 取80g干面条。\n  · 锅中加入1000ml饮用水，大火烧开。\n  · 放入面条，根据面条包装说明，煮至熟透（通常3-8分钟，以包装说明为准）。\n  · 将煮好的面条捞出，沥干水分，放入碗中。\n  · 在装有面条的碗中，加入15ml之前做好的葱油酱汁。\n  · 可以用筷子快速搅拌均匀，即可食用。",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "recipe_search",
+        "intents": [
+          "recipe_search"
+        ],
+        "confidence": 0.95,
+        "needs_clarification": false,
+        "slots": {
+          "recipe_name": "葱油拌面"
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "recipe_search",
+          "secondary_intents": [],
+          "intents": [
+            "recipe_search"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 2,
+          "slots": {
+            "recipe_name": "葱油拌面"
+          },
+          "missing_slots": [],
+          "confidence": 0.95,
+          "extracted_entities": {
+            "recipe_name": "葱油拌面"
+          },
+          "router_reasoning": "用户决定今晚做葱油拌面，并请求搜索这道菜的做法。属于recipe_search意图，且有明确的菜名。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": "F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\staple\\葱油拌面.md",
+          "recipe_candidates": [],
+          "selected_recipe_title": "葱油拌面",
+          "selected_recipe_id": "F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\staple\\葱油拌面.md",
+          "recipe_requirements": [
+            {
+              "name": "干面条",
+              "amount": 80.0,
+              "unit": "g"
+            },
+            {
+              "name": "小葱",
+              "amount": 100.0,
+              "unit": "g"
+            },
+            {
+              "name": "食用油",
+              "amount": 100.0,
+              "unit": "ml"
+            },
+            {
+              "name": "生抽",
+              "amount": 60.0,
+              "unit": "ml"
+            },
+            {
+              "name": "老抽",
+              "amount": 20.0,
+              "unit": "ml"
+            },
+            {
+              "name": "白糖",
+              "amount": 15.0,
+              "unit": "g"
+            }
+          ],
+          "recipe_steps": [
+            "将小葱洗净，切成长段（约5-7cm）。葱白和葱绿可以分开。",
+            "锅中加入100ml食用油，中火烧热。先放入葱白段，煸炒至微黄。",
+            "加入葱绿段，转小火，继续煸炒。",
+            "保持小火，耐心煸炒约15-20分钟，直至葱段变得焦黄酥脆。",
+            "将焦黄的葱段捞出（葱油保留在锅中）。",
+            "在锅中的葱油中，加入60ml生抽，20ml老抽，15g白糖。小火加热并搅拌，约1分钟，至糖溶解，酱汁混合均匀。立即关火。将制作好的葱油酱汁倒入容器中，放凉后密封保存。",
+            "取80g干面条。",
+            "锅中加入1000ml饮用水，大火烧开。",
+            "放入面条，根据面条包装说明，煮至熟透（通常3-8分钟，以包装说明为准）。",
+            "将煮好的面条捞出，沥干水分，放入碗中。",
+            "在装有面条的碗中，加入15ml之前做好的葱油酱汁。",
+            "可以用筷子快速搅拌均匀，即可食用。"
+          ],
+          "recipe_title_locked": "葱油拌面",
+          "recipe_parser_version": "llm_structured_v1"
+        },
+        "runtime_bundle": {
+          "extracted_entities": {
+            "recipe_name": "葱油拌面"
+          },
+          "router_reasoning": "用户决定今晚做葱油拌面，并请求搜索这道菜的做法。属于recipe_search意图，且有明确的菜名。",
+          "recipe_candidates": [],
+          "selected_recipe_id": "F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\staple\\葱油拌面.md",
+          "selected_recipe_title": "葱油拌面",
+          "recipe_requirements": [
+            {
+              "name": "干面条",
+              "amount": 80.0,
+              "unit": "g"
+            },
+            {
+              "name": "小葱",
+              "amount": 100.0,
+              "unit": "g"
+            },
+            {
+              "name": "食用油",
+              "amount": 100.0,
+              "unit": "ml"
+            },
+            {
+              "name": "生抽",
+              "amount": 60.0,
+              "unit": "ml"
+            },
+            {
+              "name": "老抽",
+              "amount": 20.0,
+              "unit": "ml"
+            },
+            {
+              "name": "白糖",
+              "amount": 15.0,
+              "unit": "g"
+            }
+          ],
+          "recipe_title_locked": "葱油拌面",
+          "recipe_parser_version": "llm_structured_v1",
+          "recipe_cook_step": [
+            "将小葱洗净，切成长段（约5-7cm）。葱白和葱绿可以分开。",
+            "锅中加入100ml食用油，中火烧热。先放入葱白段，煸炒至微黄。",
+            "加入葱绿段，转小火，继续煸炒。",
+            "保持小火，耐心煸炒约15-20分钟，直至葱段变得焦黄酥脆。",
+            "将焦黄的葱段捞出（葱油保留在锅中）。",
+            "在锅中的葱油中，加入60ml生抽，20ml老抽，15g白糖。小火加热并搅拌，约1分钟，至糖溶解，酱汁混合均匀。立即关火。将制作好的葱油酱汁倒入容器中，放凉后密封保存。",
+            "取80g干面条。",
+            "锅中加入1000ml饮用水，大火烧开。",
+            "放入面条，根据面条包装说明，煮至熟透（通常3-8分钟，以包装说明为准）。",
+            "将煮好的面条捞出，沥干水分，放入碗中。",
+            "在装有面条的碗中，加入15ml之前做好的葱油酱汁。",
+            "可以用筷子快速搅拌均匀，即可食用。"
+          ],
+          "inventory_snapshot": {
+            "五花肉": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "排骨": {
+              "amount": 250.0,
+              "unit": "g"
+            },
+            "牛筋": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "胡萝卜": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "苦瓜": {
+              "amount": 2.0,
+              "unit": "根"
+            },
+            "西红柿": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "豆腐": {
+              "amount": 1.0,
+              "unit": "块"
+            },
+            "饼干": {
+              "amount": 1.0,
+              "unit": "盒"
+            },
+            "鸡胸肉": {
+              "amount": 1.0,
+              "unit": "个"
+            }
+          },
+          "cached_shopping_gap": {
+            "shopping_list": [
+              {
+                "name": "干面条",
+                "amount": 80.0,
+                "unit": "g"
+              },
+              {
+                "name": "小葱",
+                "amount": 100.0,
+                "unit": "g"
+              },
+              {
+                "name": "食用油",
+                "amount": 100.0,
+                "unit": "ml"
+              },
+              {
+                "name": "生抽",
+                "amount": 60.0,
+                "unit": "ml"
+              },
+              {
+                "name": "老抽",
+                "amount": 20.0,
+                "unit": "ml"
+              },
+              {
+                "name": "白糖",
+                "amount": 15.0,
+                "unit": "g"
+              }
+            ],
+            "sufficient_items": [],
+            "missing_items": [
+              {
+                "name": "干面条",
+                "amount": 80.0,
+                "unit": "g"
+              },
+              {
+                "name": "小葱",
+                "amount": 100.0,
+                "unit": "g"
+              },
+              {
+                "name": "食用油",
+                "amount": 100.0,
+                "unit": "ml"
+              },
+              {
+                "name": "生抽",
+                "amount": 60.0,
+                "unit": "ml"
+              },
+              {
+                "name": "老抽",
+                "amount": 20.0,
+                "unit": "ml"
+              },
+              {
+                "name": "白糖",
+                "amount": 15.0,
+                "unit": "g"
+              }
+            ],
+            "pending_manual": [],
+            "computed_at": "2026-05-12T06:44:17.634014+00:00"
+          },
+          "gap_basis": {
+            "recipe_title": "葱油拌面",
+            "r_fingerprint": "d9b8a7b69521afb22192eaad",
+            "inventory_fingerprint": "aa6a5c9fdd4ec008e641e672"
+          },
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "shopping_list": [
+            {
+              "name": "干面条",
+              "amount": 80.0,
+              "unit": "g"
+            },
+            {
+              "name": "小葱",
+              "amount": 100.0,
+              "unit": "g"
+            },
+            {
+              "name": "食用油",
+              "amount": 100.0,
+              "unit": "ml"
+            },
+            {
+              "name": "生抽",
+              "amount": 60.0,
+              "unit": "ml"
+            },
+            {
+              "name": "老抽",
+              "amount": 20.0,
+              "unit": "ml"
+            },
+            {
+              "name": "白糖",
+              "amount": 15.0,
+              "unit": "g"
+            }
+          ],
+          "sufficient_items": [],
+          "missing_items": [
+            {
+              "name": "干面条",
+              "amount": 80.0,
+              "unit": "g"
+            },
+            {
+              "name": "小葱",
+              "amount": 100.0,
+              "unit": "g"
+            },
+            {
+              "name": "食用油",
+              "amount": 100.0,
+              "unit": "ml"
+            },
+            {
+              "name": "生抽",
+              "amount": 60.0,
+              "unit": "ml"
+            },
+            {
+              "name": "老抽",
+              "amount": 20.0,
+              "unit": "ml"
+            },
+            {
+              "name": "白糖",
+              "amount": 15.0,
+              "unit": "g"
+            }
+          ],
+          "gap_delivery_mode": "fresh",
+          "effective_constraint": {
+            "scope_id": "default_user",
+            "hard_exclusions": [
+              "芒果"
+            ],
+            "soft_negative_hints": [
+              "某种香料"
+            ],
+            "soft_positive_hints": [],
+            "dietary_target": "低卡/低碳水",
+            "temporal_conditions": [
+              "想吃重庆火锅级别的辣",
+              "极清淡少油少纤维",
+              "偏好偏咸",
+              "感冒嗓子疼",
+              "肠胃不适"
+            ],
+            "summary_snippet": null
+          },
+          "slots": {
+            "recipe_name": "葱油拌面"
+          },
+          "error_state": {
+            "error_code": null,
+            "recoverable": true,
+            "error_detail": null
+          }
+        },
+        "inventory_state": {
+          "inventory_snapshot": {
+            "五花肉": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "排骨": {
+              "amount": 250.0,
+              "unit": "g"
+            },
+            "牛筋": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "胡萝卜": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "苦瓜": {
+              "amount": 2.0,
+              "unit": "根"
+            },
+            "西红柿": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "豆腐": {
+              "amount": 1.0,
+              "unit": "块"
+            },
+            "饼干": {
+              "amount": 1.0,
+              "unit": "盒"
+            },
+            "鸡胸肉": {
+              "amount": 1.0,
+              "unit": "个"
+            }
+          },
+          "cached_shopping_gap": {
+            "shopping_list": [
+              {
+                "name": "干面条",
+                "amount": 80.0,
+                "unit": "g"
+              },
+              {
+                "name": "小葱",
+                "amount": 100.0,
+                "unit": "g"
+              },
+              {
+                "name": "食用油",
+                "amount": 100.0,
+                "unit": "ml"
+              },
+              {
+                "name": "生抽",
+                "amount": 60.0,
+                "unit": "ml"
+              },
+              {
+                "name": "老抽",
+                "amount": 20.0,
+                "unit": "ml"
+              },
+              {
+                "name": "白糖",
+                "amount": 15.0,
+                "unit": "g"
+              }
+            ],
+            "sufficient_items": [],
+            "missing_items": [
+              {
+                "name": "干面条",
+                "amount": 80.0,
+                "unit": "g"
+              },
+              {
+                "name": "小葱",
+                "amount": 100.0,
+                "unit": "g"
+              },
+              {
+                "name": "食用油",
+                "amount": 100.0,
+                "unit": "ml"
+              },
+              {
+                "name": "生抽",
+                "amount": 60.0,
+                "unit": "ml"
+              },
+              {
+                "name": "老抽",
+                "amount": 20.0,
+                "unit": "ml"
+              },
+              {
+                "name": "白糖",
+                "amount": 15.0,
+                "unit": "g"
+              }
+            ],
+            "pending_manual": [],
+            "computed_at": "2026-05-12T06:44:17.634014+00:00"
+          },
+          "gap_basis": {
+            "recipe_title": "葱油拌面",
+            "r_fingerprint": "d9b8a7b69521afb22192eaad",
+            "inventory_fingerprint": "aa6a5c9fdd4ec008e641e672"
+          },
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "gap_delivery_mode": "fresh",
+          "shopping_list": [
+            {
+              "name": "干面条",
+              "amount": 80.0,
+              "unit": "g"
+            },
+            {
+              "name": "小葱",
+              "amount": 100.0,
+              "unit": "g"
+            },
+            {
+              "name": "食用油",
+              "amount": 100.0,
+              "unit": "ml"
+            },
+            {
+              "name": "生抽",
+              "amount": 60.0,
+              "unit": "ml"
+            },
+            {
+              "name": "老抽",
+              "amount": 20.0,
+              "unit": "ml"
+            },
+            {
+              "name": "白糖",
+              "amount": 15.0,
+              "unit": "g"
+            }
+          ],
+          "sufficient_items": [],
+          "missing_items": [
+            {
+              "name": "干面条",
+              "amount": 80.0,
+              "unit": "g"
+            },
+            {
+              "name": "小葱",
+              "amount": 100.0,
+              "unit": "g"
+            },
+            {
+              "name": "食用油",
+              "amount": 100.0,
+              "unit": "ml"
+            },
+            {
+              "name": "生抽",
+              "amount": 60.0,
+              "unit": "ml"
+            },
+            {
+              "name": "老抽",
+              "amount": 20.0,
+              "unit": "ml"
+            },
+            {
+              "name": "白糖",
+              "amount": 15.0,
+              "unit": "g"
+            }
+          ]
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [
+            "五花肉",
+            "排骨",
+            "牛筋",
+            "胡萝卜",
+            "苦瓜",
+            "西红柿",
+            "豆腐",
+            "饼干",
+            "鸡胸肉"
+          ],
+          "cached_shopping_gap_present": true,
+          "gap_basis": {
+            "recipe_title": "葱油拌面",
+            "r_fingerprint": "d9b8a7b69521afb22192eaad",
+            "inventory_fingerprint": "aa6a5c9fdd4ec008e641e672"
+          },
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {
+          "error_code": null,
+          "recoverable": true,
+          "error_detail": null
+        },
+        "expert_payloads": {
+          "recipe_detail": {
+            "title": "葱油拌面",
+            "ingredients": [
+              {
+                "name": "干面条",
+                "amount": 80.0,
+                "unit": "g"
+              },
+              {
+                "name": "小葱",
+                "amount": 100.0,
+                "unit": "g"
+              },
+              {
+                "name": "食用油",
+                "amount": 100.0,
+                "unit": "ml"
+              },
+              {
+                "name": "生抽",
+                "amount": 60.0,
+                "unit": "ml"
+              },
+              {
+                "name": "老抽",
+                "amount": 20.0,
+                "unit": "ml"
+              },
+              {
+                "name": "白糖",
+                "amount": 15.0,
+                "unit": "g"
+              }
+            ],
+            "steps": [
+              "将小葱洗净，切成长段（约5-7cm）。葱白和葱绿可以分开。",
+              "锅中加入100ml食用油，中火烧热。先放入葱白段，煸炒至微黄。",
+              "加入葱绿段，转小火，继续煸炒。",
+              "保持小火，耐心煸炒约15-20分钟，直至葱段变得焦黄酥脆。",
+              "将焦黄的葱段捞出（葱油保留在锅中）。",
+              "在锅中的葱油中，加入60ml生抽，20ml老抽，15g白糖。小火加热并搅拌，约1分钟，至糖溶解，酱汁混合均匀。立即关火。将制作好的葱油酱汁倒入容器中，放凉后密封保存。",
+              "取80g干面条。",
+              "锅中加入1000ml饮用水，大火烧开。",
+              "放入面条，根据面条包装说明，煮至熟透（通常3-8分钟，以包装说明为准）。",
+              "将煮好的面条捞出，沥干水分，放入碗中。",
+              "在装有面条的碗中，加入15ml之前做好的葱油酱汁。",
+              "可以用筷子快速搅拌均匀，即可食用。"
+            ]
+          },
+          "status": "success"
+        },
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "这几道面食我都看了碳水有点高还在纠结"
+          },
+          {
+            "type": "ai",
+            "content": "抱歉，我没有找到合适的菜谱，请换个关键词再试试？"
+          },
+          {
+            "type": "ai",
+            "content": "没关系的！如果你在寻找碳水化合物含量较低的面食选择，可以考虑一些替代性的食材，比如用蔬菜面条（如西葫芦面条或胡萝卜面条）来代替传统的面粉面条。另外，也可以尝试全麦或者杂粮制作的面食，这样不仅能够降低碳水化合物的比例，还能增加膳食纤维哦。如果需要具体的低卡面食做法或者其他健康饮食建议，随时告诉我呀！"
+          },
+          {
+            "type": "human",
+            "content": "我想通了，今晚主食就用葱油拌面，帮我找这道菜"
+          },
+          {
+            "type": "ai",
+            "content": "以下为「葱油拌面」的用料清单（来自本地菜谱解析）：\n\n  · 干面条：80 g\n  · 小葱：100 g\n  · 食用油：100 ml\n  · 生抽：60 ml\n  · 老抽：20 ml\n  · 白糖：15 g\n\n以下为「葱油拌面」的烹饪步骤（来自本地菜谱解析）：\n\n  · 将小葱洗净，切成长段（约5-7cm）。葱白和葱绿可以分开。\n  · 锅中加入100ml食用油，中火烧热。先放入葱白段，煸炒至微黄。\n  · 加入葱绿段，转小火，继续煸炒。\n  · 保持小火，耐心煸炒约15-20分钟，直至葱段变得焦黄酥脆。\n  · 将焦黄的葱段捞出（葱油保留在锅中）。\n  · 在锅中的葱油中，加入60ml生抽，20ml老抽，15g白糖。小火加热并搅拌，约1分钟，至糖溶解，酱汁混合均匀。立即关火。将制作好的葱油酱汁倒入容器中，放凉后密封保存。\n  · 取80g干面条。\n  · 锅中加入1000ml饮用水，大火烧开。\n  · 放入面条，根据面条包装说明，煮至熟透（通常3-8分钟，以包装说明为准）。\n  · 将煮好的面条捞出，沥干水分，放入碗中。\n  · 在装有面条的碗中，加入15ml之前做好的葱油酱汁。\n  · 可以用筷子快速搅拌均匀，即可食用。"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [
+            "get_recipe_source",
+            "parse_recipe_content"
+          ],
+          "inferred_total": 2
+        },
+        "wall_time_ms": 42683.85070000113,
+        "user_input": "我想通了，今晚主食就用葱油拌面，帮我找这道菜"
+      },
+      "assistant_reply": "以下为「葱油拌面」的用料清单（来自本地菜谱解析）：\n\n  · 干面条：80 g\n  · 小葱：100 g\n  · 食用油：100 ml\n  · 生抽：60 ml\n  · 老抽：20 ml\n  · 白糖：15 g\n\n以下为「葱油拌面」的烹饪步骤（来自本地菜谱解析）：\n\n  · 将小葱洗净，切成长段（约5-7cm）。葱白和葱绿可以分开。\n  · 锅中加入100ml食用油，中火烧热。先放入葱白段，煸炒至微黄。\n  · 加入葱绿段，转小火，继续煸炒。\n  · 保持小火，耐心煸炒约15-20分钟，直至葱段变得焦黄酥脆。\n  · 将焦黄的葱段捞出（葱油保留在锅中）。\n  · 在锅中的葱油中，加入60ml生抽，20ml老抽，15g白糖。小火加热并搅拌，约1分钟，至糖溶解，酱汁混合均匀。立即关火。将制作好的葱油酱汁倒入容器中，放凉后密封保存。\n  · 取80g干面条。\n  · 锅中加入1000ml饮用水，大火烧开。\n  · 放入面条，根据面条包装说明，煮至熟透（通常3-8分钟，以包装说明为准）。\n  · 将煮好的面条捞出，沥干水分，放入碗中。\n  · 在装有面条的碗中，加入15ml之前做好的葱油酱汁。\n  · 可以用筷子快速搅拌均匀，即可食用。"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 61361.74840000058,
+    "turn_count": 2
+  }
+}

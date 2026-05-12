@@ -1,0 +1,335 @@
+{
+  "case_id": "multi_turn_006",
+  "source_file": "recipe_search.json",
+  "fixture": {
+    "case_id": "multi_turn_006",
+    "scenario_category": "multi_turn",
+    "difficulty": "hard",
+    "description": "首轮声明忌口后轮继续检索，上下文应体现在检索约束",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "我不吃羊肉和膻味重的肉类，记住了"
+      },
+      {
+        "turn": 2,
+        "input": "帮我推荐一道暖身的炖菜菜谱作为晚餐"
+      }
+    ],
+    "expected": {
+      "primary_intent": "recipe_search",
+      "intents": [
+        "recipe_search",
+        "profile_sync"
+      ],
+      "needs_clarification": false,
+      "key_slots": {
+        "recipe_query": "暖身炖菜",
+        "ingredients": []
+      },
+      "golden_recipe_ids": [
+        "recipe_id_广式萝卜牛腩",
+        "recipe_id_西红柿土豆炖牛肉",
+        "recipe_id_鲤鱼炖白菜",
+        "recipe_id_鳊鱼炖豆腐"
+      ],
+      "output_contains": [
+        "炖",
+        "牛腩"
+      ],
+      "output_excludes": [
+        "羊肉",
+        "羊骨"
+      ],
+      "context_preserved": [
+        "不吃羊肉",
+        "忌膻味"
+      ],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": [
+      "S-05"
+    ]
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:multi_turn_006",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "我不吃羊肉和膻味重的肉类，记住了",
+      "wall_time_ms": 10527.1238000023,
+      "snapshot": {
+        "final_response": "好的，我已记录您的饮食偏好，以后推荐菜谱时会注意。",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "profile_sync",
+        "intents": [
+          "profile_sync"
+        ],
+        "confidence": 0.98,
+        "needs_clarification": false,
+        "slots": {
+          "profile_fragments": [
+            "不吃羊肉",
+            "不吃膻味重的肉类"
+          ],
+          "target_member": "default_user",
+          "profile_explicit": true
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "profile_sync",
+          "secondary_intents": [],
+          "intents": [
+            "profile_sync"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 1,
+          "slots": {
+            "profile_fragments": [
+              "不吃羊肉",
+              "不吃膻味重的肉类"
+            ],
+            "target_member": "default_user",
+            "profile_explicit": true
+          },
+          "missing_slots": [],
+          "confidence": 0.98,
+          "extracted_entities": {
+            "preferences": [
+              "不吃羊肉",
+              "不吃膻味重的肉类"
+            ]
+          },
+          "router_reasoning": "用户表达了对羊肉和膻味重的肉类的忌口，并要求记住这一信息，属于 profile_sync。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {
+            "preferences": [
+              "不吃羊肉",
+              "不吃膻味重的肉类"
+            ]
+          },
+          "router_reasoning": "用户表达了对羊肉和膻味重的肉类的忌口，并要求记住这一信息，属于 profile_sync。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "short_term_constraints": [
+            "医嘱/自我约束：忌口需遵守"
+          ],
+          "slots": {
+            "profile_fragments": [
+              "不吃羊肉",
+              "不吃膻味重的肉类"
+            ],
+            "target_member": "default_user",
+            "profile_explicit": true
+          },
+          "error_state": {}
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [
+            "医嘱/自我约束：忌口需遵守"
+          ],
+          "conversation_summary_len": 0
+        },
+        "error_state": {},
+        "expert_payloads": {},
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "我不吃羊肉和膻味重的肉类，记住了"
+          },
+          {
+            "type": "ai",
+            "content": "好的，我已记录您的饮食偏好，以后推荐菜谱时会注意。"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [],
+          "inferred_total": 0
+        },
+        "wall_time_ms": 10527.1238000023,
+        "user_input": "我不吃羊肉和膻味重的肉类，记住了"
+      },
+      "assistant_reply": "好的，我已记录您的饮食偏好，以后推荐菜谱时会注意。"
+    },
+    {
+      "turn": 2,
+      "input": "帮我推荐一道暖身的炖菜菜谱作为晚餐",
+      "wall_time_ms": 6569.290100000217,
+      "snapshot": {
+        "final_response": "抱歉，我没有找到合适的菜谱，请换个关键词再试试？",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "recipe_search",
+        "intents": [
+          "recipe_search"
+        ],
+        "confidence": 0.8,
+        "needs_clarification": true,
+        "slots": {
+          "recipe_query": "暖身的炖菜"
+        },
+        "missing_slots": [
+          "recipe_search_anchor"
+        ],
+        "control_state": {
+          "primary_intent": "recipe_search",
+          "secondary_intents": [],
+          "intents": [
+            "recipe_search"
+          ],
+          "task_stack": [
+            "TASK_CLARIFY"
+          ],
+          "current_task": null,
+          "needs_clarification": true,
+          "loop_guard_count": 1,
+          "slots": {
+            "recipe_query": "暖身的炖菜"
+          },
+          "missing_slots": [
+            "recipe_search_anchor"
+          ],
+          "confidence": 0.8,
+          "extracted_entities": {},
+          "router_reasoning": "用户请求推荐一道暖身的炖菜作为晚餐，属于recipe_search意图。用户没有提供具体的菜名或食材，但给出了菜品类型和用餐时间。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {},
+          "router_reasoning": "用户请求推荐一道暖身的炖菜作为晚餐，属于recipe_search意图。用户没有提供具体的菜名或食材，但给出了菜品类型和用餐时间。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "short_term_constraints": [
+            "医嘱/自我约束：忌口需遵守"
+          ],
+          "slots": {
+            "recipe_query": "暖身的炖菜"
+          },
+          "error_state": {}
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [
+            "医嘱/自我约束：忌口需遵守"
+          ],
+          "conversation_summary_len": 0
+        },
+        "error_state": {},
+        "expert_payloads": {},
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "我不吃羊肉和膻味重的肉类，记住了"
+          },
+          {
+            "type": "ai",
+            "content": "好的，我已记录您的饮食偏好，以后推荐菜谱时会注意。"
+          },
+          {
+            "type": "human",
+            "content": "帮我推荐一道暖身的炖菜菜谱作为晚餐"
+          },
+          {
+            "type": "ai",
+            "content": "抱歉，我没有找到合适的菜谱，请换个关键词再试试？"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [],
+          "inferred_total": 0
+        },
+        "wall_time_ms": 6569.290100000217,
+        "user_input": "帮我推荐一道暖身的炖菜菜谱作为晚餐"
+      },
+      "assistant_reply": "抱歉，我没有找到合适的菜谱，请换个关键词再试试？"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 17096.413900002517,
+    "turn_count": 2
+  }
+}

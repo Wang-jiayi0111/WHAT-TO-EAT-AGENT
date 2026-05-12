@@ -1,0 +1,278 @@
+{
+  "case_id": "inventory_014",
+  "source_file": "inventory_add.json",
+  "fixture": {
+    "case_id": "inventory_014",
+    "scenario_category": "inventory",
+    "difficulty": "easy",
+    "description": "散装称重口语转化为 restock_items",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "菜场买了三百克五花肉入库"
+      }
+    ],
+    "expected": {
+      "primary_intent": "inventory_add",
+      "intents": [
+        "inventory_add"
+      ],
+      "needs_clarification": false,
+      "key_slots": {
+        "restock_items": [
+          {
+            "name": "五花肉",
+            "amount": 300,
+            "unit": "g",
+            "merge_mode": "add"
+          }
+        ]
+      },
+      "golden_recipe_ids": [],
+      "output_contains": [
+        "五花肉"
+      ],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "auto",
+    "linked_scenarios": [
+      "S-03",
+      "S-04"
+    ]
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:inventory_014",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "菜场买了三百克五花肉入库",
+      "wall_time_ms": 8694.918699999107,
+      "snapshot": {
+        "final_response": "没能从您的话里确定买了哪些食材、各多少量（需带单位）。请再说具体一点，例如「买了鸡蛋 12 个」。",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "inventory_add",
+        "intents": [
+          "inventory_add"
+        ],
+        "confidence": 0.95,
+        "needs_clarification": false,
+        "slots": {
+          "restock_items": [
+            "{\"name\": \"五花肉\", \"amount\": 300, \"unit\": \"克\"}"
+          ]
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "inventory_add",
+          "secondary_intents": [],
+          "intents": [
+            "inventory_add"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 1,
+          "slots": {
+            "restock_items": [
+              "{\"name\": \"五花肉\", \"amount\": 300, \"unit\": \"克\"}"
+            ]
+          },
+          "missing_slots": [],
+          "confidence": 0.95,
+          "extracted_entities": {},
+          "router_reasoning": "用户购买了五花肉并希望将其入库，属于inventory_add意图。用户提供了明确的食材和数量信息。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {},
+          "router_reasoning": "用户购买了五花肉并希望将其入库，属于inventory_add意图。用户提供了明确的食材和数量信息。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {
+            "五花肉": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "排骨": {
+              "amount": 250.0,
+              "unit": "g"
+            },
+            "牛筋": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "胡萝卜": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "苦瓜": {
+              "amount": 2.0,
+              "unit": "根"
+            },
+            "西红柿": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "豆腐": {
+              "amount": 1.0,
+              "unit": "块"
+            },
+            "饼干": {
+              "amount": 1.0,
+              "unit": "盒"
+            },
+            "鸡胸肉": {
+              "amount": 1.0,
+              "unit": "个"
+            }
+          },
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": {
+            "items": [],
+            "unresolved": [
+              "{\"name\": \"五花肉\", \"amount\": 300, \"unit\": \"克\"}"
+            ],
+            "source": "utterance"
+          },
+          "add_status": "failed",
+          "add_failed_items": [],
+          "add_succeeded_items": [],
+          "slots": {
+            "restock_items": [
+              "{\"name\": \"五花肉\", \"amount\": 300, \"unit\": \"克\"}"
+            ]
+          },
+          "error_state": {
+            "error_code": "INVENTORY_ADD_UNPARSED",
+            "recoverable": true,
+            "error_detail": "补货意图下食材/数量/单位无法稳定解析"
+          }
+        },
+        "inventory_state": {
+          "inventory_snapshot": {
+            "五花肉": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "排骨": {
+              "amount": 250.0,
+              "unit": "g"
+            },
+            "牛筋": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "胡萝卜": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "苦瓜": {
+              "amount": 2.0,
+              "unit": "根"
+            },
+            "西红柿": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "豆腐": {
+              "amount": 1.0,
+              "unit": "块"
+            },
+            "饼干": {
+              "amount": 1.0,
+              "unit": "盒"
+            },
+            "鸡胸肉": {
+              "amount": 1.0,
+              "unit": "个"
+            }
+          },
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": {
+            "items": [],
+            "unresolved": [
+              "{\"name\": \"五花肉\", \"amount\": 300, \"unit\": \"克\"}"
+            ],
+            "source": "utterance"
+          },
+          "add_status": "failed",
+          "add_failed_items": [],
+          "add_succeeded_items": []
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [
+            "五花肉",
+            "排骨",
+            "牛筋",
+            "胡萝卜",
+            "苦瓜",
+            "西红柿",
+            "豆腐",
+            "饼干",
+            "鸡胸肉"
+          ],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {
+          "error_code": "INVENTORY_ADD_UNPARSED",
+          "recoverable": true,
+          "error_detail": "补货意图下食材/数量/单位无法稳定解析"
+        },
+        "expert_payloads": {},
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "菜场买了三百克五花肉入库"
+          },
+          {
+            "type": "ai",
+            "content": "没能从您的话里确定买了哪些食材、各多少量（需带单位）。请再说具体一点，例如「买了鸡蛋 12 个」。"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [],
+          "inferred_total": 0
+        },
+        "wall_time_ms": 8694.918699999107,
+        "user_input": "菜场买了三百克五花肉入库"
+      },
+      "assistant_reply": "没能从您的话里确定买了哪些食材、各多少量（需带单位）。请再说具体一点，例如「买了鸡蛋 12 个」。"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 8694.918699999107,
+    "turn_count": 1
+  }
+}

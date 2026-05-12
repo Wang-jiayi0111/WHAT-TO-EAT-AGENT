@@ -1,0 +1,327 @@
+{
+  "case_id": "multi_turn_023",
+  "source_file": "dietary_advice.json",
+  "fixture": {
+    "case_id": "multi_turn_023",
+    "scenario_category": "multi_turn",
+    "difficulty": "hard",
+    "description": "前轮声明过敏后轮追问交叉食材风险",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "我对花生严重过敏，帮我记住"
+      },
+      {
+        "turn": 2,
+        "input": "那酱油和调和油里会不会也有花生成分我需要担心吗"
+      }
+    ],
+    "expected": {
+      "primary_intent": "dietary_advice",
+      "intents": [
+        "dietary_advice",
+        "profile_sync"
+      ],
+      "needs_clarification": false,
+      "key_slots": {
+        "diet_topic": "加工调味品过敏原交叉",
+        "ingredients": [
+          "酱油",
+          "调和油"
+        ]
+      },
+      "golden_recipe_ids": [],
+      "output_contains": [
+        "花生",
+        "标签"
+      ],
+      "output_excludes": [],
+      "context_preserved": [
+        "花生过敏"
+      ],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": [
+      "S-05"
+    ]
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:multi_turn_023",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "我对花生严重过敏，帮我记住",
+      "wall_time_ms": 12144.674999999552,
+      "snapshot": {
+        "final_response": "好的，我已记录您的饮食偏好，以后推荐菜谱时会注意。",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "profile_sync",
+        "intents": [
+          "profile_sync"
+        ],
+        "confidence": 0.98,
+        "needs_clarification": false,
+        "slots": {
+          "profile_fragments": [
+            "对花生严重过敏"
+          ],
+          "target_member": "default_user",
+          "profile_explicit": true
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "profile_sync",
+          "secondary_intents": [],
+          "intents": [
+            "profile_sync"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 1,
+          "slots": {
+            "profile_fragments": [
+              "对花生严重过敏"
+            ],
+            "target_member": "default_user",
+            "profile_explicit": true
+          },
+          "missing_slots": [],
+          "confidence": 0.98,
+          "extracted_entities": {
+            "preferences": [
+              "对花生严重过敏"
+            ]
+          },
+          "router_reasoning": "用户声明对花生严重过敏，并要求系统记住这一信息，属于profile_sync意图。用户的请求明确，直接提供需要记住的信息。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {
+            "preferences": [
+              "对花生严重过敏"
+            ]
+          },
+          "router_reasoning": "用户声明对花生严重过敏，并要求系统记住这一信息，属于profile_sync意图。用户的请求明确，直接提供需要记住的信息。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "short_term_constraints": [
+            "安全：过敏相关表述需结合画像核对"
+          ],
+          "slots": {
+            "profile_fragments": [
+              "对花生严重过敏"
+            ],
+            "target_member": "default_user",
+            "profile_explicit": true
+          },
+          "error_state": {}
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [
+            "安全：过敏相关表述需结合画像核对"
+          ],
+          "conversation_summary_len": 0
+        },
+        "error_state": {},
+        "expert_payloads": {},
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "我对花生严重过敏，帮我记住"
+          },
+          {
+            "type": "ai",
+            "content": "好的，我已记录您的饮食偏好，以后推荐菜谱时会注意。"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [],
+          "inferred_total": 0
+        },
+        "wall_time_ms": 12144.674999999552,
+        "user_input": "我对花生严重过敏，帮我记住"
+      },
+      "assistant_reply": "好的，我已记录您的饮食偏好，以后推荐菜谱时会注意。"
+    },
+    {
+      "turn": 2,
+      "input": "那酱油和调和油里会不会也有花生成分我需要担心吗",
+      "wall_time_ms": 13291.533999999956,
+      "snapshot": {
+        "final_response": "您提到的确实是个需要注意的问题。有些酱油或调和油可能含有花生成分，或者在生产过程中与花生制品共用设备，导致交叉污染。因此，在购买时，请仔细查看产品的成分表及过敏原信息。如果不确定，最好选择明确标注“不含花生”的产品，或是直接联系生产厂家确认。这样可以更安全地避免过敏反应。希望这些建议对您有所帮助！",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "dietary_advice",
+        "intents": [
+          "dietary_advice"
+        ],
+        "confidence": 0.85,
+        "needs_clarification": false,
+        "slots": {
+          "profile_fragments": [
+            "花生过敏"
+          ],
+          "diet_topic": "花生成分"
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "dietary_advice",
+          "secondary_intents": [],
+          "intents": [
+            "dietary_advice"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 2,
+          "slots": {
+            "profile_fragments": [
+              "花生过敏"
+            ],
+            "diet_topic": "花生成分"
+          },
+          "missing_slots": [],
+          "confidence": 0.85,
+          "extracted_entities": {},
+          "router_reasoning": "用户询问关于花生成分的问题，涉及到饮食偏好和过敏信息。这属于dietary_advice类别，因为用户在询问有关健康和营养的信息，并且之前已经记录了对花生的过敏情况。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {},
+          "router_reasoning": "用户询问关于花生成分的问题，涉及到饮食偏好和过敏信息。这属于dietary_advice类别，因为用户在询问有关健康和营养的信息，并且之前已经记录了对花生的过敏情况。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "short_term_constraints": [
+            "安全：过敏相关表述需结合画像核对"
+          ],
+          "slots": {
+            "profile_fragments": [
+              "花生过敏"
+            ],
+            "diet_topic": "花生成分"
+          },
+          "error_state": {}
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [
+            "安全：过敏相关表述需结合画像核对"
+          ],
+          "conversation_summary_len": 0
+        },
+        "error_state": {},
+        "expert_payloads": {},
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "我对花生严重过敏，帮我记住"
+          },
+          {
+            "type": "ai",
+            "content": "好的，我已记录您的饮食偏好，以后推荐菜谱时会注意。"
+          },
+          {
+            "type": "human",
+            "content": "那酱油和调和油里会不会也有花生成分我需要担心吗"
+          },
+          {
+            "type": "ai",
+            "content": "您提到的确实是个需要注意的问题。有些酱油或调和油可能含有花生成分，或者在生产过程中与花生制品共用设备，导致交叉污染。因此，在购买时，请仔细查看产品的成分表及过敏原信息。如果不确定，最好选择明确标注“不含花生”的产品，或是直接联系生产厂家确认。这样可以更安全地避免过敏反应。希望这些建议对您有所帮助！"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [],
+          "inferred_total": 0
+        },
+        "wall_time_ms": 13291.533999999956,
+        "user_input": "那酱油和调和油里会不会也有花生成分我需要担心吗"
+      },
+      "assistant_reply": "您提到的确实是个需要注意的问题。有些酱油或调和油可能含有花生成分，或者在生产过程中与花生制品共用设备，导致交叉污染。因此，在购买时，请仔细查看产品的成分表及过敏原信息。如果不确定，最好选择明确标注“不含花生”的产品，或是直接联系生产厂家确认。这样可以更安全地避免过敏反应。希望这些建议对您有所帮助！"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 25436.208999999508,
+    "turn_count": 2
+  }
+}

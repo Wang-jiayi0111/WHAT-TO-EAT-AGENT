@@ -1,0 +1,318 @@
+{
+  "case_id": "ambiguity_004",
+  "source_file": "recipe_search.json",
+  "fixture": {
+    "case_id": "ambiguity_004",
+    "scenario_category": "ambiguity",
+    "difficulty": "hard",
+    "description": "指代不明的网红菜需澄清候选或追问",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "来个网上很火的那个茄子做法"
+      }
+    ],
+    "expected": {
+      "primary_intent": "recipe_search",
+      "intents": [
+        "recipe_search"
+      ],
+      "needs_clarification": true,
+      "key_slots": {
+        "recipe_query": "网红茄子"
+      },
+      "golden_recipe_ids": [
+        "recipe_id_鱼香茄子"
+      ],
+      "output_contains": [
+        "哪",
+        "茄子"
+      ],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": true
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": [
+      "S-06"
+    ]
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:ambiguity_004",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "来个网上很火的那个茄子做法",
+      "wall_time_ms": 16902.185499999177,
+      "snapshot": {
+        "final_response": "我找到了以下几个相关菜谱（按检索相关性排序），请问您想做哪一个？\n\n  1. 烤茄子\n  2. 鱼香茄子\n  3. 炒茄子\n  4. 红烧茄子\n  5. 茄子炖土豆\n  6. 蒲烧茄子\n\n请回复序号数字（如 1）或菜名即可。",
+        "task_stack": [
+          "TASK_CLARIFY"
+        ],
+        "current_task": null,
+        "primary_intent": "recipe_search",
+        "intents": [
+          "recipe_search"
+        ],
+        "confidence": 0.85,
+        "needs_clarification": false,
+        "slots": {
+          "ingredients": [
+            "茄子"
+          ]
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "recipe_search",
+          "secondary_intents": [],
+          "intents": [
+            "recipe_search"
+          ],
+          "task_stack": [
+            "TASK_SEARCH"
+          ],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 0,
+          "slots": {
+            "ingredients": [
+              "茄子"
+            ]
+          },
+          "missing_slots": [],
+          "confidence": 0.85,
+          "extracted_entities": {
+            "ingredients": [
+              "茄子"
+            ]
+          },
+          "router_reasoning": "用户请求一个网上很火的茄子做法，属于菜谱搜索意图。用户没有提供具体的菜名，但给出了食材（茄子）作为搜索锚点。",
+          "pending_tasks": [],
+          "clarification_kind": "recipe_pick"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [
+            {
+              "title": "烤茄子"
+            },
+            {
+              "title": "鱼香茄子"
+            },
+            {
+              "title": "炒茄子"
+            },
+            {
+              "title": "红烧茄子"
+            },
+            {
+              "title": "茄子炖土豆"
+            },
+            {
+              "title": "蒲烧茄子"
+            }
+          ],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {
+            "ingredients": [
+              "茄子"
+            ]
+          },
+          "router_reasoning": "用户请求一个网上很火的茄子做法，属于菜谱搜索意图。用户没有提供具体的菜名，但给出了食材（茄子）作为搜索锚点。",
+          "pending_tasks": [],
+          "clarification_kind": "recipe_pick",
+          "recipe_candidates": [
+            "烤茄子",
+            "鱼香茄子",
+            "炒茄子",
+            "红烧茄子",
+            "茄子炖土豆",
+            "蒲烧茄子"
+          ],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "effective_constraint": {
+            "scope_id": "default_user",
+            "hard_exclusions": [
+              "芒果"
+            ],
+            "soft_negative_hints": [
+              "某种香料",
+              "刺多的鱼"
+            ],
+            "soft_positive_hints": [],
+            "dietary_target": "低卡/低碳水",
+            "temporal_conditions": [
+              "暂时放弃低碳水目标",
+              "想吃重庆火锅级别的辣",
+              "极清淡少油少纤维",
+              "偏好偏咸",
+              "感冒嗓子疼",
+              "肠胃不适"
+            ],
+            "summary_snippet": null
+          },
+          "slots": {
+            "ingredients": [
+              "茄子"
+            ]
+          },
+          "error_state": {
+            "error_code": null,
+            "recoverable": true,
+            "error_detail": null
+          }
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {
+          "error_code": null,
+          "recoverable": true,
+          "error_detail": null
+        },
+        "expert_payloads": {
+          "search_results": [
+            {
+              "id": "combined_495035",
+              "title": "烤茄子",
+              "score": 0.4673521373566775
+            },
+            {
+              "id": "combined_876716",
+              "title": "鱼香茄子",
+              "score": 0.4561123566372952
+            },
+            {
+              "id": "combined_81826",
+              "title": "炒茄子",
+              "score": 0.45452417942759155
+            },
+            {
+              "id": "combined_631006",
+              "title": "红烧茄子",
+              "score": 0.4532638249495329
+            },
+            {
+              "id": "combined_459353",
+              "title": "炒茄子",
+              "score": 0.44627775234922745
+            },
+            {
+              "id": "combined_924078",
+              "title": "炒茄子",
+              "score": 0.4457001752621769
+            },
+            {
+              "id": "combined_762014",
+              "title": "茄子炖土豆",
+              "score": 0.4445565790793585
+            },
+            {
+              "id": "combined_397560",
+              "title": "鱼香茄子",
+              "score": 0.4440021111180003
+            },
+            {
+              "id": "combined_654271",
+              "title": "蒲烧茄子",
+              "score": 0.44246771881645675
+            },
+            {
+              "id": "combined_505269",
+              "title": "烤茄子",
+              "score": 0.4414116436171286
+            },
+            {
+              "id": "combined_296057",
+              "title": "鱼香茄子",
+              "score": 0.4389721547690057
+            },
+            {
+              "id": "combined_642619",
+              "title": "红烧茄子",
+              "score": 0.4367641658580887
+            },
+            {
+              "id": "combined_164699",
+              "title": "蒲烧茄子",
+              "score": 0.4354157080351681
+            },
+            {
+              "id": "combined_111308",
+              "title": "茄子炖土豆",
+              "score": 0.43209997242725584
+            },
+            {
+              "id": "combined_910286",
+              "title": "蒲烧茄子",
+              "score": 0.4271134696322701
+            }
+          ],
+          "status": "ambiguous",
+          "ambiguity_candidate_count": 6
+        },
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "来个网上很火的那个茄子做法"
+          },
+          {
+            "type": "ai",
+            "content": "我找到了以下几个相关菜谱（按检索相关性排序），请问您想做哪一个？\n\n  1. 烤茄子\n  2. 鱼香茄子\n  3. 炒茄子\n  4. 红烧茄子\n  5. 茄子炖土豆\n  6. 蒲烧茄子\n\n请回复序号数字（如 1）或菜名即可。"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [
+            "search_recipes"
+          ],
+          "inferred_total": 1
+        },
+        "wall_time_ms": 16902.185499999177,
+        "user_input": "来个网上很火的那个茄子做法"
+      },
+      "assistant_reply": "我找到了以下几个相关菜谱（按检索相关性排序），请问您想做哪一个？\n\n  1. 烤茄子\n  2. 鱼香茄子\n  3. 炒茄子\n  4. 红烧茄子\n  5. 茄子炖土豆\n  6. 蒲烧茄子\n\n请回复序号数字（如 1）或菜名即可。"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 16902.185499999177,
+    "turn_count": 1
+  }
+}

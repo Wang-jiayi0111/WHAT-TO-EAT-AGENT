@@ -1,0 +1,187 @@
+{
+  "case_id": "edge_case_036",
+  "source_file": "inventory_commit.json",
+  "fixture": {
+    "case_id": "edge_case_036",
+    "scenario_category": "edge_case",
+    "difficulty": "hard",
+    "description": "未采纳菜谱时强制扣减应被守卫拦截或澄清",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "直接把土豆库存扣一半"
+      }
+    ],
+    "expected": {
+      "primary_intent": "inventory_commit",
+      "intents": [
+        "inventory_commit"
+      ],
+      "needs_clarification": true,
+      "key_slots": {
+        "recipe_name_for_commit": null
+      },
+      "golden_recipe_ids": [],
+      "output_contains": [
+        "菜谱",
+        "确认"
+      ],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": true
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": []
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:edge_case_036",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "直接把土豆库存扣一半",
+      "wall_time_ms": 7136.359699999957,
+      "snapshot": {
+        "final_response": "抱歉，我没有找到合适的菜谱，请换个关键词再试试？",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "inventory_commit",
+        "intents": [
+          "inventory_commit"
+        ],
+        "confidence": 0.75,
+        "needs_clarification": true,
+        "slots": {
+          "ingredients": [
+            "土豆"
+          ],
+          "recipe_name_for_commit": null,
+          "inventory_query_targets": [
+            "土豆"
+          ]
+        },
+        "missing_slots": [
+          "recipe_name_for_commit"
+        ],
+        "control_state": {
+          "primary_intent": "inventory_commit",
+          "secondary_intents": [],
+          "intents": [
+            "inventory_commit"
+          ],
+          "task_stack": [
+            "TASK_CLARIFY"
+          ],
+          "current_task": null,
+          "needs_clarification": true,
+          "loop_guard_count": 0,
+          "slots": {
+            "ingredients": [
+              "土豆"
+            ],
+            "recipe_name_for_commit": null,
+            "inventory_query_targets": [
+              "土豆"
+            ]
+          },
+          "missing_slots": [
+            "recipe_name_for_commit"
+          ],
+          "confidence": 0.75,
+          "extracted_entities": {
+            "ingredients": [
+              "土豆"
+            ]
+          },
+          "router_reasoning": "用户请求扣减土豆库存，但未明确具体数量或菜名，属于 inventory_commit 意图。需要进一步确认具体的扣减量。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {
+            "ingredients": [
+              "土豆"
+            ]
+          },
+          "router_reasoning": "用户请求扣减土豆库存，但未明确具体数量或菜名，属于 inventory_commit 意图。需要进一步确认具体的扣减量。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "slots": {
+            "ingredients": [
+              "土豆"
+            ],
+            "recipe_name_for_commit": null,
+            "inventory_query_targets": [
+              "土豆"
+            ]
+          },
+          "error_state": {}
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {},
+        "expert_payloads": {},
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "直接把土豆库存扣一半"
+          },
+          {
+            "type": "ai",
+            "content": "抱歉，我没有找到合适的菜谱，请换个关键词再试试？"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [],
+          "inferred_total": 0
+        },
+        "wall_time_ms": 7136.359699999957,
+        "user_input": "直接把土豆库存扣一半"
+      },
+      "assistant_reply": "抱歉，我没有找到合适的菜谱，请换个关键词再试试？"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 7136.359699999957,
+    "turn_count": 1
+  }
+}

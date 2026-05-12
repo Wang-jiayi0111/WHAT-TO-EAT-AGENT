@@ -1,0 +1,659 @@
+{
+  "case_id": "recipe_query_070",
+  "source_file": "user_clarify.json",
+  "fixture": {
+    "case_id": "recipe_query_070",
+    "scenario_category": "recipe_query",
+    "difficulty": "medium",
+    "description": "多轮：首轮宽泛家常菜诉求，次轮补充口味偏好（澄清续答）",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "想吃红烧肉一类家常菜，我还没想好偏甜还是偏咸"
+      },
+      {
+        "turn": 2,
+        "input": "那就家常红烧偏咸鲜口吧，不要太甜"
+      }
+    ],
+    "expected": {
+      "primary_intent": "user_clarify",
+      "intents": [
+        "user_clarify",
+        "recipe_search"
+      ],
+      "needs_clarification": false,
+      "key_slots": {
+        "recipe_query": "红烧咸鲜不太甜"
+      },
+      "golden_recipe_ids": [
+        "recipe_id_简易红烧肉"
+      ],
+      "output_contains": [
+        "红烧",
+        "咸"
+      ],
+      "output_excludes": [],
+      "context_preserved": [
+        "红烧",
+        "不要太甜"
+      ],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": [
+      "S-01",
+      "S-02",
+      "S-05"
+    ]
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:recipe_query_070",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "想吃红烧肉一类家常菜，我还没想好偏甜还是偏咸",
+      "wall_time_ms": 17793.031899997004,
+      "snapshot": {
+        "final_response": "我找到了以下几个相关菜谱（按检索相关性排序），请问您想做哪一个？\n\n  1. 辣椒炒肉\n  2. 蒜苔炒肉末\n  3. 简易红烧肉\n  4. 鱼香肉丝\n  5. 炒河粉\n  6. 凉皮\n\n请回复序号数字（如 1）或菜名即可。",
+        "task_stack": [
+          "TASK_CLARIFY"
+        ],
+        "current_task": null,
+        "primary_intent": "profile_sync",
+        "intents": [
+          "profile_sync",
+          "recipe_search"
+        ],
+        "confidence": 0.8,
+        "needs_clarification": false,
+        "slots": {
+          "recipe_query": "红烧肉一类家常菜",
+          "profile_fragments": [
+            "偏甜",
+            "偏咸"
+          ],
+          "target_member": "default_user"
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "profile_sync",
+          "secondary_intents": [
+            "recipe_search"
+          ],
+          "intents": [
+            "profile_sync",
+            "recipe_search"
+          ],
+          "task_stack": [
+            "TASK_PROFILE_SYNC",
+            "TASK_SEARCH"
+          ],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 0,
+          "slots": {
+            "recipe_query": "红烧肉一类家常菜",
+            "profile_fragments": [
+              "偏甜",
+              "偏咸"
+            ],
+            "target_member": "default_user"
+          },
+          "missing_slots": [],
+          "confidence": 0.8,
+          "extracted_entities": {
+            "recipe_query": "红烧肉一类家常菜",
+            "preferences": [
+              "偏甜",
+              "偏咸"
+            ]
+          },
+          "router_reasoning": "用户表达了想吃红烧肉一类家常菜的意愿，但尚未决定口味偏好（偏甜还是偏咸），属于recipe_search意图。同时，用户的口味偏好信息可以更新到个人资料中，因此还涉及profile_sync意图。",
+          "pending_tasks": [
+            "TASK_PROFILE_SYNC"
+          ],
+          "clarification_kind": "recipe_pick"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [
+            {
+              "title": "辣椒炒肉"
+            },
+            {
+              "title": "蒜苔炒肉末"
+            },
+            {
+              "title": "简易红烧肉"
+            },
+            {
+              "title": "鱼香肉丝"
+            },
+            {
+              "title": "炒河粉"
+            },
+            {
+              "title": "凉皮"
+            }
+          ],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {
+            "recipe_query": "红烧肉一类家常菜",
+            "preferences": [
+              "偏甜",
+              "偏咸"
+            ]
+          },
+          "router_reasoning": "用户表达了想吃红烧肉一类家常菜的意愿，但尚未决定口味偏好（偏甜还是偏咸），属于recipe_search意图。同时，用户的口味偏好信息可以更新到个人资料中，因此还涉及profile_sync意图。",
+          "pending_tasks": [
+            "TASK_PROFILE_SYNC"
+          ],
+          "clarification_kind": "recipe_pick",
+          "recipe_candidates": [
+            "辣椒炒肉",
+            "蒜苔炒肉末",
+            "简易红烧肉",
+            "鱼香肉丝",
+            "炒河粉",
+            "凉皮"
+          ],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "effective_constraint": {
+            "scope_id": "default_user",
+            "hard_exclusions": [
+              "芒果"
+            ],
+            "soft_negative_hints": [
+              "某种香料",
+              "刺多的鱼",
+              "羊肉, 膻味重的肉类"
+            ],
+            "soft_positive_hints": [
+              "酸辣"
+            ],
+            "dietary_target": "低卡/低碳水",
+            "temporal_conditions": [
+              "暂时放弃低碳水目标",
+              "想吃重庆火锅级别的辣",
+              "极清淡少油少纤维",
+              "偏好偏咸",
+              "感冒嗓子疼",
+              "肠胃不适"
+            ],
+            "summary_snippet": null
+          },
+          "slots": {
+            "recipe_query": "红烧肉一类家常菜",
+            "profile_fragments": [
+              "偏甜",
+              "偏咸"
+            ],
+            "target_member": "default_user"
+          },
+          "error_state": {
+            "error_code": null,
+            "recoverable": true,
+            "error_detail": null
+          }
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {
+          "error_code": null,
+          "recoverable": true,
+          "error_detail": null
+        },
+        "expert_payloads": {
+          "search_results": [
+            {
+              "id": "combined_487285",
+              "title": "辣椒炒肉",
+              "score": 0.401140759555897
+            },
+            {
+              "id": "combined_592147",
+              "title": "蒜苔炒肉末",
+              "score": 0.386812772170049
+            },
+            {
+              "id": "combined_866335",
+              "title": "简易红烧肉",
+              "score": 0.3828922381163322
+            },
+            {
+              "id": "combined_972448",
+              "title": "鱼香肉丝",
+              "score": 0.3822794707249223
+            },
+            {
+              "id": "combined_773862",
+              "title": "炒河粉",
+              "score": 0.3807521793947052
+            },
+            {
+              "id": "combined_644217",
+              "title": "凉皮",
+              "score": 0.37697702466017324
+            },
+            {
+              "id": "combined_925979",
+              "title": "麻辣减脂荞麦面",
+              "score": 0.3762938111312568
+            },
+            {
+              "id": "combined_794847",
+              "title": "湖南家常红烧肉",
+              "score": 0.37567593383244524
+            },
+            {
+              "id": "combined_219870",
+              "title": "卤菜",
+              "score": 0.3753888425230853
+            },
+            {
+              "id": "combined_771888",
+              "title": "辣椒炒肉",
+              "score": 0.3748623223258012
+            },
+            {
+              "id": "combined_972339",
+              "title": "水油焖蔬菜",
+              "score": 0.3748275781507625
+            },
+            {
+              "id": "combined_940901",
+              "title": "水煮鱼",
+              "score": 0.3734270542969282
+            },
+            {
+              "id": "combined_521061",
+              "title": "小炒肉",
+              "score": 0.3725749722965194
+            },
+            {
+              "id": "combined_402093",
+              "title": "蛏抱蛋",
+              "score": 0.3723465415168389
+            },
+            {
+              "id": "combined_698645",
+              "title": "荷兰豆炒腊肠",
+              "score": 0.372065469170642
+            }
+          ],
+          "status": "ambiguous",
+          "ambiguity_candidate_count": 6
+        },
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "想吃红烧肉一类家常菜，我还没想好偏甜还是偏咸"
+          },
+          {
+            "type": "ai",
+            "content": "我找到了以下几个相关菜谱（按检索相关性排序），请问您想做哪一个？\n\n  1. 辣椒炒肉\n  2. 蒜苔炒肉末\n  3. 简易红烧肉\n  4. 鱼香肉丝\n  5. 炒河粉\n  6. 凉皮\n\n请回复序号数字（如 1）或菜名即可。"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [
+            "search_recipes"
+          ],
+          "inferred_total": 1
+        },
+        "wall_time_ms": 17793.031899997004,
+        "user_input": "想吃红烧肉一类家常菜，我还没想好偏甜还是偏咸"
+      },
+      "assistant_reply": "我找到了以下几个相关菜谱（按检索相关性排序），请问您想做哪一个？\n\n  1. 辣椒炒肉\n  2. 蒜苔炒肉末\n  3. 简易红烧肉\n  4. 鱼香肉丝\n  5. 炒河粉\n  6. 凉皮\n\n请回复序号数字（如 1）或菜名即可。"
+    },
+    {
+      "turn": 2,
+      "input": "那就家常红烧偏咸鲜口吧，不要太甜",
+      "wall_time_ms": 201.25909999842406,
+      "snapshot": {
+        "final_response": "抱歉，没能识别您的选择。请回复列表中的序号（1～6），或直接输入菜名（可输入部分关键词）。\n\n我找到了以下几个相关菜谱（按检索相关性排序），请问您想做哪一个？\n\n  1. 辣椒炒肉\n  2. 蒜苔炒肉末\n  3. 简易红烧肉\n  4. 鱼香肉丝\n  5. 炒河粉\n  6. 凉皮\n\n请回复序号数字（如 1）或菜名即可。",
+        "task_stack": [
+          "TASK_CLARIFY"
+        ],
+        "current_task": null,
+        "primary_intent": "profile_sync",
+        "intents": [
+          "profile_sync",
+          "recipe_search"
+        ],
+        "confidence": 0.8,
+        "needs_clarification": false,
+        "slots": {
+          "recipe_query": "红烧肉一类家常菜",
+          "profile_fragments": [
+            "偏甜",
+            "偏咸"
+          ],
+          "target_member": "default_user"
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "profile_sync",
+          "secondary_intents": [
+            "recipe_search"
+          ],
+          "intents": [
+            "profile_sync",
+            "recipe_search"
+          ],
+          "task_stack": [
+            "TASK_PROFILE_SYNC",
+            "TASK_SEARCH"
+          ],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 0,
+          "slots": {
+            "recipe_query": "红烧肉一类家常菜",
+            "profile_fragments": [
+              "偏甜",
+              "偏咸"
+            ],
+            "target_member": "default_user"
+          },
+          "missing_slots": [],
+          "confidence": 0.8,
+          "extracted_entities": {
+            "recipe_query": "红烧肉一类家常菜",
+            "preferences": [
+              "偏甜",
+              "偏咸"
+            ]
+          },
+          "router_reasoning": "用户表达了想吃红烧肉一类家常菜的意愿，但尚未决定口味偏好（偏甜还是偏咸），属于recipe_search意图。同时，用户的口味偏好信息可以更新到个人资料中，因此还涉及profile_sync意图。",
+          "pending_tasks": [
+            "TASK_PROFILE_SYNC"
+          ],
+          "clarification_kind": "recipe_pick",
+          "clarify_error": null
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [
+            {
+              "title": "辣椒炒肉"
+            },
+            {
+              "title": "蒜苔炒肉末"
+            },
+            {
+              "title": "简易红烧肉"
+            },
+            {
+              "title": "鱼香肉丝"
+            },
+            {
+              "title": "炒河粉"
+            },
+            {
+              "title": "凉皮"
+            }
+          ],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {
+            "recipe_query": "红烧肉一类家常菜",
+            "preferences": [
+              "偏甜",
+              "偏咸"
+            ]
+          },
+          "router_reasoning": "用户表达了想吃红烧肉一类家常菜的意愿，但尚未决定口味偏好（偏甜还是偏咸），属于recipe_search意图。同时，用户的口味偏好信息可以更新到个人资料中，因此还涉及profile_sync意图。",
+          "pending_tasks": [
+            "TASK_PROFILE_SYNC"
+          ],
+          "clarification_kind": "recipe_pick",
+          "clarify_error": null,
+          "recipe_candidates": [
+            "辣椒炒肉",
+            "蒜苔炒肉末",
+            "简易红烧肉",
+            "鱼香肉丝",
+            "炒河粉",
+            "凉皮"
+          ],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "effective_constraint": {
+            "scope_id": "default_user",
+            "hard_exclusions": [
+              "芒果"
+            ],
+            "soft_negative_hints": [
+              "某种香料",
+              "刺多的鱼",
+              "羊肉, 膻味重的肉类"
+            ],
+            "soft_positive_hints": [
+              "酸辣"
+            ],
+            "dietary_target": "低卡/低碳水",
+            "temporal_conditions": [
+              "暂时放弃低碳水目标",
+              "想吃重庆火锅级别的辣",
+              "极清淡少油少纤维",
+              "偏好偏咸",
+              "感冒嗓子疼",
+              "肠胃不适"
+            ],
+            "summary_snippet": null
+          },
+          "slots": {
+            "recipe_query": "红烧肉一类家常菜",
+            "profile_fragments": [
+              "偏甜",
+              "偏咸"
+            ],
+            "target_member": "default_user"
+          },
+          "error_state": {
+            "error_code": null,
+            "recoverable": true,
+            "error_detail": null
+          }
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {
+          "error_code": null,
+          "recoverable": true,
+          "error_detail": null
+        },
+        "expert_payloads": {
+          "search_results": [
+            {
+              "id": "combined_487285",
+              "title": "辣椒炒肉",
+              "score": 0.401140759555897
+            },
+            {
+              "id": "combined_592147",
+              "title": "蒜苔炒肉末",
+              "score": 0.386812772170049
+            },
+            {
+              "id": "combined_866335",
+              "title": "简易红烧肉",
+              "score": 0.3828922381163322
+            },
+            {
+              "id": "combined_972448",
+              "title": "鱼香肉丝",
+              "score": 0.3822794707249223
+            },
+            {
+              "id": "combined_773862",
+              "title": "炒河粉",
+              "score": 0.3807521793947052
+            },
+            {
+              "id": "combined_644217",
+              "title": "凉皮",
+              "score": 0.37697702466017324
+            },
+            {
+              "id": "combined_925979",
+              "title": "麻辣减脂荞麦面",
+              "score": 0.3762938111312568
+            },
+            {
+              "id": "combined_794847",
+              "title": "湖南家常红烧肉",
+              "score": 0.37567593383244524
+            },
+            {
+              "id": "combined_219870",
+              "title": "卤菜",
+              "score": 0.3753888425230853
+            },
+            {
+              "id": "combined_771888",
+              "title": "辣椒炒肉",
+              "score": 0.3748623223258012
+            },
+            {
+              "id": "combined_972339",
+              "title": "水油焖蔬菜",
+              "score": 0.3748275781507625
+            },
+            {
+              "id": "combined_940901",
+              "title": "水煮鱼",
+              "score": 0.3734270542969282
+            },
+            {
+              "id": "combined_521061",
+              "title": "小炒肉",
+              "score": 0.3725749722965194
+            },
+            {
+              "id": "combined_402093",
+              "title": "蛏抱蛋",
+              "score": 0.3723465415168389
+            },
+            {
+              "id": "combined_698645",
+              "title": "荷兰豆炒腊肠",
+              "score": 0.372065469170642
+            }
+          ],
+          "status": "ambiguous",
+          "ambiguity_candidate_count": 6
+        },
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "想吃红烧肉一类家常菜，我还没想好偏甜还是偏咸"
+          },
+          {
+            "type": "ai",
+            "content": "我找到了以下几个相关菜谱（按检索相关性排序），请问您想做哪一个？\n\n  1. 辣椒炒肉\n  2. 蒜苔炒肉末\n  3. 简易红烧肉\n  4. 鱼香肉丝\n  5. 炒河粉\n  6. 凉皮\n\n请回复序号数字（如 1）或菜名即可。"
+          },
+          {
+            "type": "human",
+            "content": "那就家常红烧偏咸鲜口吧，不要太甜"
+          },
+          {
+            "type": "ai",
+            "content": "抱歉，没能识别您的选择。请回复列表中的序号（1～6），或直接输入菜名（可输入部分关键词）。\n\n我找到了以下几个相关菜谱（按检索相关性排序），请问您想做哪一个？\n\n  1. 辣椒炒肉\n  2. 蒜苔炒肉末\n  3. 简易红烧肉\n  4. 鱼香肉丝\n  5. 炒河粉\n  6. 凉皮\n\n请回复序号数字（如 1）或菜名即可。"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [
+            "search_recipes"
+          ],
+          "inferred_total": 1
+        },
+        "wall_time_ms": 201.25909999842406,
+        "user_input": "那就家常红烧偏咸鲜口吧，不要太甜"
+      },
+      "assistant_reply": "抱歉，没能识别您的选择。请回复列表中的序号（1～6），或直接输入菜名（可输入部分关键词）。\n\n我找到了以下几个相关菜谱（按检索相关性排序），请问您想做哪一个？\n\n  1. 辣椒炒肉\n  2. 蒜苔炒肉末\n  3. 简易红烧肉\n  4. 鱼香肉丝\n  5. 炒河粉\n  6. 凉皮\n\n请回复序号数字（如 1）或菜名即可。"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 17994.290999995428,
+    "turn_count": 2
+  }
+}

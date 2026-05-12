@@ -1,0 +1,157 @@
+{
+  "case_id": "nutrition_query_019",
+  "source_file": "dietary_advice.json",
+  "fixture": {
+    "case_id": "nutrition_query_019",
+    "scenario_category": "nutrition_query",
+    "difficulty": "easy",
+    "description": "单一营养概念问答，不强制触发菜谱检索",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "糖尿病患者喝汤要不要撇浮油，有什么原则"
+      }
+    ],
+    "expected": {
+      "primary_intent": "dietary_advice",
+      "intents": [
+        "dietary_advice"
+      ],
+      "needs_clarification": false,
+      "key_slots": {
+        "diet_topic": "糖尿病饮食油脂控制"
+      },
+      "golden_recipe_ids": [],
+      "output_contains": [
+        "油",
+        "血糖"
+      ],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": [
+      "S-02"
+    ]
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:nutrition_query_019",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "糖尿病患者喝汤要不要撇浮油，有什么原则",
+      "wall_time_ms": 30705.570299998726,
+      "snapshot": {
+        "final_response": "糖尿病患者在喝汤时确实需要注意撇去浮油，因为过多的油脂摄入会增加体重负担，并可能影响血糖控制。以下是一些针对糖尿病患者的饮食原则，尤其是在喝汤方面：\n\n1. **少油少盐**：尽量选择清汤而非浓汤，减少油脂和食盐的使用。\n2. **食材选择**：多用蔬菜、瘦肉（如鸡胸肉）、豆制品等作为主要材料，避免高脂肪肉类。\n3. **适量食用**：即使是很健康的汤品也不宜过量饮用，特别是对于容易引起血糖波动的食物更需谨慎。\n4. **注意烹饪方式**：推荐采用炖煮的方式制作汤品，避免煎炸等方式引入额外热量。\n\n总之，在准备或选择汤品时应考虑其对血糖的影响以及是否符合整体健康饮食计划。如果有特别的需求或者疑问，建议咨询专业的营养师获得个性化的指导哦！同时，请记得遵循医生给出的具体建议。",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "dietary_advice",
+        "intents": [
+          "dietary_advice"
+        ],
+        "confidence": 0.95,
+        "needs_clarification": false,
+        "slots": {
+          "diet_topic": "糖尿病饮食原则"
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "dietary_advice",
+          "secondary_intents": [],
+          "intents": [
+            "dietary_advice"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 1,
+          "slots": {
+            "diet_topic": "糖尿病饮食原则"
+          },
+          "missing_slots": [],
+          "confidence": 0.95,
+          "extracted_entities": {},
+          "router_reasoning": "用户询问糖尿病患者喝汤是否需要撇去浮油以及相关原则，属于营养健康类问答。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {},
+          "router_reasoning": "用户询问糖尿病患者喝汤是否需要撇去浮油以及相关原则，属于营养健康类问答。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "slots": {
+            "diet_topic": "糖尿病饮食原则"
+          },
+          "error_state": {}
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {},
+        "expert_payloads": {},
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "糖尿病患者喝汤要不要撇浮油，有什么原则"
+          },
+          {
+            "type": "ai",
+            "content": "糖尿病患者在喝汤时确实需要注意撇去浮油，因为过多的油脂摄入会增加体重负担，并可能影响血糖控制。以下是一些针对糖尿病患者的饮食原则，尤其是在喝汤方面：\n\n1. **少油少盐**：尽量选择清汤而非浓汤，减少油脂和食盐的使用。\n2. **食材选择**：多用蔬菜、瘦肉（如鸡胸肉）、豆制品等作为主要材料，避免高脂肪肉类。\n3. **适量食用**：即使是很健康的汤品也不宜过量饮用，特别是对于容易引起血糖波动的食物更需谨慎。\n4. **注意烹饪方式**：推荐采用炖煮的方式制作汤品，避免煎炸等方式引入额外热量。\n\n总之，在准备或选择汤品时应考虑其对血糖的影响以及是否符合整体健康饮食计划。如果有特别的需求或者疑问，建议咨询专业的营养师获得个性化的指导哦！同时，请记得遵循医生给出的具体建议。"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [],
+          "inferred_total": 0
+        },
+        "wall_time_ms": 30705.570299998726,
+        "user_input": "糖尿病患者喝汤要不要撇浮油，有什么原则"
+      },
+      "assistant_reply": "糖尿病患者在喝汤时确实需要注意撇去浮油，因为过多的油脂摄入会增加体重负担，并可能影响血糖控制。以下是一些针对糖尿病患者的饮食原则，尤其是在喝汤方面：\n\n1. **少油少盐**：尽量选择清汤而非浓汤，减少油脂和食盐的使用。\n2. **食材选择**：多用蔬菜、瘦肉（如鸡胸肉）、豆制品等作为主要材料，避免高脂肪肉类。\n3. **适量食用**：即使是很健康的汤品也不宜过量饮用，特别是对于容易引起血糖波动的食物更需谨慎。\n4. **注意烹饪方式**：推荐采用炖煮的方式制作汤品，避免煎炸等方式引入额外热量。\n\n总之，在准备或选择汤品时应考虑其对血糖的影响以及是否符合整体健康饮食计划。如果有特别的需求或者疑问，建议咨询专业的营养师获得个性化的指导哦！同时，请记得遵循医生给出的具体建议。"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 30705.570299998726,
+    "turn_count": 1
+  }
+}

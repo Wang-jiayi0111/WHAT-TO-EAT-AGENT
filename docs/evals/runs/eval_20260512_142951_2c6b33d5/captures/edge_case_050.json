@@ -1,0 +1,145 @@
+{
+  "case_id": "edge_case_050",
+  "source_file": "out_of_scope.json",
+  "fixture": {
+    "case_id": "edge_case_050",
+    "scenario_category": "edge_case",
+    "difficulty": "easy",
+    "description": "金融投资建议超范围",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "明天该买哪只股票你给个内幕消息呗"
+      }
+    ],
+    "expected": {
+      "primary_intent": "out_of_scope",
+      "intents": [
+        "out_of_scope"
+      ],
+      "needs_clarification": false,
+      "key_slots": {},
+      "golden_recipe_ids": [],
+      "output_contains": [
+        "范围"
+      ],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "auto",
+    "linked_scenarios": []
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:edge_case_050",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "明天该买哪只股票你给个内幕消息呗",
+      "wall_time_ms": 3780.299300000479,
+      "snapshot": {
+        "final_response": "我主要帮你做饭谱推荐、库存与买菜清单、饮食偏好这类家事膳食问题。这个问题超出了我的能力范围，换个和吃饭、买菜、菜谱相关的话题我可以陪你聊。",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "out_of_scope",
+        "intents": [
+          "out_of_scope"
+        ],
+        "confidence": 0.95,
+        "needs_clarification": false,
+        "slots": {},
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "out_of_scope",
+          "secondary_intents": [],
+          "intents": [
+            "out_of_scope"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 1,
+          "slots": {},
+          "missing_slots": [],
+          "confidence": 0.95,
+          "extracted_entities": {},
+          "router_reasoning": "用户询问关于股票的建议，这与膳食助手的功能无关。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {},
+          "router_reasoning": "用户询问关于股票的建议，这与膳食助手的功能无关。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "error_state": {}
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {},
+        "expert_payloads": {},
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "明天该买哪只股票你给个内幕消息呗"
+          },
+          {
+            "type": "ai",
+            "content": "我主要帮你做饭谱推荐、库存与买菜清单、饮食偏好这类家事膳食问题。这个问题超出了我的能力范围，换个和吃饭、买菜、菜谱相关的话题我可以陪你聊。"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [],
+          "inferred_total": 0
+        },
+        "wall_time_ms": 3780.299300000479,
+        "user_input": "明天该买哪只股票你给个内幕消息呗"
+      },
+      "assistant_reply": "我主要帮你做饭谱推荐、库存与买菜清单、饮食偏好这类家事膳食问题。这个问题超出了我的能力范围，换个和吃饭、买菜、菜谱相关的话题我可以陪你聊。"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 3780.299300000479,
+    "turn_count": 1
+  }
+}

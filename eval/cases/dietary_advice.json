@@ -9,6 +9,7 @@
     ],
     "expected": {
       "primary_intent": "dietary_advice",
+      "intents": ["dietary_advice"],
       "needs_clarification": false,
       "key_slots": { "diet_topic": "糖尿病饮食油脂控制" },
       "golden_recipe_ids": [],
@@ -30,6 +31,7 @@
     ],
     "expected": {
       "primary_intent": "dietary_advice",
+      "intents": ["dietary_advice", "recipe_search"],
       "needs_clarification": false,
       "key_slots": { "diet_topic": "感冒咽痛饮食", "ingredients": [] },
       "golden_recipe_ids": [],
@@ -51,6 +53,7 @@
     ],
     "expected": {
       "primary_intent": "dietary_advice",
+      "intents": ["dietary_advice"],
       "needs_clarification": false,
       "key_slots": { "diet_topic": "胃病与辛辣饮食冲突" },
       "golden_recipe_ids": [],
@@ -72,6 +75,7 @@
     ],
     "expected": {
       "primary_intent": "dietary_advice",
+      "intents": ["dietary_advice"],
       "needs_clarification": false,
       "key_slots": { "diet_topic": "减脂宏量营养素分配" },
       "golden_recipe_ids": [],
@@ -94,6 +98,7 @@
     ],
     "expected": {
       "primary_intent": "dietary_advice",
+      "intents": ["dietary_advice", "profile_sync"],
       "needs_clarification": false,
       "key_slots": { "diet_topic": "加工调味品过敏原交叉", "ingredients": ["酱油", "调和油"] },
       "golden_recipe_ids": [],
@@ -115,6 +120,7 @@
     ],
     "expected": {
       "primary_intent": "dietary_advice",
+      "intents": ["dietary_advice"],
       "needs_clarification": false,
       "key_slots": { "diet_topic": "他汀与西柚相互作用" },
       "golden_recipe_ids": [],

@@ -1,0 +1,179 @@
+{
+  "case_id": "edge_case_071",
+  "source_file": "user_clarify.json",
+  "fixture": {
+    "case_id": "edge_case_071",
+    "scenario_category": "edge_case",
+    "difficulty": "hard",
+    "description": "自相矛盾澄清需二次追问",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "既要极辣又要完全不吃辣椒你看着办吧"
+      }
+    ],
+    "expected": {
+      "primary_intent": "user_clarify",
+      "intents": [
+        "user_clarify"
+      ],
+      "needs_clarification": true,
+      "key_slots": {},
+      "golden_recipe_ids": [],
+      "output_contains": [
+        "辣"
+      ],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": true
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": []
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:edge_case_071",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "既要极辣又要完全不吃辣椒你看着办吧",
+      "wall_time_ms": 12130.791699997644,
+      "snapshot": {
+        "final_response": "好的，我已记录您的饮食偏好，以后推荐菜谱时会注意。",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "profile_sync",
+        "intents": [
+          "profile_sync"
+        ],
+        "confidence": 0.8,
+        "needs_clarification": false,
+        "slots": {
+          "profile_fragments": [
+            "极辣",
+            "完全不吃辣椒"
+          ],
+          "target_member": "default_user"
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "profile_sync",
+          "secondary_intents": [],
+          "intents": [
+            "profile_sync"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 1,
+          "slots": {
+            "profile_fragments": [
+              "极辣",
+              "完全不吃辣椒"
+            ],
+            "target_member": "default_user"
+          },
+          "missing_slots": [],
+          "confidence": 0.8,
+          "extracted_entities": {
+            "preferences": [
+              "极辣",
+              "完全不吃辣椒"
+            ]
+          },
+          "router_reasoning": "用户表达了对食物口味的矛盾需求，既想要极辣又完全不吃辣椒。这属于用户的个人偏好更新。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {
+            "preferences": [
+              "极辣",
+              "完全不吃辣椒"
+            ]
+          },
+          "router_reasoning": "用户表达了对食物口味的矛盾需求，既想要极辣又完全不吃辣椒。这属于用户的个人偏好更新。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "short_term_constraints": [
+            "医嘱/自我约束：忌口需遵守"
+          ],
+          "slots": {
+            "profile_fragments": [
+              "极辣",
+              "完全不吃辣椒"
+            ],
+            "target_member": "default_user"
+          },
+          "error_state": {}
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [
+            "医嘱/自我约束：忌口需遵守"
+          ],
+          "conversation_summary_len": 0
+        },
+        "error_state": {},
+        "expert_payloads": {},
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "既要极辣又要完全不吃辣椒你看着办吧"
+          },
+          {
+            "type": "ai",
+            "content": "好的，我已记录您的饮食偏好，以后推荐菜谱时会注意。"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [],
+          "inferred_total": 0
+        },
+        "wall_time_ms": 12130.791699997644,
+        "user_input": "既要极辣又要完全不吃辣椒你看着办吧"
+      },
+      "assistant_reply": "好的，我已记录您的饮食偏好，以后推荐菜谱时会注意。"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 12130.791699997644,
+    "turn_count": 1
+  }
+}

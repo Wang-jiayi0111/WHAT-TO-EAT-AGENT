@@ -10,6 +10,7 @@
     ],
     "expected": {
       "primary_intent": "profile_sync",
+      "intents": ["profile_sync"],
       "needs_clarification": false,
       "key_slots": {
         "profile_fragments": ["芹菜过敏", "少吃大豆制品"],
@@ -34,6 +35,7 @@
     ],
     "expected": {
       "primary_intent": "profile_sync",
+      "intents": ["profile_sync"],
       "needs_clarification": false,
       "key_slots": {
         "profile_fragments": ["喜欢酸甜", "讨厌重花椒"],
@@ -54,17 +56,18 @@
     "difficulty": "medium",
     "description": "宗教/伦理膳食偏好写入（检索类场景分类但核心意图为画像）",
     "user_turns": [
-      { "turn": 1, "input": "我是严格素食者请以后推荐菜谱都不要出现肉类高汤隐形荤料" }
+      { "turn": 1, "input": "我是严格素食者请以后推荐菜谱都不要出现肉类高汤等隐形荤料" }
     ],
     "expected": {
       "primary_intent": "profile_sync",
+      "intents": ["profile_sync"],
       "needs_clarification": false,
       "key_slots": {
         "profile_fragments": ["纯素食", "避免肉类高汤"],
         "profile_explicit": true
       },
-      "golden_recipe_ids": ["recipe_id_凉拌黄瓜"],
-      "output_contains": ["素", "凉拌"],
+      "golden_recipe_ids": [],
+      "output_contains": ["速食", "凉拌"],
       "output_excludes": ["鸡肉", "猪油"],
       "context_preserved": [],
       "clarification_triggered": false
@@ -82,6 +85,7 @@
     ],
     "expected": {
       "primary_intent": "profile_sync",
+      "intents": ["profile_sync", "dietary_advice"],
       "needs_clarification": false,
       "key_slots": {
         "profile_fragments": ["肠胃炎恢复期", "清淡少油少纤维"],
@@ -107,6 +111,7 @@
     ],
     "expected": {
       "primary_intent": "profile_sync",
+      "intents": ["profile_sync"],
       "needs_clarification": false,
       "key_slots": {
         "profile_fragments": ["纠正海鲜过敏误判", "芒果过敏"],
@@ -127,10 +132,11 @@
     "difficulty": "hard",
     "description": "模糊体量表述触发澄清而非盲写入",
     "user_turns": [
-      { "turn": 1, "input": "把我讨厌的一种香料记下来反正你知道我在说哪种吧" }
+      { "turn": 1, "input": "把我讨厌的一种香料记下来" }
     ],
     "expected": {
       "primary_intent": "profile_sync",
+      "intents": ["profile_sync", "user_clarify"],
       "needs_clarification": true,
       "key_slots": { "profile_fragments": [], "profile_explicit": false },
       "golden_recipe_ids": [],

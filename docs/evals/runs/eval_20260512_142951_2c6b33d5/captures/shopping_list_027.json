@@ -1,0 +1,662 @@
+{
+  "case_id": "shopping_list_027",
+  "source_file": "shopping_list.json",
+  "fixture": {
+    "case_id": "shopping_list_027",
+    "scenario_category": "shopping_list",
+    "difficulty": "medium",
+    "description": "按菜谱重算缺口 refresh_gap",
+    "e2e_seed": {
+      "recipe_state": {
+        "recipe_title_locked": "占位旧菜",
+        "recipe_requirements": [
+          {
+            "name": "土豆",
+            "amount": 2,
+            "unit": "个"
+          }
+        ]
+      },
+      "inventory_state": {
+        "inventory_snapshot": {},
+        "cached_shopping_gap": {
+          "shopping_list": [
+            {
+              "name": "土豆",
+              "amount": 2,
+              "unit": "个"
+            }
+          ],
+          "sufficient_items": [],
+          "missing_items": [
+            {
+              "name": "土豆",
+              "amount": 2,
+              "unit": "个"
+            }
+          ],
+          "pending_manual": [],
+          "computed_at": "2026-05-11T00:00:00Z"
+        },
+        "gap_basis": {
+          "recipe_title": "占位旧菜"
+        },
+        "shopping_list_overlay": []
+      }
+    },
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "我改做糖醋里脊了，按新菜谱重新算一遍要买什么"
+      }
+    ],
+    "expected": {
+      "primary_intent": "shopping_list",
+      "intents": [
+        "shopping_list",
+        "recipe_search"
+      ],
+      "needs_clarification": false,
+      "key_slots": {
+        "list_action": "refresh_gap"
+      },
+      "golden_recipe_ids": [
+        "recipe_id_糖醋里脊"
+      ],
+      "output_contains": [
+        "糖醋里脊"
+      ],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false,
+      "shopping_list_assert": {
+        "gap_cache_present": true
+      }
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": [
+      "S-08"
+    ]
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:shopping_list_027",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "我改做糖醋里脊了，按新菜谱重新算一遍要买什么",
+      "wall_time_ms": 37263.04750000054,
+      "snapshot": {
+        "final_response": "已按**最新库存**与菜谱用料重新计算缺口，待购清单如下：\n\n  · 清水：50.0 ml\n  · 生抽：40.0 ml\n  · 白糖：30.0 g\n  · 白醋：20.0 ml\n  · 料酒：10.0 ml\n\n以下为「糖醋里脊」的用料清单（来自本地菜谱解析）：\n\n  · 清水：50 ml\n  · 生抽：40 ml\n  · 白糖：30 g\n  · 白醋：20 ml\n  · 料酒：10 ml",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "recipe_search",
+        "intents": [
+          "recipe_search",
+          "shopping_list"
+        ],
+        "confidence": 0.9,
+        "needs_clarification": false,
+        "slots": {
+          "recipe_name": "糖醋里脊"
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "recipe_search",
+          "secondary_intents": [
+            "shopping_list"
+          ],
+          "intents": [
+            "recipe_search",
+            "shopping_list"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 1,
+          "slots": {
+            "recipe_name": "糖醋里脊"
+          },
+          "missing_slots": [],
+          "confidence": 0.9,
+          "extracted_entities": {},
+          "router_reasoning": "用户改变了菜谱选择，选择了糖醋里脊，并要求根据新的菜谱重新计算需要购买的食材。这涉及到了recipe_search（通过指定的菜名搜索菜谱）和shopping_list（基于找到的菜谱生成购物清单）。"
+        },
+        "recipe_state": {
+          "recipe_title_locked": "糖醋里脊",
+          "recipe_requirements": [
+            {
+              "name": "清水",
+              "amount": 50.0,
+              "unit": "ml"
+            },
+            {
+              "name": "生抽",
+              "amount": 40.0,
+              "unit": "ml"
+            },
+            {
+              "name": "白糖",
+              "amount": 30.0,
+              "unit": "g"
+            },
+            {
+              "name": "白醋",
+              "amount": 20.0,
+              "unit": "ml"
+            },
+            {
+              "name": "料酒",
+              "amount": 10.0,
+              "unit": "ml"
+            }
+          ],
+          "recipe_file_ref": "F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\condiment\\糖醋汁.md",
+          "recipe_candidates": [],
+          "selected_recipe_title": "糖醋里脊",
+          "selected_recipe_id": "F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\condiment\\糖醋汁.md",
+          "recipe_steps": [
+            "按照比例将各调料在小碗中搅拌均匀。",
+            "按不同菜肴的方式处理完毕后，将配制好的糖醋汁倒入锅中。",
+            "根据各菜肴的不同，烹制 5-10 分钟。",
+            "大火收汁，可增加菜的浓度、香味和光泽。"
+          ],
+          "recipe_parser_version": "llm_structured_v1"
+        },
+        "runtime_bundle": {
+          "extracted_entities": {},
+          "router_reasoning": "用户改变了菜谱选择，选择了糖醋里脊，并要求根据新的菜谱重新计算需要购买的食材。这涉及到了recipe_search（通过指定的菜名搜索菜谱）和shopping_list（基于找到的菜谱生成购物清单）。",
+          "recipe_candidates": [],
+          "selected_recipe_id": "F:\\WHAT-TO-EAT-AGENT\\data\\recipes\\condiment\\糖醋汁.md",
+          "selected_recipe_title": "糖醋里脊",
+          "recipe_requirements": [
+            {
+              "name": "清水",
+              "amount": 50.0,
+              "unit": "ml"
+            },
+            {
+              "name": "生抽",
+              "amount": 40.0,
+              "unit": "ml"
+            },
+            {
+              "name": "白糖",
+              "amount": 30.0,
+              "unit": "g"
+            },
+            {
+              "name": "白醋",
+              "amount": 20.0,
+              "unit": "ml"
+            },
+            {
+              "name": "料酒",
+              "amount": 10.0,
+              "unit": "ml"
+            }
+          ],
+          "recipe_title_locked": "糖醋里脊",
+          "recipe_parser_version": "llm_structured_v1",
+          "recipe_cook_step": [
+            "按照比例将各调料在小碗中搅拌均匀。",
+            "按不同菜肴的方式处理完毕后，将配制好的糖醋汁倒入锅中。",
+            "根据各菜肴的不同，烹制 5-10 分钟。",
+            "大火收汁，可增加菜的浓度、香味和光泽。"
+          ],
+          "inventory_snapshot": {
+            "五花肉": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "排骨": {
+              "amount": 250.0,
+              "unit": "g"
+            },
+            "牛筋": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "胡萝卜": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "苦瓜": {
+              "amount": 2.0,
+              "unit": "根"
+            },
+            "西红柿": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "豆腐": {
+              "amount": 1.0,
+              "unit": "块"
+            },
+            "饼干": {
+              "amount": 1.0,
+              "unit": "盒"
+            },
+            "鸡胸肉": {
+              "amount": 1.0,
+              "unit": "个"
+            }
+          },
+          "cached_shopping_gap": {
+            "shopping_list": [
+              {
+                "name": "清水",
+                "amount": 50.0,
+                "unit": "ml"
+              },
+              {
+                "name": "生抽",
+                "amount": 40.0,
+                "unit": "ml"
+              },
+              {
+                "name": "白糖",
+                "amount": 30.0,
+                "unit": "g"
+              },
+              {
+                "name": "白醋",
+                "amount": 20.0,
+                "unit": "ml"
+              },
+              {
+                "name": "料酒",
+                "amount": 10.0,
+                "unit": "ml"
+              }
+            ],
+            "sufficient_items": [],
+            "missing_items": [
+              {
+                "name": "清水",
+                "amount": 50.0,
+                "unit": "ml"
+              },
+              {
+                "name": "生抽",
+                "amount": 40.0,
+                "unit": "ml"
+              },
+              {
+                "name": "白糖",
+                "amount": 30.0,
+                "unit": "g"
+              },
+              {
+                "name": "白醋",
+                "amount": 20.0,
+                "unit": "ml"
+              },
+              {
+                "name": "料酒",
+                "amount": 10.0,
+                "unit": "ml"
+              }
+            ],
+            "pending_manual": [],
+            "computed_at": "2026-05-12T06:47:58.257483+00:00"
+          },
+          "gap_basis": {
+            "recipe_title": "糖醋里脊",
+            "r_fingerprint": "d46aff165a2834c13f9ed503",
+            "inventory_fingerprint": "aa6a5c9fdd4ec008e641e672"
+          },
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "shopping_list": [
+            {
+              "name": "清水",
+              "amount": 50.0,
+              "unit": "ml"
+            },
+            {
+              "name": "生抽",
+              "amount": 40.0,
+              "unit": "ml"
+            },
+            {
+              "name": "白糖",
+              "amount": 30.0,
+              "unit": "g"
+            },
+            {
+              "name": "白醋",
+              "amount": 20.0,
+              "unit": "ml"
+            },
+            {
+              "name": "料酒",
+              "amount": 10.0,
+              "unit": "ml"
+            }
+          ],
+          "sufficient_items": [],
+          "missing_items": [
+            {
+              "name": "清水",
+              "amount": 50.0,
+              "unit": "ml"
+            },
+            {
+              "name": "生抽",
+              "amount": 40.0,
+              "unit": "ml"
+            },
+            {
+              "name": "白糖",
+              "amount": 30.0,
+              "unit": "g"
+            },
+            {
+              "name": "白醋",
+              "amount": 20.0,
+              "unit": "ml"
+            },
+            {
+              "name": "料酒",
+              "amount": 10.0,
+              "unit": "ml"
+            }
+          ],
+          "gap_delivery_mode": "fresh",
+          "effective_constraint": {
+            "scope_id": "default_user",
+            "hard_exclusions": [
+              "芒果"
+            ],
+            "soft_negative_hints": [
+              "某种香料",
+              "刺多的鱼",
+              "羊肉, 膻味重的肉类"
+            ],
+            "soft_positive_hints": [],
+            "dietary_target": "低卡/低碳水",
+            "temporal_conditions": [
+              "暂时放弃低碳水目标",
+              "想吃重庆火锅级别的辣",
+              "极清淡少油少纤维",
+              "偏好偏咸",
+              "感冒嗓子疼",
+              "肠胃不适"
+            ],
+            "summary_snippet": null
+          },
+          "slots": {
+            "recipe_name": "糖醋里脊"
+          },
+          "error_state": {
+            "error_code": null,
+            "recoverable": true,
+            "error_detail": null
+          }
+        },
+        "inventory_state": {
+          "inventory_snapshot": {
+            "五花肉": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "排骨": {
+              "amount": 250.0,
+              "unit": "g"
+            },
+            "牛筋": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "胡萝卜": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "苦瓜": {
+              "amount": 2.0,
+              "unit": "根"
+            },
+            "西红柿": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "豆腐": {
+              "amount": 1.0,
+              "unit": "块"
+            },
+            "饼干": {
+              "amount": 1.0,
+              "unit": "盒"
+            },
+            "鸡胸肉": {
+              "amount": 1.0,
+              "unit": "个"
+            }
+          },
+          "cached_shopping_gap": {
+            "shopping_list": [
+              {
+                "name": "清水",
+                "amount": 50.0,
+                "unit": "ml"
+              },
+              {
+                "name": "生抽",
+                "amount": 40.0,
+                "unit": "ml"
+              },
+              {
+                "name": "白糖",
+                "amount": 30.0,
+                "unit": "g"
+              },
+              {
+                "name": "白醋",
+                "amount": 20.0,
+                "unit": "ml"
+              },
+              {
+                "name": "料酒",
+                "amount": 10.0,
+                "unit": "ml"
+              }
+            ],
+            "sufficient_items": [],
+            "missing_items": [
+              {
+                "name": "清水",
+                "amount": 50.0,
+                "unit": "ml"
+              },
+              {
+                "name": "生抽",
+                "amount": 40.0,
+                "unit": "ml"
+              },
+              {
+                "name": "白糖",
+                "amount": 30.0,
+                "unit": "g"
+              },
+              {
+                "name": "白醋",
+                "amount": 20.0,
+                "unit": "ml"
+              },
+              {
+                "name": "料酒",
+                "amount": 10.0,
+                "unit": "ml"
+              }
+            ],
+            "pending_manual": [],
+            "computed_at": "2026-05-12T06:47:58.257483+00:00"
+          },
+          "gap_basis": {
+            "recipe_title": "糖醋里脊",
+            "r_fingerprint": "d46aff165a2834c13f9ed503",
+            "inventory_fingerprint": "aa6a5c9fdd4ec008e641e672"
+          },
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "gap_delivery_mode": "fresh",
+          "shopping_list": [
+            {
+              "name": "清水",
+              "amount": 50.0,
+              "unit": "ml"
+            },
+            {
+              "name": "生抽",
+              "amount": 40.0,
+              "unit": "ml"
+            },
+            {
+              "name": "白糖",
+              "amount": 30.0,
+              "unit": "g"
+            },
+            {
+              "name": "白醋",
+              "amount": 20.0,
+              "unit": "ml"
+            },
+            {
+              "name": "料酒",
+              "amount": 10.0,
+              "unit": "ml"
+            }
+          ],
+          "sufficient_items": [],
+          "missing_items": [
+            {
+              "name": "清水",
+              "amount": 50.0,
+              "unit": "ml"
+            },
+            {
+              "name": "生抽",
+              "amount": 40.0,
+              "unit": "ml"
+            },
+            {
+              "name": "白糖",
+              "amount": 30.0,
+              "unit": "g"
+            },
+            {
+              "name": "白醋",
+              "amount": 20.0,
+              "unit": "ml"
+            },
+            {
+              "name": "料酒",
+              "amount": 10.0,
+              "unit": "ml"
+            }
+          ]
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [
+            "五花肉",
+            "排骨",
+            "牛筋",
+            "胡萝卜",
+            "苦瓜",
+            "西红柿",
+            "豆腐",
+            "饼干",
+            "鸡胸肉"
+          ],
+          "cached_shopping_gap_present": true,
+          "gap_basis": {
+            "recipe_title": "糖醋里脊",
+            "r_fingerprint": "d46aff165a2834c13f9ed503",
+            "inventory_fingerprint": "aa6a5c9fdd4ec008e641e672"
+          },
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {
+          "error_code": null,
+          "recoverable": true,
+          "error_detail": null
+        },
+        "expert_payloads": {
+          "recipe_detail": {
+            "title": "糖醋汁",
+            "ingredients": [
+              {
+                "name": "清水",
+                "amount": 50.0,
+                "unit": "ml"
+              },
+              {
+                "name": "生抽",
+                "amount": 40.0,
+                "unit": "ml"
+              },
+              {
+                "name": "白糖",
+                "amount": 30.0,
+                "unit": "g"
+              },
+              {
+                "name": "白醋",
+                "amount": 20.0,
+                "unit": "ml"
+              },
+              {
+                "name": "料酒",
+                "amount": 10.0,
+                "unit": "ml"
+              }
+            ],
+            "steps": [
+              "按照比例将各调料在小碗中搅拌均匀。",
+              "按不同菜肴的方式处理完毕后，将配制好的糖醋汁倒入锅中。",
+              "根据各菜肴的不同，烹制 5-10 分钟。",
+              "大火收汁，可增加菜的浓度、香味和光泽。"
+            ]
+          },
+          "status": "success"
+        },
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "我改做糖醋里脊了，按新菜谱重新算一遍要买什么"
+          },
+          {
+            "type": "ai",
+            "content": "已按**最新库存**与菜谱用料重新计算缺口，待购清单如下：\n\n  · 清水：50.0 ml\n  · 生抽：40.0 ml\n  · 白糖：30.0 g\n  · 白醋：20.0 ml\n  · 料酒：10.0 ml\n\n以下为「糖醋里脊」的用料清单（来自本地菜谱解析）：\n\n  · 清水：50 ml\n  · 生抽：40 ml\n  · 白糖：30 g\n  · 白醋：20 ml\n  · 料酒：10 ml"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [
+            "get_recipe_source",
+            "parse_recipe_content"
+          ],
+          "inferred_total": 2
+        },
+        "wall_time_ms": 37263.04750000054,
+        "user_input": "我改做糖醋里脊了，按新菜谱重新算一遍要买什么"
+      },
+      "assistant_reply": "已按**最新库存**与菜谱用料重新计算缺口，待购清单如下：\n\n  · 清水：50.0 ml\n  · 生抽：40.0 ml\n  · 白糖：30.0 g\n  · 白醋：20.0 ml\n  · 料酒：10.0 ml\n\n以下为「糖醋里脊」的用料清单（来自本地菜谱解析）：\n\n  · 清水：50 ml\n  · 生抽：40 ml\n  · 白糖：30 g\n  · 白醋：20 ml\n  · 料酒：10 ml"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 37263.04750000054,
+    "turn_count": 1
+  }
+}

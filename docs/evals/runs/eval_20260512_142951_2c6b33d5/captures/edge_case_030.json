@@ -1,0 +1,468 @@
+{
+  "case_id": "edge_case_030",
+  "source_file": "shopping_list.json",
+  "fixture": {
+    "case_id": "edge_case_030",
+    "scenario_category": "edge_case",
+    "difficulty": "hard",
+    "description": "从缺口标记已买 mark_bought",
+    "e2e_seed": {
+      "recipe_state": {
+        "recipe_title_locked": "葱油拌面",
+        "recipe_requirements": [
+          {
+            "name": "香葱",
+            "amount": 50,
+            "unit": "g"
+          },
+          {
+            "name": "面条",
+            "amount": 200,
+            "unit": "g"
+          }
+        ]
+      },
+      "inventory_state": {
+        "inventory_snapshot": {},
+        "cached_shopping_gap": {
+          "shopping_list": [
+            {
+              "name": "香葱",
+              "amount": 50,
+              "unit": "g"
+            },
+            {
+              "name": "面条",
+              "amount": 200,
+              "unit": "g"
+            }
+          ],
+          "sufficient_items": [],
+          "missing_items": [
+            {
+              "name": "香葱",
+              "amount": 50,
+              "unit": "g"
+            },
+            {
+              "name": "面条",
+              "amount": 200,
+              "unit": "g"
+            }
+          ],
+          "pending_manual": [],
+          "computed_at": "2026-05-11T00:00:00Z"
+        },
+        "gap_basis": {
+          "recipe_title": "葱油拌面"
+        },
+        "shopping_list_overlay": []
+      }
+    },
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "清单里缺的香葱我已经在楼下便利店买好了帮我勾掉"
+      }
+    ],
+    "expected": {
+      "primary_intent": "shopping_list",
+      "intents": [
+        "shopping_list"
+      ],
+      "needs_clarification": false,
+      "key_slots": {
+        "list_action": "mark_bought"
+      },
+      "golden_recipe_ids": [],
+      "output_contains": [
+        "香葱"
+      ],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false,
+      "shopping_list_assert": {
+        "overlay_remove_keys_contain": [
+          "香葱"
+        ],
+        "overlay_ops_min": 1
+      }
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": []
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:edge_case_030",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "清单里缺的香葱我已经在楼下便利店买好了帮我勾掉",
+      "wall_time_ms": 11100.172899998142,
+      "snapshot": {
+        "final_response": "已按**最新库存**与菜谱用料重新计算缺口，待购清单如下：\n\n（以下待购行已包含你对清单的手动调整。）\n\n  · 面条：200.0 g",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "shopping_list",
+        "intents": [
+          "shopping_list"
+        ],
+        "confidence": 0.95,
+        "needs_clarification": false,
+        "slots": {
+          "ingredients": [
+            "香葱"
+          ],
+          "list_action": "mark_bought",
+          "mark_bought_items": [
+            "香葱"
+          ]
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "shopping_list",
+          "secondary_intents": [],
+          "intents": [
+            "shopping_list"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 1,
+          "slots": {
+            "ingredients": [
+              "香葱"
+            ],
+            "list_action": "mark_bought",
+            "mark_bought_items": [
+              "香葱"
+            ]
+          },
+          "missing_slots": [],
+          "confidence": 0.95,
+          "extracted_entities": {
+            "ingredients": [
+              "香葱"
+            ]
+          },
+          "router_reasoning": "用户表示已经购买了清单中缺少的香葱，并要求从购物清单中移除。这涉及到更新购物清单的操作。"
+        },
+        "recipe_state": {
+          "recipe_title_locked": "葱油拌面",
+          "recipe_requirements": [
+            {
+              "name": "香葱",
+              "amount": 50,
+              "unit": "g"
+            },
+            {
+              "name": "面条",
+              "amount": 200,
+              "unit": "g"
+            }
+          ],
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_steps": [],
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {
+            "ingredients": [
+              "香葱"
+            ]
+          },
+          "router_reasoning": "用户表示已经购买了清单中缺少的香葱，并要求从购物清单中移除。这涉及到更新购物清单的操作。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [
+            {
+              "name": "香葱",
+              "amount": 50,
+              "unit": "g"
+            },
+            {
+              "name": "面条",
+              "amount": 200,
+              "unit": "g"
+            }
+          ],
+          "recipe_title_locked": "葱油拌面",
+          "recipe_cook_step": null,
+          "inventory_snapshot": {
+            "五花肉": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "排骨": {
+              "amount": 250.0,
+              "unit": "g"
+            },
+            "牛筋": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "胡萝卜": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "苦瓜": {
+              "amount": 2.0,
+              "unit": "根"
+            },
+            "西红柿": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "豆腐": {
+              "amount": 1.0,
+              "unit": "块"
+            },
+            "饼干": {
+              "amount": 1.0,
+              "unit": "盒"
+            },
+            "鸡胸肉": {
+              "amount": 1.0,
+              "unit": "个"
+            }
+          },
+          "cached_shopping_gap": {
+            "shopping_list": [
+              {
+                "name": "香葱",
+                "amount": 50.0,
+                "unit": "g"
+              },
+              {
+                "name": "面条",
+                "amount": 200.0,
+                "unit": "g"
+              }
+            ],
+            "sufficient_items": [],
+            "missing_items": [
+              {
+                "name": "香葱",
+                "amount": 50.0,
+                "unit": "g"
+              },
+              {
+                "name": "面条",
+                "amount": 200.0,
+                "unit": "g"
+              }
+            ],
+            "pending_manual": [],
+            "computed_at": "2026-05-12T06:50:00.463674+00:00"
+          },
+          "gap_basis": {
+            "recipe_title": "葱油拌面",
+            "r_fingerprint": "7e5d1c803fc4cea6534331a0",
+            "inventory_fingerprint": "aa6a5c9fdd4ec008e641e672"
+          },
+          "shopping_list_overlay": [
+            {
+              "op": "remove",
+              "key": "香葱"
+            }
+          ],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "shopping_list": [
+            {
+              "name": "面条",
+              "amount": 200.0,
+              "unit": "g"
+            }
+          ],
+          "sufficient_items": [],
+          "missing_items": [
+            {
+              "name": "香葱",
+              "amount": 50.0,
+              "unit": "g"
+            },
+            {
+              "name": "面条",
+              "amount": 200.0,
+              "unit": "g"
+            }
+          ],
+          "gap_delivery_mode": "fresh",
+          "slots": {
+            "ingredients": [
+              "香葱"
+            ],
+            "list_action": "mark_bought",
+            "mark_bought_items": [
+              "香葱"
+            ]
+          },
+          "error_state": {}
+        },
+        "inventory_state": {
+          "inventory_snapshot": {
+            "五花肉": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "排骨": {
+              "amount": 250.0,
+              "unit": "g"
+            },
+            "牛筋": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "胡萝卜": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "苦瓜": {
+              "amount": 2.0,
+              "unit": "根"
+            },
+            "西红柿": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "豆腐": {
+              "amount": 1.0,
+              "unit": "块"
+            },
+            "饼干": {
+              "amount": 1.0,
+              "unit": "盒"
+            },
+            "鸡胸肉": {
+              "amount": 1.0,
+              "unit": "个"
+            }
+          },
+          "cached_shopping_gap": {
+            "shopping_list": [
+              {
+                "name": "香葱",
+                "amount": 50.0,
+                "unit": "g"
+              },
+              {
+                "name": "面条",
+                "amount": 200.0,
+                "unit": "g"
+              }
+            ],
+            "sufficient_items": [],
+            "missing_items": [
+              {
+                "name": "香葱",
+                "amount": 50.0,
+                "unit": "g"
+              },
+              {
+                "name": "面条",
+                "amount": 200.0,
+                "unit": "g"
+              }
+            ],
+            "pending_manual": [],
+            "computed_at": "2026-05-12T06:50:00.463674+00:00"
+          },
+          "gap_basis": {
+            "recipe_title": "葱油拌面",
+            "r_fingerprint": "7e5d1c803fc4cea6534331a0",
+            "inventory_fingerprint": "aa6a5c9fdd4ec008e641e672"
+          },
+          "shopping_list_overlay": [
+            {
+              "op": "remove",
+              "key": "香葱"
+            }
+          ],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "gap_delivery_mode": "fresh",
+          "shopping_list": [
+            {
+              "name": "面条",
+              "amount": 200.0,
+              "unit": "g"
+            }
+          ],
+          "sufficient_items": [],
+          "missing_items": [
+            {
+              "name": "香葱",
+              "amount": 50.0,
+              "unit": "g"
+            },
+            {
+              "name": "面条",
+              "amount": 200.0,
+              "unit": "g"
+            }
+          ]
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [
+            "五花肉",
+            "排骨",
+            "牛筋",
+            "胡萝卜",
+            "苦瓜",
+            "西红柿",
+            "豆腐",
+            "饼干",
+            "鸡胸肉"
+          ],
+          "cached_shopping_gap_present": true,
+          "gap_basis": {
+            "recipe_title": "葱油拌面",
+            "r_fingerprint": "7e5d1c803fc4cea6534331a0",
+            "inventory_fingerprint": "aa6a5c9fdd4ec008e641e672"
+          },
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {},
+        "expert_payloads": {},
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "清单里缺的香葱我已经在楼下便利店买好了帮我勾掉"
+          },
+          {
+            "type": "ai",
+            "content": "已按**最新库存**与菜谱用料重新计算缺口，待购清单如下：\n\n（以下待购行已包含你对清单的手动调整。）\n\n  · 面条：200.0 g"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [
+            "get_recipe_source",
+            "parse_recipe_content"
+          ],
+          "inferred_total": 2
+        },
+        "wall_time_ms": 11100.172899998142,
+        "user_input": "清单里缺的香葱我已经在楼下便利店买好了帮我勾掉"
+      },
+      "assistant_reply": "已按**最新库存**与菜谱用料重新计算缺口，待购清单如下：\n\n（以下待购行已包含你对清单的手动调整。）\n\n  · 面条：200.0 g"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 11100.172899998142,
+    "turn_count": 1
+  }
+}

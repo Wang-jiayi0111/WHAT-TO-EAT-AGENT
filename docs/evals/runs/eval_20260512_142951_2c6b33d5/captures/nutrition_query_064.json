@@ -1,0 +1,185 @@
+{
+  "case_id": "nutrition_query_064",
+  "source_file": "profile_sync.json",
+  "fixture": {
+    "case_id": "nutrition_query_064",
+    "scenario_category": "nutrition_query",
+    "difficulty": "medium",
+    "description": "短期身体状况写入短期状态",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "这两天肠胃炎刚好帮我标记近期饮食要极清淡少油少纤维"
+      }
+    ],
+    "expected": {
+      "primary_intent": "profile_sync",
+      "intents": [
+        "profile_sync",
+        "dietary_advice"
+      ],
+      "needs_clarification": false,
+      "key_slots": {
+        "profile_fragments": [
+          "肠胃炎恢复期",
+          "清淡少油少纤维"
+        ],
+        "profile_explicit": true
+      },
+      "golden_recipe_ids": [],
+      "output_contains": [
+        "清淡"
+      ],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": [
+      "S-02"
+    ]
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:nutrition_query_064",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "这两天肠胃炎刚好帮我标记近期饮食要极清淡少油少纤维",
+      "wall_time_ms": 6993.994499998735,
+      "snapshot": {
+        "final_response": "好的，我已记录您的饮食偏好，以后推荐菜谱时会注意。",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "profile_sync",
+        "intents": [
+          "profile_sync"
+        ],
+        "confidence": 0.95,
+        "needs_clarification": false,
+        "slots": {
+          "profile_fragments": [
+            "极清淡少油少纤维"
+          ],
+          "target_member": "default_user"
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "profile_sync",
+          "secondary_intents": [],
+          "intents": [
+            "profile_sync"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 1,
+          "slots": {
+            "profile_fragments": [
+              "极清淡少油少纤维"
+            ],
+            "target_member": "default_user"
+          },
+          "missing_slots": [],
+          "confidence": 0.95,
+          "extracted_entities": {
+            "preferences": [
+              "极清淡少油少纤维"
+            ]
+          },
+          "router_reasoning": "用户表达了近期饮食需要清淡少油少纤维的需求，这属于更新个人饮食偏好的意图。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {
+            "preferences": [
+              "极清淡少油少纤维"
+            ]
+          },
+          "router_reasoning": "用户表达了近期饮食需要清淡少油少纤维的需求，这属于更新个人饮食偏好的意图。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "short_term_constraints": [
+            "短期：肠胃不适，宜清淡易消化",
+            "口味：清淡饮食"
+          ],
+          "slots": {
+            "profile_fragments": [
+              "极清淡少油少纤维"
+            ],
+            "target_member": "default_user"
+          },
+          "error_state": {}
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [
+            "短期：肠胃不适，宜清淡易消化",
+            "口味：清淡饮食"
+          ],
+          "conversation_summary_len": 0
+        },
+        "error_state": {},
+        "expert_payloads": {},
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "这两天肠胃炎刚好帮我标记近期饮食要极清淡少油少纤维"
+          },
+          {
+            "type": "ai",
+            "content": "好的，我已记录您的饮食偏好，以后推荐菜谱时会注意。"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [],
+          "inferred_total": 0
+        },
+        "wall_time_ms": 6993.994499998735,
+        "user_input": "这两天肠胃炎刚好帮我标记近期饮食要极清淡少油少纤维"
+      },
+      "assistant_reply": "好的，我已记录您的饮食偏好，以后推荐菜谱时会注意。"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 6993.994499998735,
+    "turn_count": 1
+  }
+}

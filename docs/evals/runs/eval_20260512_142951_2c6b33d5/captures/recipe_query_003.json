@@ -1,0 +1,309 @@
+{
+  "case_id": "recipe_query_003",
+  "source_file": "recipe_search.json",
+  "fixture": {
+    "case_id": "recipe_query_003",
+    "scenario_category": "recipe_query",
+    "difficulty": "medium",
+    "description": "场景化厨具约束（电饭煲炊饭）+开放式 query，金标对齐库内菜谱",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "用电饭煲做懒人一锅出的炊饭类菜谱，给我想两个名字就行"
+      }
+    ],
+    "expected": {
+      "primary_intent": "recipe_search",
+      "intents": [
+        "recipe_search"
+      ],
+      "needs_clarification": false,
+      "key_slots": {
+        "recipe_query": "电饭煲炊饭一锅出"
+      },
+      "golden_recipe_ids": [
+        "recipe_id_电饭煲三文鱼炊饭"
+      ],
+      "output_contains": [
+        "炊饭",
+        "电饭煲"
+      ],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "auto",
+    "linked_scenarios": [
+      "S-01",
+      "S-02"
+    ]
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:recipe_query_003",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "用电饭煲做懒人一锅出的炊饭类菜谱，给我想两个名字就行",
+      "wall_time_ms": 19142.693599998893,
+      "snapshot": {
+        "final_response": "我找到了以下几个相关菜谱（按检索相关性排序），请问您想做哪一个？\n\n  1. 电饭煲蒸米饭\n  2. 煮锅蒸米饭\n  3. 电饭煲三文鱼炊饭\n  4. 微波炉腊肠煲仔饭\n  5. 韩式拌饭\n  6. 蛋炒饭\n\n请回复序号数字（如 1）或菜名即可。",
+        "task_stack": [
+          "TASK_CLARIFY"
+        ],
+        "current_task": null,
+        "primary_intent": "recipe_search",
+        "intents": [
+          "recipe_search"
+        ],
+        "confidence": 0.9,
+        "needs_clarification": false,
+        "slots": {
+          "recipe_query": "用电饭煲做懒人一锅出的炊饭"
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "recipe_search",
+          "secondary_intents": [],
+          "intents": [
+            "recipe_search"
+          ],
+          "task_stack": [
+            "TASK_SEARCH"
+          ],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 0,
+          "slots": {
+            "recipe_query": "用电饭煲做懒人一锅出的炊饭"
+          },
+          "missing_slots": [],
+          "confidence": 0.9,
+          "extracted_entities": {
+            "recipe_query": "用电饭煲做懒人一锅出的炊饭"
+          },
+          "router_reasoning": "用户希望找到用电饭煲制作的懒人一锅出炊饭类菜谱，并且需要两个具体的菜名。这属于recipe_search意图，用户指定了做法（电饭煲）和类型（懒人一锅出炊饭），但未具体到某一道菜。",
+          "pending_tasks": [],
+          "clarification_kind": "recipe_pick"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [
+            {
+              "title": "电饭煲蒸米饭"
+            },
+            {
+              "title": "煮锅蒸米饭"
+            },
+            {
+              "title": "电饭煲三文鱼炊饭"
+            },
+            {
+              "title": "微波炉腊肠煲仔饭"
+            },
+            {
+              "title": "韩式拌饭"
+            },
+            {
+              "title": "蛋炒饭"
+            }
+          ],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {
+            "recipe_query": "用电饭煲做懒人一锅出的炊饭"
+          },
+          "router_reasoning": "用户希望找到用电饭煲制作的懒人一锅出炊饭类菜谱，并且需要两个具体的菜名。这属于recipe_search意图，用户指定了做法（电饭煲）和类型（懒人一锅出炊饭），但未具体到某一道菜。",
+          "pending_tasks": [],
+          "clarification_kind": "recipe_pick",
+          "recipe_candidates": [
+            "电饭煲蒸米饭",
+            "煮锅蒸米饭",
+            "电饭煲三文鱼炊饭",
+            "微波炉腊肠煲仔饭",
+            "韩式拌饭",
+            "蛋炒饭"
+          ],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "effective_constraint": {
+            "scope_id": "default_user",
+            "hard_exclusions": [
+              "芒果"
+            ],
+            "soft_negative_hints": [
+              "某种香料",
+              "刺多的鱼"
+            ],
+            "soft_positive_hints": [],
+            "dietary_target": "低卡/低碳水",
+            "temporal_conditions": [
+              "暂时放弃低碳水目标",
+              "想吃重庆火锅级别的辣",
+              "极清淡少油少纤维",
+              "偏好偏咸",
+              "感冒嗓子疼",
+              "肠胃不适"
+            ],
+            "summary_snippet": null
+          },
+          "slots": {
+            "recipe_query": "用电饭煲做懒人一锅出的炊饭"
+          },
+          "error_state": {
+            "error_code": null,
+            "recoverable": true,
+            "error_detail": null
+          }
+        },
+        "inventory_state": {
+          "inventory_snapshot": {},
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {
+          "error_code": null,
+          "recoverable": true,
+          "error_detail": null
+        },
+        "expert_payloads": {
+          "search_results": [
+            {
+              "id": "combined_879737",
+              "title": "电饭煲蒸米饭",
+              "score": 0.436283745020456
+            },
+            {
+              "id": "combined_34216",
+              "title": "煮锅蒸米饭",
+              "score": 0.4173913389613391
+            },
+            {
+              "id": "combined_104877",
+              "title": "电饭煲三文鱼炊饭",
+              "score": 0.40630204100498285
+            },
+            {
+              "id": "combined_763923",
+              "title": "微波炉腊肠煲仔饭",
+              "score": 0.39970664709528486
+            },
+            {
+              "id": "combined_301823",
+              "title": "韩式拌饭",
+              "score": 0.39495309717007787
+            },
+            {
+              "id": "combined_285424",
+              "title": "蛋炒饭",
+              "score": 0.39338275740950807
+            },
+            {
+              "id": "combined_5460",
+              "title": "煮锅蒸米饭",
+              "score": 0.3925352448753801
+            },
+            {
+              "id": "combined_939877",
+              "title": "皮蛋瘦肉粥",
+              "score": 0.3905025304081239
+            },
+            {
+              "id": "combined_440556",
+              "title": "蛋炒饭",
+              "score": 0.3847141521450046
+            },
+            {
+              "id": "combined_635445",
+              "title": "扬州炒饭",
+              "score": 0.38325219989687087
+            },
+            {
+              "id": "combined_408182",
+              "title": "蛋炒饭",
+              "score": 0.38231130395582397
+            },
+            {
+              "id": "combined_76287",
+              "title": "皮蛋瘦肉粥",
+              "score": 0.38206593445489667
+            },
+            {
+              "id": "combined_36475",
+              "title": "肉蛋盖饭",
+              "score": 0.3818916881981122
+            },
+            {
+              "id": "combined_161682",
+              "title": "微波炉蛋糕",
+              "score": 0.3813951428059427
+            },
+            {
+              "id": "combined_219273",
+              "title": "电饭煲三文鱼炊饭",
+              "score": 0.3800302851492908
+            }
+          ],
+          "status": "ambiguous",
+          "ambiguity_candidate_count": 6
+        },
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "用电饭煲做懒人一锅出的炊饭类菜谱，给我想两个名字就行"
+          },
+          {
+            "type": "ai",
+            "content": "我找到了以下几个相关菜谱（按检索相关性排序），请问您想做哪一个？\n\n  1. 电饭煲蒸米饭\n  2. 煮锅蒸米饭\n  3. 电饭煲三文鱼炊饭\n  4. 微波炉腊肠煲仔饭\n  5. 韩式拌饭\n  6. 蛋炒饭\n\n请回复序号数字（如 1）或菜名即可。"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [
+            "search_recipes"
+          ],
+          "inferred_total": 1
+        },
+        "wall_time_ms": 19142.693599998893,
+        "user_input": "用电饭煲做懒人一锅出的炊饭类菜谱，给我想两个名字就行"
+      },
+      "assistant_reply": "我找到了以下几个相关菜谱（按检索相关性排序），请问您想做哪一个？\n\n  1. 电饭煲蒸米饭\n  2. 煮锅蒸米饭\n  3. 电饭煲三文鱼炊饭\n  4. 微波炉腊肠煲仔饭\n  5. 韩式拌饭\n  6. 蛋炒饭\n\n请回复序号数字（如 1）或菜名即可。"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 19142.693599998893,
+    "turn_count": 1
+  }
+}

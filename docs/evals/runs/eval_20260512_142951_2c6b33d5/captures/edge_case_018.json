@@ -1,0 +1,275 @@
+{
+  "case_id": "edge_case_018",
+  "source_file": "inventory_add.json",
+  "fixture": {
+    "case_id": "edge_case_018",
+    "scenario_category": "edge_case",
+    "difficulty": "hard",
+    "description": "混合口语单位（斤两）需规范化解析",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "老家带了半扇排骨大概两斤多点你也帮我估一下入库"
+      }
+    ],
+    "expected": {
+      "primary_intent": "inventory_add",
+      "intents": [
+        "inventory_add"
+      ],
+      "needs_clarification": true,
+      "key_slots": {
+        "restock_items": [
+          {
+            "name": "排骨",
+            "amount": 1000,
+            "unit": "g",
+            "merge_mode": "add"
+          }
+        ]
+      },
+      "golden_recipe_ids": [],
+      "output_contains": [
+        "排骨"
+      ],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": true
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": []
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:edge_case_018",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "老家带了半扇排骨大概两斤多点你也帮我估一下入库",
+      "wall_time_ms": 6987.462699999014,
+      "snapshot": {
+        "final_response": "没能从您的话里确定买了哪些食材、各多少量（需带单位）。请再说具体一点，例如「买了鸡蛋 12 个」。",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "inventory_add",
+        "intents": [
+          "inventory_add"
+        ],
+        "confidence": 0.95,
+        "needs_clarification": false,
+        "slots": {
+          "restock_items": [
+            "{\"name\": \"排骨\", \"amount\": 2, \"unit\": \"斤\"}"
+          ]
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "inventory_add",
+          "secondary_intents": [],
+          "intents": [
+            "inventory_add"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 1,
+          "slots": {
+            "restock_items": [
+              "{\"name\": \"排骨\", \"amount\": 2, \"unit\": \"斤\"}"
+            ]
+          },
+          "missing_slots": [],
+          "confidence": 0.95,
+          "extracted_entities": {},
+          "router_reasoning": "用户从老家带回了排骨并希望将其入库，明确提到数量为两斤多。这是一个典型的inventory_add意图，并且提供了具体的补货项。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {},
+          "router_reasoning": "用户从老家带回了排骨并希望将其入库，明确提到数量为两斤多。这是一个典型的inventory_add意图，并且提供了具体的补货项。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {
+            "五花肉": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "排骨": {
+              "amount": 250.0,
+              "unit": "g"
+            },
+            "牛筋": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "胡萝卜": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "苦瓜": {
+              "amount": 2.0,
+              "unit": "根"
+            },
+            "西红柿": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "豆腐": {
+              "amount": 1.0,
+              "unit": "块"
+            },
+            "饼干": {
+              "amount": 1.0,
+              "unit": "盒"
+            },
+            "鸡胸肉": {
+              "amount": 1.0,
+              "unit": "个"
+            }
+          },
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": {
+            "items": [],
+            "unresolved": [
+              "{\"name\": \"排骨\", \"amount\": 2, \"unit\": \"斤\"}"
+            ],
+            "source": "utterance"
+          },
+          "add_status": "failed",
+          "add_failed_items": [],
+          "add_succeeded_items": [],
+          "slots": {
+            "restock_items": [
+              "{\"name\": \"排骨\", \"amount\": 2, \"unit\": \"斤\"}"
+            ]
+          },
+          "error_state": {
+            "error_code": "INVENTORY_ADD_UNPARSED",
+            "recoverable": true,
+            "error_detail": "补货意图下食材/数量/单位无法稳定解析"
+          }
+        },
+        "inventory_state": {
+          "inventory_snapshot": {
+            "五花肉": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "排骨": {
+              "amount": 250.0,
+              "unit": "g"
+            },
+            "牛筋": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "胡萝卜": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "苦瓜": {
+              "amount": 2.0,
+              "unit": "根"
+            },
+            "西红柿": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "豆腐": {
+              "amount": 1.0,
+              "unit": "块"
+            },
+            "饼干": {
+              "amount": 1.0,
+              "unit": "盒"
+            },
+            "鸡胸肉": {
+              "amount": 1.0,
+              "unit": "个"
+            }
+          },
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": {
+            "items": [],
+            "unresolved": [
+              "{\"name\": \"排骨\", \"amount\": 2, \"unit\": \"斤\"}"
+            ],
+            "source": "utterance"
+          },
+          "add_status": "failed",
+          "add_failed_items": [],
+          "add_succeeded_items": []
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [
+            "五花肉",
+            "排骨",
+            "牛筋",
+            "胡萝卜",
+            "苦瓜",
+            "西红柿",
+            "豆腐",
+            "饼干",
+            "鸡胸肉"
+          ],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {
+          "error_code": "INVENTORY_ADD_UNPARSED",
+          "recoverable": true,
+          "error_detail": "补货意图下食材/数量/单位无法稳定解析"
+        },
+        "expert_payloads": {},
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "老家带了半扇排骨大概两斤多点你也帮我估一下入库"
+          },
+          {
+            "type": "ai",
+            "content": "没能从您的话里确定买了哪些食材、各多少量（需带单位）。请再说具体一点，例如「买了鸡蛋 12 个」。"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [],
+          "inferred_total": 0
+        },
+        "wall_time_ms": 6987.462699999014,
+        "user_input": "老家带了半扇排骨大概两斤多点你也帮我估一下入库"
+      },
+      "assistant_reply": "没能从您的话里确定买了哪些食材、各多少量（需带单位）。请再说具体一点，例如「买了鸡蛋 12 个」。"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 6987.462699999014,
+    "turn_count": 1
+  }
+}

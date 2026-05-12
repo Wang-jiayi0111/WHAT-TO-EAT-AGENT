@@ -83,6 +83,7 @@ def build_e2e_snapshot(state: Mapping[str, Any]) -> Dict[str, Any]:
         "control_state": ctrl,
         "recipe_state": rs,
         "runtime_bundle": dict(bundle),
+        "inventory_state": copy.deepcopy(inv),
         "inventory_state_excerpt": {
             "inventory_snapshot_keys": list((inv.get("inventory_snapshot") or {}).keys())[:80],
             "cached_shopping_gap_present": inv.get("cached_shopping_gap") is not None,

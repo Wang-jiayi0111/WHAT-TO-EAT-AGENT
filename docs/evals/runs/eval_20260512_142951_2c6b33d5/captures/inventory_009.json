@@ -1,0 +1,266 @@
+{
+  "case_id": "inventory_009",
+  "source_file": "inventory_check.json",
+  "fixture": {
+    "case_id": "inventory_009",
+    "scenario_category": "inventory",
+    "difficulty": "medium",
+    "description": "带数量单位的库存追问",
+    "user_turns": [
+      {
+        "turn": 1,
+        "input": "冷冻柜里牛肉还剩多少克够不够用"
+      }
+    ],
+    "expected": {
+      "primary_intent": "inventory_check",
+      "intents": [
+        "inventory_check"
+      ],
+      "needs_clarification": false,
+      "key_slots": {
+        "inventory_query_targets": [
+          "牛肉"
+        ]
+      },
+      "golden_recipe_ids": [],
+      "output_contains": [
+        "牛肉"
+      ],
+      "output_excludes": [],
+      "context_preserved": [],
+      "clarification_triggered": false
+    },
+    "eval_method": "llm_judge",
+    "linked_scenarios": [
+      "S-03",
+      "S-04"
+    ]
+  },
+  "thread_id": "eval_20260512_142951_2c6b33d5:inventory_009",
+  "turns": [
+    {
+      "turn": 1,
+      "input": "冷冻柜里牛肉还剩多少克够不够用",
+      "wall_time_ms": 5852.57780000029,
+      "snapshot": {
+        "final_response": "您家目前的库存食材如下：\n\n  · 五花肉：500.0 g\n  · 排骨：250.0 g\n  · 牛筋：500.0 g\n  · 胡萝卜：1.0 个\n  · 苦瓜：2.0 根\n  · 西红柿：1.0 个\n  · 豆腐：1.0 块\n  · 饼干：1.0 盒\n  · 鸡胸肉：1.0 个\n\n共 9 种食材。",
+        "task_stack": [],
+        "current_task": null,
+        "primary_intent": "inventory_check",
+        "intents": [
+          "inventory_check"
+        ],
+        "confidence": 0.95,
+        "needs_clarification": false,
+        "slots": {
+          "ingredients": [
+            "牛肉"
+          ],
+          "inventory_query_targets": [
+            "牛肉"
+          ]
+        },
+        "missing_slots": [],
+        "control_state": {
+          "primary_intent": "inventory_check",
+          "secondary_intents": [],
+          "intents": [
+            "inventory_check"
+          ],
+          "task_stack": [],
+          "current_task": null,
+          "needs_clarification": false,
+          "loop_guard_count": 1,
+          "slots": {
+            "ingredients": [
+              "牛肉"
+            ],
+            "inventory_query_targets": [
+              "牛肉"
+            ]
+          },
+          "missing_slots": [],
+          "confidence": 0.95,
+          "extracted_entities": {
+            "ingredients": [
+              "牛肉"
+            ]
+          },
+          "router_reasoning": "用户查询冷冻柜中牛肉的剩余量及其是否足够使用，属于库存查询意图 inventory_check。"
+        },
+        "recipe_state": {
+          "recipe_file_ref": null,
+          "recipe_candidates": [],
+          "selected_recipe_title": null,
+          "selected_recipe_id": null,
+          "recipe_requirements": [],
+          "recipe_steps": [],
+          "recipe_title_locked": null,
+          "recipe_parser_version": null
+        },
+        "runtime_bundle": {
+          "extracted_entities": {
+            "ingredients": [
+              "牛肉"
+            ]
+          },
+          "router_reasoning": "用户查询冷冻柜中牛肉的剩余量及其是否足够使用，属于库存查询意图 inventory_check。",
+          "recipe_candidates": [],
+          "selected_recipe_id": null,
+          "selected_recipe_title": null,
+          "recipe_requirements": [],
+          "recipe_title_locked": null,
+          "recipe_cook_step": null,
+          "inventory_snapshot": {
+            "五花肉": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "排骨": {
+              "amount": 250.0,
+              "unit": "g"
+            },
+            "牛筋": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "胡萝卜": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "苦瓜": {
+              "amount": 2.0,
+              "unit": "根"
+            },
+            "西红柿": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "豆腐": {
+              "amount": 1.0,
+              "unit": "块"
+            },
+            "饼干": {
+              "amount": 1.0,
+              "unit": "盒"
+            },
+            "鸡胸肉": {
+              "amount": 1.0,
+              "unit": "个"
+            }
+          },
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null,
+          "slots": {
+            "ingredients": [
+              "牛肉"
+            ],
+            "inventory_query_targets": [
+              "牛肉"
+            ]
+          },
+          "error_state": {}
+        },
+        "inventory_state": {
+          "inventory_snapshot": {
+            "五花肉": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "排骨": {
+              "amount": 250.0,
+              "unit": "g"
+            },
+            "牛筋": {
+              "amount": 500.0,
+              "unit": "g"
+            },
+            "胡萝卜": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "苦瓜": {
+              "amount": 2.0,
+              "unit": "根"
+            },
+            "西红柿": {
+              "amount": 1.0,
+              "unit": "个"
+            },
+            "豆腐": {
+              "amount": 1.0,
+              "unit": "块"
+            },
+            "饼干": {
+              "amount": 1.0,
+              "unit": "盒"
+            },
+            "鸡胸肉": {
+              "amount": 1.0,
+              "unit": "个"
+            }
+          },
+          "cached_shopping_gap": null,
+          "gap_basis": null,
+          "shopping_list_overlay": [],
+          "recipe_use_confirmed": false,
+          "commit_preview": null,
+          "commit_status": null,
+          "add_preview": null,
+          "add_status": null
+        },
+        "inventory_state_excerpt": {
+          "inventory_snapshot_keys": [
+            "五花肉",
+            "排骨",
+            "牛筋",
+            "胡萝卜",
+            "苦瓜",
+            "西红柿",
+            "豆腐",
+            "饼干",
+            "鸡胸肉"
+          ],
+          "cached_shopping_gap_present": false,
+          "gap_basis": null,
+          "recipe_use_confirmed": false
+        },
+        "memory_state_excerpt": {
+          "short_term_constraints": [],
+          "conversation_summary_len": 0
+        },
+        "error_state": {},
+        "expert_payloads": {},
+        "research_results_legacy": null,
+        "messages_tail": [
+          {
+            "type": "human",
+            "content": "冷冻柜里牛肉还剩多少克够不够用"
+          },
+          {
+            "type": "ai",
+            "content": "您家目前的库存食材如下：\n\n  · 五花肉：500.0 g\n  · 排骨：250.0 g\n  · 牛筋：500.0 g\n  · 胡萝卜：1.0 个\n  · 苦瓜：2.0 根\n  · 西红柿：1.0 个\n  · 豆腐：1.0 块\n  · 饼干：1.0 盒\n  · 鸡胸肉：1.0 个\n\n共 9 种食材。"
+          }
+        ],
+        "mcp_evidence": {
+          "inferred_sequence": [],
+          "inferred_total": 0
+        },
+        "wall_time_ms": 5852.57780000029,
+        "user_input": "冷冻柜里牛肉还剩多少克够不够用"
+      },
+      "assistant_reply": "您家目前的库存食材如下：\n\n  · 五花肉：500.0 g\n  · 排骨：250.0 g\n  · 牛筋：500.0 g\n  · 胡萝卜：1.0 个\n  · 苦瓜：2.0 根\n  · 西红柿：1.0 个\n  · 豆腐：1.0 块\n  · 饼干：1.0 盒\n  · 鸡胸肉：1.0 个\n\n共 9 种食材。"
+    }
+  ],
+  "aggregate": {
+    "total_wall_ms": 5852.57780000029,
+    "turn_count": 1
+  }
+}

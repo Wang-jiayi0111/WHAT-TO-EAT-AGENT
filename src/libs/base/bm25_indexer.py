@@ -1,4 +1,5 @@
 # src/libs/base/bm25_indexer.py
+import re
 import sqlite3
 import json
 
@@ -75,33 +76,71 @@ class BM25Indexer:
                 metadata=doc.get('metadata', {}),  
             )
 
-    def search(self, query: str, top_k: int = 10) -> list:
-        """Perform BM25 search and return ranked results"""
+    @staticmethod
+    def _sanitize_fts5_match_text(query: str) -> str:
+        """
+        检索串可能含 `[饮食约束]`、列举用的逗号、括号等；直接传入 FTS5 MATCH 会语法错误
+        （如 near "["、near ","）。去掉会破坏解析的字符，保留中文与常规检索用词。
+        """
+        # 运算符/引号 + 中英文逗号分号顿号（增强 query 里极常见）
+        s = re.sub(r'[\[\](){}^*:"|&!<>~,;，；、]', " ", query)
+        s = re.sub(r"\s+", " ", s).strip()
+        return s
 
-        cleaned_query = query.replace('"', ' ').replace('.', ' ').replace('*', ' ').strip()
-        if not cleaned_query:
-            return []
-        
-        # 用双引号包裹，避免 FTS5 把词语解析为操作符
-        safe_query = f'"{cleaned_query}"'
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-
-        # Use FTS5's built-in bm25() function for ranking
-        cursor.execute('''
+    def _run_fts(self, cursor: sqlite3.Cursor, match_pattern: str, top_k: int) -> list:
+        cursor.execute(
+            """
             SELECT recipe_id, content, metadata, bm25(recipe_fts) AS rank_score
             FROM recipe_fts
             WHERE content MATCH ?
             ORDER BY rank_score ASC
             LIMIT ?
-        ''', (safe_query, top_k))
-        results = []
+            """,
+            (match_pattern, top_k),
+        )
+        out = []
         for row in cursor.fetchall():
-            results.append({
-                'id': row[0],
-                'content': row[1],
-                'metadata': json.loads(row[2] or '{}'),   # ✅ 反序列化
-                'score': -row[3],
-            })
+            out.append(
+                {
+                    "id": row[0],
+                    "content": row[1],
+                    "metadata": json.loads(row[2] or "{}"),
+                    "score": -row[3],
+                }
+            )
+        return out
+
+    def _run_fts_safe(
+        self, cursor: sqlite3.Cursor, match_pattern: str, top_k: int
+    ) -> list:
+        """MATCH 语法出错时不抛异常，避免拖垮混合检索（语义侧仍可返回结果）。"""
+        try:
+            return self._run_fts(cursor, match_pattern, top_k)
+        except sqlite3.OperationalError as e:
+            msg = str(e).lower()
+            if "fts5" in msg or "syntax" in msg or "malformed" in msg:
+                return []
+            raise
+
+    def search(self, query: str, top_k: int = 10) -> list:
+        """Perform BM25 search and return ranked results"""
+
+        cleaned_query = query.replace('"', ' ').replace('.', ' ').replace('*', ' ').strip()
+        cleaned_query = self._sanitize_fts5_match_text(cleaned_query)
+        if not cleaned_query:
+            return []
+
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+
+        # 1) 整句短语：命中时排序最准；中文整词连写时常能直接命中标题行
+        inner = cleaned_query.replace('"', " ")
+        phrase = f'"{inner}"'
+        results = self._run_fts_safe(cursor, phrase, top_k)
+
+        # 2) 短语无命中时回退为非短语 MATCH（由 FTS5 tokenizer 决定分词，避免「有数据但短语 token 对不齐」时完全空召回）
+        if not results:
+            results = self._run_fts_safe(cursor, cleaned_query, top_k)
+
         conn.close()
         return results

@@ -2,12 +2,16 @@
 T-042：对已落盘的 E2E run（`docs/evals/runs/<run_id>/captures/*.json`）计算分层指标与总分。
 
 用法：
+  python -m eval.score_run
+      （未指定 --run-dir / --run-id 时，默认选用 docs/evals/runs/ 下最新一次测评目录）
   python -m eval.score_run --run-dir docs/evals/runs/<run_id>
   python -m eval.score_run --run-id eval_20260510_120000_ab12cd34
 
 产出（默认同 run 目录）：
   - scores.json：机器可读全量
   - scores_report.md：人类易读摘要（可用 --no-report-md 关闭）
+  - T-043：`docs/evals/cases/<run_id>/*.md`、`e2e_summary.md`、`docs/evals/e2e_summary_<run_id>.md`、
+    `docs/agent_eval_report.md`（可用 --no-t043 / --no-agent-eval-main 控制）
 """
 from __future__ import annotations
 
@@ -33,6 +37,25 @@ def resolve_run_dir(run_id_or_path: str) -> Path:
     return (default_runs_root() / run_id_or_path).resolve()
 
 
+def resolve_latest_run_dir(runs_root: Path | None = None) -> Path | None:
+    """
+    选用最近一次 E2E 落盘目录：优先含 captures/ 的子目录，按目录 mtime 最新。
+    """
+    root = runs_root or default_runs_root()
+    if not root.is_dir():
+        return None
+    candidates = [
+        p
+        for p in root.iterdir()
+        if p.is_dir() and not p.name.startswith(".")
+    ]
+    if not candidates:
+        return None
+    with_captures = [p for p in candidates if (p / "captures").is_dir()]
+    pool = with_captures if with_captures else candidates
+    return max(pool, key=lambda p: p.stat().st_mtime)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="T-042：E2E 分层打分（§5.1～5.4 + §5.6）"
@@ -41,13 +64,13 @@ def main() -> int:
         "--run-dir",
         type=str,
         default=None,
-        help="run 目录（含 captures/），默认由 --run-id 推导",
+        help="run 目录（含 captures/）；省略时默认用 docs/evals/runs 下最新 run",
     )
     parser.add_argument(
         "--run-id",
         type=str,
         default=None,
-        help="run_id（对应 docs/evals/runs/<run_id>）",
+        help="run_id（对应 docs/evals/runs/<run_id>）；省略且未传 --run-dir 时用最新 run",
     )
     parser.add_argument(
         "--no-retrieval-hard-fail",
@@ -69,6 +92,16 @@ def main() -> int:
         action="store_true",
         help="不生成易读 Markdown（默认写入 run 目录下 scores_report.md）",
     )
+    parser.add_argument(
+        "--no-t043",
+        action="store_true",
+        help="跳过 T-043：不写单用例 MD、总报告、不更新 manifest 的 t043 字段",
+    )
+    parser.add_argument(
+        "--no-agent-eval-main",
+        action="store_true",
+        help="T-043 仍生成单用例与 run 内 e2e_summary，但不覆盖 docs/agent_eval_report.md",
+    )
     args = parser.parse_args()
 
     if not logging.root.handlers:
@@ -79,8 +112,15 @@ def main() -> int:
     elif args.run_id:
         run_dir = resolve_run_dir(args.run_id)
     else:
-        logging.error("请指定 --run-dir 或 --run-id")
-        return 2
+        latest = resolve_latest_run_dir()
+        if latest is None:
+            logging.error(
+                "未找到测评目录：请在 %s 下先运行 eval.run_e2e，或显式传入 --run-dir / --run-id",
+                default_runs_root(),
+            )
+            return 2
+        run_dir = latest
+        logging.info("未指定 run，使用最新测评目录：%s", run_dir)
 
     from eval.scoring import DEFAULT_WEIGHTS, render_scores_markdown, score_run_directory
 
@@ -103,6 +143,16 @@ def main() -> int:
         md_path = run_dir / "scores_report.md"
         md_path.write_text(render_scores_markdown(report), encoding="utf-8")
         logging.info("已写入易读报告 %s", md_path)
+
+    if not args.no_t043:
+        from eval.e2e_reports import write_all_t043_artifacts
+
+        paths = write_all_t043_artifacts(
+            run_dir,
+            report,
+            write_main_agent_eval_report=not args.no_agent_eval_main,
+        )
+        logging.info("T-043 产出：%s", paths)
 
     if args.latest:
         latest = _ROOT / "docs" / "evals" / "latest_eval.json"
