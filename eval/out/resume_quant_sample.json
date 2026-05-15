@@ -1,0 +1,125 @@
+{
+  "gold_file": "F:\\WHAT-TO-EAT-AGENT\\eval\\data\\resume_quant_gold.json",
+  "deterministic": {
+    "inventory_and_units": {
+      "inventory_distinct_ingredient_kinds_in_scope": 9,
+      "ingredient_alias_table_entries": 0,
+      "unit_converter_supported_unit_strings": 30,
+      "bm25_index": {
+        "fts_rows": 4158,
+        "distinct_recipe_ids": 2079
+      },
+      "note": "inventory 种类数为当前 household scope 下快照；菜谱侧覆盖可参考 bm25 distinct_recipe_ids。"
+    },
+    "shopping_list_vs_gold": {
+      "num_cases": 4,
+      "matches": 4,
+      "accuracy": 100.0,
+      "per_case": [
+        {
+          "id": "shop_full_missing",
+          "match": true,
+          "expected": [
+            {
+              "name": "豆腐",
+              "amount": 400,
+              "unit": "g"
+            }
+          ],
+          "got": [
+            {
+              "name": "豆腐",
+              "amount": 400.0,
+              "unit": "g"
+            }
+          ]
+        },
+        {
+          "id": "shop_partial_milk_ml",
+          "match": true,
+          "expected": [
+            {
+              "name": "牛奶",
+              "amount": 300,
+              "unit": "ml"
+            }
+          ],
+          "got": [
+            {
+              "name": "牛奶",
+              "amount": 300.0,
+              "unit": "ml"
+            }
+          ]
+        },
+        {
+          "id": "shop_unit_convert_g",
+          "match": true,
+          "expected": [
+            {
+              "name": "五花肉",
+              "amount": 300,
+              "unit": "g"
+            }
+          ],
+          "got": [
+            {
+              "name": "五花肉",
+              "amount": 300.0,
+              "unit": "g"
+            }
+          ]
+        },
+        {
+          "id": "shop_sufficient_zero_gap",
+          "match": true,
+          "expected": [],
+          "got": []
+        }
+      ]
+    },
+    "cross_session_effective_constraint": {
+      "num_cases": 3,
+      "hits": 3,
+      "hit_rate_percent": 100.0,
+      "per_case": [
+        {
+          "id": "cs_allergen_peanut",
+          "match": true,
+          "hard_exclusions": [
+            "花生"
+          ],
+          "temporal_conditions": []
+        },
+        {
+          "id": "cs_medical_shellfish",
+          "match": true,
+          "hard_exclusions": [
+            "贝壳类禁食"
+          ],
+          "temporal_conditions": []
+        },
+        {
+          "id": "cs_l3_plus_db_short",
+          "match": true,
+          "hard_exclusions": [
+            "乳制品"
+          ],
+          "temporal_conditions": [
+            "肠胃炎恢复期",
+            "孕期慎生冷"
+          ]
+        }
+      ]
+    }
+  },
+  "llm": {
+    "skipped": true,
+    "hint": "追加 --with-llm 以评测意图、澄清与 L2 摘要（将产生 LLM API 调用）。"
+  },
+  "retrieval": {
+    "skipped": true,
+    "hint": "追加 --with-retrieval 以跑混合检索 Recall/MRR（需索引与 DASHSCOPE_API_KEY）。"
+  },
+  "composite_end_to_end_score_0_100": null
+}

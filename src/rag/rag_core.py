@@ -241,6 +241,8 @@ class HybridSearchEngine(BaseSearchEngine):
 
 
         # Calculate combined scores
+        # 若 keyword_results 为空（BM25 无命中），则 keyword_norm 全为 0，
+        # combined_score ∝ semantic_score，排序与纯向量一致——属预期退化，非混合逻辑 bug。
         combined_results = []
         for content_key, data in score_map.items():
             semantic_norm = data['semantic_score']  #  semantic_score

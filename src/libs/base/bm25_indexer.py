@@ -138,9 +138,22 @@ class BM25Indexer:
         phrase = f'"{inner}"'
         results = self._run_fts_safe(cursor, phrase, top_k)
 
-        # 2) 短语无命中时回退为非短语 MATCH（由 FTS5 tokenizer 决定分词，避免「有数据但短语 token 对不齐」时完全空召回）
+        # 2) 短语无命中时：先试整串 MATCH（FTS5 对空格分词多为 AND，长 query 易全不命中）
         if not results:
             results = self._run_fts_safe(cursor, cleaned_query, top_k)
+
+        # 3) 仍无命中且 query 含多个词片时，用 OR 放宽（否则混合检索无 BM25 信号，退化为纯向量序）
+        if not results:
+            parts = [p.strip() for p in cleaned_query.split() if len(p.strip()) >= 2]
+            if len(parts) >= 2:
+                esc: list[str] = []
+                for p in parts[:14]:
+                    p2 = re.sub(r'[\[\](){}^*:"|&!<>~]', " ", p).strip()
+                    if len(p2) >= 2:
+                        esc.append(p2)
+                if len(esc) >= 2:
+                    or_pat = " OR ".join(esc)
+                    results = self._run_fts_safe(cursor, or_pat, top_k)
 
         conn.close()
         return results

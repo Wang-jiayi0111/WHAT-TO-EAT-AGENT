@@ -1,0 +1,136 @@
+{
+  "version": 1,
+  "description": "简历量化指标黄金集：意图三分类、多轮澄清、跨会话约束、购物清单、L2 摘要保留词（与 eval/run_resume_quant_metrics.py 配套）",
+
+  "intent_bucket_gold": [
+    {"id": "ib_search_dish", "utterance": "我想做红烧肉，帮我找几个做法。", "expect_bucket": "retrieval"},
+    {"id": "ib_inv_check", "utterance": "冰箱里还有肉吗？", "expect_bucket": "inventory"},
+    {"id": "ib_shopping", "utterance": "看看做麻婆豆腐还差什么要买。", "expect_bucket": "inventory"},
+    {"id": "ib_inv_add", "utterance": "超市买了鸡蛋一盒、牛奶两瓶。", "expect_bucket": "inventory"},
+    {"id": "ib_chat_weather", "utterance": "今天天气真不错。", "expect_bucket": "chat"},
+    {"id": "ib_help", "utterance": "你能做什么？", "expect_bucket": "chat"},
+    {"id": "ib_out_of_scope", "utterance": "帮我写一段 Python 快速排序。", "expect_bucket": "chat"},
+    {"id": "ib_dietary", "utterance": "我感冒了，饮食上有什么要注意的？", "expect_bucket": "chat"},
+    {"id": "ib_profile", "utterance": "帮我记下，我对花生过敏。", "expect_bucket": "chat"},
+    {"id": "ib_recipe_adopt", "utterance": "就按第一个菜谱做吧。", "expect_bucket": "retrieval"},
+    {"id": "ib_commit_done", "utterance": "刚才的清蒸鱼做好了。", "expect_bucket": "inventory"},
+    {
+      "id": "ib_multi_gap",
+      "utterance": "买了点猪肉，想做红烧肉，看看还差什么。",
+      "expect_bucket_any": ["retrieval", "inventory"]
+    }
+  ],
+
+  "clarification_flows": [
+    {
+      "id": "vague_then_named_dish",
+      "turns": [
+        {
+          "user": "随便推荐个菜吧，再看看缺啥要买。",
+          "expect_clarify_path": true,
+          "expect_primary_one_of": ["recipe_search", "shopping_list", "general_chat", "user_clarify"]
+        },
+        {
+          "assistant": "好的，需要先确认您更想先看菜谱还是优先列购物清单。",
+          "user": "那就做酸菜鱼吧，只要菜谱。",
+          "expect_clarify_path": false,
+          "expect_primary_one_of": ["recipe_search", "general_chat"]
+        }
+      ]
+    },
+    {
+      "id": "underspecified_inv_then_anchor",
+      "turns": [
+        {
+          "user": "看看冰箱里还有吗？",
+          "expect_clarify_path": true,
+          "expect_primary_one_of": ["inventory_check", "general_chat", "user_clarify"]
+        },
+        {
+          "assistant": "请问您想查哪一种食材？",
+          "user": "鸡蛋还有几个？",
+          "expect_clarify_path": false,
+          "expect_primary_one_of": ["inventory_check", "general_chat"]
+        }
+      ]
+    }
+  ],
+
+  "cross_session_constraint_gold": [
+    {
+      "id": "cs_allergen_peanut",
+      "active_user_id": "resume_eval_scope",
+      "profile": {
+        "allergens": ["花生"],
+        "medical_restrictions": [],
+        "short_term_states": [],
+        "taste_tags": {"like": [], "dislike": []}
+      },
+      "memory_state": {"short_term_constraints": [], "conversation_summary": "用户曾讨论过晚餐。"},
+      "must_hit_hard_exclusions": ["花生"]
+    },
+    {
+      "id": "cs_medical_shellfish",
+      "active_user_id": "resume_eval_scope",
+      "profile": {
+        "allergens": [],
+        "medical_restrictions": ["贝壳类禁食"],
+        "short_term_states": [],
+        "taste_tags": {"like": [], "dislike": []}
+      },
+      "memory_state": {},
+      "must_hit_hard_exclusions": ["贝壳类禁食"]
+    },
+    {
+      "id": "cs_l3_plus_db_short",
+      "active_user_id": "resume_eval_scope",
+      "profile": {
+        "allergens": ["乳制品"],
+        "medical_restrictions": [],
+        "short_term_states": ["孕期慎生冷"],
+        "taste_tags": {"like": [], "dislike": []}
+      },
+      "memory_state": {"short_term_constraints": ["肠胃炎恢复期"]},
+      "must_hit_temporal_any": ["肠胃", "孕", "生冷"],
+      "must_hit_hard_exclusions": ["乳制品"]
+    }
+  ],
+
+  "shopping_list_gold": [
+    {
+      "id": "shop_full_missing",
+      "required": [{"name": "豆腐", "amount": 400, "unit": "g"}],
+      "inventory": {},
+      "expected_shopping": [{"name": "豆腐", "amount": 400, "unit": "g"}]
+    },
+    {
+      "id": "shop_partial_milk_ml",
+      "required": [{"name": "牛奶", "amount": 500, "unit": "ml"}],
+      "inventory": {"牛奶": {"amount": 200, "unit": "ml"}},
+      "expected_shopping": [{"name": "牛奶", "amount": 300, "unit": "ml"}]
+    },
+    {
+      "id": "shop_unit_convert_g",
+      "required": [{"name": "五花肉", "amount": 500, "unit": "g"}],
+      "inventory": {"五花肉": {"amount": 0.2, "unit": "kg"}},
+      "expected_shopping": [{"name": "五花肉", "amount": 300, "unit": "g"}]
+    },
+    {
+      "id": "shop_sufficient_zero_gap",
+      "required": [{"name": "鸡蛋", "amount": 3, "unit": "个"}],
+      "inventory": {"鸡蛋": {"amount": 10, "unit": "个"}},
+      "expected_shopping": []
+    }
+  ],
+
+  "l2_summary_must_preserve": {
+    "seed_turns": [
+      {"role": "human", "content": "我对花生严重过敏，千万别推荐含花生的菜。"},
+      {"role": "ai", "content": "已记录：菜谱与清单会避开花生及相关制品。"},
+      {"role": "human", "content": "另外我想周末做酸菜鱼。"},
+      {"role": "ai", "content": "好的，可以为您检索酸菜鱼菜谱并计算食材缺口。"}
+    ],
+    "extra_chitchat_pairs": 5,
+    "must_preserve_substrings": ["花生", "过敏", "酸菜鱼"]
+  }
+}

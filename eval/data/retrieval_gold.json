@@ -1,0 +1,190 @@
+{
+  "version": 3,
+  "description": "32 条检索黄金集：压低麻婆豆腐/蛋炒饭/清蒸鲈鱼重复度；提高粥类、甜品、轻食/沙拉相关占比；更多菜谱至少出现一次。scenario 与 effective_constraint 语义同 v2。",
+  "cases": [
+    {
+      "scenario": "exact",
+      "query": "麻婆豆腐做法花椒豆瓣酱",
+      "relevant_paths": ["data/recipes/meat_dish/麻婆豆腐/麻婆豆腐.md"]
+    },
+    {
+      "scenario": "exact",
+      "query": "糖醋排骨家常冰糖醋比例",
+      "relevant_paths": ["data/recipes/meat_dish/糖醋排骨/糖醋排骨.md"]
+    },
+    {
+      "scenario": "exact",
+      "query": "地三鲜茄子土豆青椒东北家常菜",
+      "relevant_paths": ["data/recipes/vegetable_dish/地三鲜.md"]
+    },
+    {
+      "scenario": "exact",
+      "query": "清蒸鲈鱼蒸鱼豉油葱姜",
+      "relevant_paths": ["data/recipes/aquatic/清蒸鲈鱼/清蒸鲈鱼.md"]
+    },
+    {
+      "scenario": "exact",
+      "query": "白灼菜心蚝油淋汁",
+      "relevant_paths": ["data/recipes/vegetable_dish/白灼菜心/白灼菜心.md"]
+    },
+    {
+      "scenario": "exact",
+      "query": "腊八粥杂粮豆干果传统",
+      "relevant_paths": ["data/recipes/soup/腊八粥.md"]
+    },
+    {
+      "scenario": "exact",
+      "query": "银耳莲子粥胶质养颜甜品粥",
+      "relevant_paths": ["data/recipes/soup/银耳莲子粥/银耳莲子粥.md"]
+    },
+    {
+      "scenario": "exact",
+      "query": "草莓冰淇淋自制冷冻甜品",
+      "relevant_paths": ["data/recipes/dessert/草莓冰淇淋/草莓冰淇淋.md"]
+    },
+    {
+      "scenario": "semantic_fuzzy",
+      "query": "想吃川味茄子鱼香味下饭不要纯素菜那种寡淡",
+      "relevant_paths": ["data/recipes/meat_dish/鱼香茄子/鱼香茄子.md"]
+    },
+    {
+      "scenario": "semantic_fuzzy",
+      "query": "番茄炖牛腩那种酸甜浓汤浇米饭想象",
+      "relevant_paths": ["data/recipes/meat_dish/西红柿牛腩/西红柿牛腩.md"]
+    },
+    {
+      "scenario": "semantic_fuzzy",
+      "query": "港式糖水想喝芒果西柚椰浆那种清爽甜品饮料",
+      "relevant_paths": ["data/recipes/drink/杨枝甘露.md"]
+    },
+    {
+      "scenario": "semantic_fuzzy",
+      "query": "想少油烟用微波炉做鱼配葱姜那种快手海鲜",
+      "relevant_paths": ["data/recipes/aquatic/微波葱姜黑鳕鱼.md"]
+    },
+    {
+      "scenario": "semantic_fuzzy",
+      "query": "夏天想拍根黄瓜凉拌醋蒜清爽一点",
+      "relevant_paths": ["data/recipes/vegetable_dish/凉拌黄瓜.md"]
+    },
+    {
+      "scenario": "semantic_fuzzy",
+      "query": "小孩爱吃甜口鸡翅可乐上色那种家常",
+      "relevant_paths": ["data/recipes/meat_dish/可乐鸡翅.md"]
+    },
+    {
+      "scenario": "keyword_exact",
+      "query": "小米辣 香菜 黄牛肉 爆炒 小炒",
+      "relevant_paths": ["data/recipes/meat_dish/小炒黄牛肉/小炒黄牛肉.md"]
+    },
+    {
+      "scenario": "keyword_exact",
+      "query": "鲤鱼 红烧 酱油 葱姜蒜 收汁",
+      "relevant_paths": ["data/recipes/aquatic/红烧鲤鱼.md"]
+    },
+    {
+      "scenario": "keyword_exact",
+      "query": "河粉 牛肉 芽菜 生抽 大火 炒河粉",
+      "relevant_paths": ["data/recipes/staple/炒河粉.md"]
+    },
+    {
+      "scenario": "keyword_exact",
+      "query": "八角 香叶 红茶 茶叶蛋 卤汁 小火",
+      "relevant_paths": ["data/recipes/breakfast/茶叶蛋.md"]
+    },
+    {
+      "scenario": "keyword_exact",
+      "query": "糯米粉 雪媚娘 淡奶油 荔浦芋头 黄油",
+      "relevant_paths": ["data/recipes/dessert/芋泥雪媚娘/芋泥雪媚娘.md"]
+    },
+    {
+      "scenario": "keyword_exact",
+      "query": "饭团 海苔 火腿 玉米粒 沙拉酱 拌饭",
+      "relevant_paths": ["data/recipes/staple/火腿饭团/火腿饭团.md"]
+    },
+    {
+      "scenario": "filter_constraint",
+      "query": "夜宵想做鸡蛋火腿蔬菜炒饭不要河海鲜虾仁那种配料",
+      "relevant_paths": ["data/recipes/staple/蛋炒饭.md"],
+      "effective_constraint": { "hard_exclusions": ["虾仁"] }
+    },
+    {
+      "scenario": "filter_constraint",
+      "query": "川味凉拌鸡丝麻辣香油醋糖想要低脂鸡胸肉版但不要任何花生坚果碎",
+      "relevant_paths": ["data/recipes/meat_dish/凉拌鸡丝/凉拌鸡丝.md"],
+      "effective_constraint": { "hard_exclusions": ["花生"] }
+    },
+    {
+      "scenario": "filter_constraint",
+      "query": "想吃咖喱椰浆拌饭浇头不要有带壳螃蟹的海鲜煲那种菜谱",
+      "relevant_paths": ["data/recipes/staple/日式咖喱饭/日式咖喱饭.md"],
+      "effective_constraint": { "hard_exclusions": ["蟹"] }
+    },
+    {
+      "scenario": "filter_constraint",
+      "query": "想啃干煸麻辣鸡块重口贵州风味不要宫保鸡丁那种加花生米爆炒的",
+      "relevant_paths": ["data/recipes/meat_dish/贵州辣子鸡/贵州辣子鸡.md"],
+      "effective_constraint": { "hard_exclusions": ["花生"] }
+    },
+    {
+      "scenario": "filter_constraint",
+      "query": "讨厌羊膻味，晚餐想吃一道暖身的炖菜",
+      "relevant_paths": ["data/recipes/meat_dish/广式萝卜牛腩.md"],
+      "effective_constraint": { "hard_exclusions": ["羊"] }
+    },
+    {
+      "scenario": "filter_constraint",
+      "query": "想清蒸整条鱼补充蛋白不要虾仁滑蛋河海鲜小炒那类做法",
+      "relevant_paths": ["data/recipes/aquatic/清蒸鲈鱼/清蒸鲈鱼.md"],
+      "effective_constraint": { "hard_exclusions": ["虾仁"] }
+    },
+    {
+      "scenario": "mixed",
+      "query": "便当一格韩式辣酱拌饭另一格想配拍黄瓜凉菜清口",
+      "relevant_paths": [
+        "data/recipes/staple/韩式拌饭/韩式拌饭.md",
+        "data/recipes/vegetable_dish/凉拌黄瓜.md"
+      ]
+    },
+    {
+      "scenario": "mixed",
+      "query": "周末卤一锅茶叶蛋当早餐再煮包泡面加蛋当夜宵",
+      "relevant_paths": [
+        "data/recipes/breakfast/茶叶蛋.md",
+        "data/recipes/staple/煮泡面加蛋.md"
+      ]
+    },
+    {
+      "scenario": "mixed",
+      "query": "晚餐想一荤一素糖醋小排配绿叶菜蚝油生菜",
+      "relevant_paths": [
+        "data/recipes/meat_dish/糖醋排骨/糖醋排骨.md",
+        "data/recipes/vegetable_dish/蚝油生菜.md"
+      ]
+    },
+    {
+      "scenario": "mixed",
+      "query": "凉菜双拼木耳和黄瓜都要醋蒜清爽素食开胃",
+      "relevant_paths": [
+        "data/recipes/vegetable_dish/凉拌木耳/凉拌木耳.md",
+        "data/recipes/vegetable_dish/凉拌黄瓜.md"
+      ]
+    },
+    {
+      "scenario": "mixed",
+      "query": "川菜想一桌俩硬菜干煸鸡块和鱼香茄子一起上",
+      "relevant_paths": [
+        "data/recipes/meat_dish/干煸仔鸡/干煸仔鸡.md",
+        "data/recipes/meat_dish/鱼香茄子/鱼香茄子.md"
+      ]
+    },
+    {
+      "scenario": "mixed",
+      "query": "早餐想流食养胃小米粥和大米白粥都备一点换着吃",
+      "relevant_paths": [
+        "data/recipes/soup/小米粥.md",
+        "data/recipes/soup/米粥.md"
+      ]
+    }
+  ]
+}
